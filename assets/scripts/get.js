@@ -18,7 +18,7 @@ var Content=function(options) {
   }
 
   this.getJSON=function() {
-//    log("Getting JSON file "+this.url+"...",LOG_DEBUG);
+    log("Getting JSON file "+this.url+"...",LOG_DEBUG);
     var that=this;
     $.getJSON(that.url)
       .done(that.dl_done)
@@ -26,14 +26,14 @@ var Content=function(options) {
   };
 
   this.getString=function() {
-//    log("Getting plain file "+this.url+"...",LOG_DEBUG);
+    log("Getting plain file "+this.url+"...",LOG_DEBUG);
     $.get(this.url)
       .done(this.dl_done)
       .fail(this.dl_fail);
   };
 
   this.getImage=function() {
-//    log("Getting image "+this.url+"...",LOG_DEBUG);
+    log("Getting image "+this.url+"...",LOG_DEBUG);
     this.data=new Image(this.url);
     this.data.onload=function() {
       var that=get_queue_current(); // we better be in a queue
@@ -75,14 +75,14 @@ var Content=function(options) {
     get_queue_check();
   };
 
-  this.dl_fail=function(d,error) {
+  this.dl_fail=function(d,error,retry) {
+    if(retry == null) retry=true
     async_loaded("get");
     var that=get_queue_current(); // we better be in a queue
     if(!that) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
       return;
     }
-    var retry=true;
     log("Failed to get "+that.url+": "+d.status,LOG_WARNING)
     if(that.tries > prop.get.retry.max) {
       if(that.callback)
@@ -91,9 +91,11 @@ var Content=function(options) {
       get_queue_check();
       load_item_done();
     } else {
-      setTimeout(function() {
-        that.get(); // try again
-      },prop.get.retry.time);
+      if(retry) {
+        setTimeout(function() {
+          that.get(); // try again
+        },prop.get.retry.time);
+      }
     }
   };
 
@@ -103,14 +105,17 @@ var Content=function(options) {
     var that=this;
     this.status="download";
     setTimeout(function() {
-      if(that.type == "json")
+      if(that.type == "json") {
         that.getJSON();
-      else if(that.type == "string")
+      } else if(that.type == "string") {
         that.getString();
-      else if(that.type == "image")
+      } else if(that.type == "image") {
         that.getImage();
-      else if(that.type == "audio")
+      } else if(that.type == "audio") {
         that.getAudio();
+      } else {
+        that.dl_fail({status:"unknown content type "+that.type},"type",false);
+      }
     },0);
   };
 
@@ -118,7 +123,7 @@ var Content=function(options) {
   get_queue_add(this);
 };
 
-function get_pre() {
+function get_init_pre() {
   prop.get={};
   prop.get.queue=[];
 

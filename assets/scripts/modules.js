@@ -5,13 +5,16 @@
 var MODULES=[
   "-util",
   "-animation",
-//  "get",
-//  "canvas",
-//  "load"
+  "load",
+  "track",
+  "get",
+  "environment",
+  "draw",
 ];
 
 // saved as prop.version and prop.version_string
-var VERSION=[0,0,0];
+var VERSION=[0,1];
+var VERSION_STATUS="alpha";
 
 // are you using a main loop? (you must call update() afterward disable/reenable)
 var UPDATE=false;
@@ -74,7 +77,7 @@ function prop_init() {
   prop={};
   prop.temp="nothing here";
   prop.version=VERSION;
-  prop.version_string="v"+VERSION.join(".");
+  prop.version_string="v"+VERSION.join(".")+" "+VERSION_STATUS;
   prop.time={};
   prop.time.start=time();
   prop.time.frames=0;
