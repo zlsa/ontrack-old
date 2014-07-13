@@ -17,7 +17,7 @@ var VERSION=[0,1];
 var VERSION_STATUS="alpha";
 
 // are you using a main loop? (you must call update() afterward disable/reenable)
-var UPDATE=false;
+var UPDATE=true;
 
 // the framerate is updated this often (seconds)
 var FRAME_DELAY=1;
@@ -119,7 +119,9 @@ function async(name) {
 
 function async_loaded(name) {
   async_modules[name]-=1;
-  async_check();
+  setTimeout(function() {
+    async_check();
+  },10);
 }
 
 function async_wait(callback) {
@@ -217,12 +219,12 @@ function done() {
   var e=time()-prop.time.start;
   e=e.toPrecision(2);
   log("Finished loading "+MODULES.length+" module"+s(MODULES.length)+" in "+e+"s");
-  $(window).resize(resize);
-  resize();
   call_module("*","done");
   async_wait(function() {
     prop.loaded=true;
     call_module("*","ready");
+    $(window).resize(resize);
+    resize();
     if(UPDATE)
       requestAnimationFrame(update);
   });

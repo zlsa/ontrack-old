@@ -67,6 +67,7 @@ var Content=function(options) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
       return;
     }
+    that.data=data;
     that.status="done";
 //    log("Downloaded "+that.url,LOG_DEBUG);
     if(that.callback)

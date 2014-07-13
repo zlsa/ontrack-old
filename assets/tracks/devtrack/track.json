@@ -1,0 +1,10 @@
+{
+  "about":{
+    "name":"Devtrack",
+    "author":"Jon Ross",
+    "designer":"Jon Ross"
+  },
+  "environment":{
+    "skydome":"skydome.png"
+  }
+}
