@@ -18,7 +18,7 @@ function draw_init_pre() {
 
 function draw_init() {
 
-  draw_shader_get("asphalt","assets/shaders/asphalt.frag");
+  draw_shader_get("asphalt","assets/shaders/grass.frag");
 
 }
 
