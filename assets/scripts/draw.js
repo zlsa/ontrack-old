@@ -147,10 +147,8 @@ function draw_resize() {
 
 function draw_update() {
 
-  prop.draw.camera.position.x=cos(time()*0.05)*4;
   prop.draw.camera.position.y=1.8;
-  prop.draw.camera.position.z=sin(time()*0.05)*4;
-  prop.draw.camera.lookAt(new THREE.Vector3(sin(time()*0.1)*5,0,cos(time()*0.1)*5));
+  prop.draw.camera.position.z-=delta()*4;
 
   window.ground_uniforms.time.value+=delta();
 
