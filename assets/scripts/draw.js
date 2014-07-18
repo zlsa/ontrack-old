@@ -97,14 +97,24 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 2, 2);
+  var ground_geometry=new THREE.PlaneGeometry(600, 600, 2, 2);
+
+  window.ground_uniforms={
+    time: {
+      type: "f",
+      value: 1.0
+    }
+  };
 
   var ground_material=new THREE.ShaderMaterial({
+    uniforms:window.ground_uniforms,
     vertexShader: ""+
       "varying vec2 vUV;\n"+
       "varying float vD;\n"+
+      "varying vec3 vNormal;\n"+
       "void main() {\n"+
       "  vUV=uv;\n"+
+      "  vNormal=normal;\n"+
       "  vec4 pos=vec4(position,1.0);\n"+
       "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
       "  vD=gl_Position.z;\n"+
@@ -137,12 +147,14 @@ function draw_resize() {
 
 function draw_update() {
 
-  prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
-
   prop.draw.camera.position.x=cos(time()*0.05)*4;
   prop.draw.camera.position.y=1.8;
   prop.draw.camera.position.z=sin(time()*0.05)*4;
   prop.draw.camera.lookAt(new THREE.Vector3(sin(time()*0.1)*5,0,cos(time()*0.1)*5));
+
+  window.ground_uniforms.time.value+=delta();
+
+  prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }
