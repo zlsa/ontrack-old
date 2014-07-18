@@ -74,44 +74,31 @@ float snoise(vec2 v)
 }
 
 void main() {
+  vec2 vp=vUV;
+
   vec4 asphalt_color=vec4(0.3,0.29,0.28,1.0);
 
-  float s=500000.0;
-  float asphalt_tiny_noise=(snoise(s*vUV)+1.0)*0.4+0.6;
+  float s=100.0;
+  float asphalt_big_noise=(snoise(s*vp)+1.0)*0.01+0.9;
+
+  s=400000.0;
+  float asphalt_tiny_noise=(((snoise(s*vp)+1.0)*0.4+0.6)*((snoise(s*vp+100.0)+1.0)*0.2+0.8));
+  asphalt_tiny_noise*=asphalt_big_noise*0.5+0.5;
 
   s=50000.0;
-  float asphalt_noise=(snoise(s*vUV)+1.0)*0.4+0.6;
+  float asphalt_noise=(snoise(s*vp)+1.0)*0.4+0.6;
 
-  s=10000.0;
-  float asphalt_medium_noise=(snoise(s*vUV)+1.0)*0.02+0.9;
+  s=5000.0;
+  float asphalt_medium_noise=(snoise(s*vp)+1.0)*0.02+0.9;
 
-  s=3000.0;
-  float asphalt_big_noise=(snoise(s*vUV)+1.0)*0.01+0.9;
+  float f=1.0;
 
-  asphalt_noise=mix(asphalt_tiny_noise,asphalt_medium_noise,clamp(vD*0.3,0.1,1.0));
+  asphalt_noise=mix(asphalt_tiny_noise,asphalt_medium_noise,clamp(vD*0.2/f,0.1,1.0));
 
-  asphalt_noise=mix(asphalt_noise,asphalt_medium_noise,clamp(vD*0.15,0.1,1.0));
+  asphalt_noise=mix(asphalt_noise,asphalt_medium_noise,clamp(vD*0.12/f,0.1,1.0));
 
-  asphalt_noise=mix(asphalt_noise,asphalt_big_noise,clamp(vD*0.02,0.1,1.0));
+  asphalt_noise=mix(asphalt_noise,asphalt_big_noise,clamp(vD*0.0001/f,0.1,1.0));
 
 
-  s=4000.0;
-  float f=0.005;
-  float asphalt_color_noise=(snoise(s*vUV+0.0)+1.0)*0.5;
-  asphalt_color.r+=asphalt_color_noise*f;
-
-  asphalt_color_noise=(snoise(s*vUV+100.0)+1.0)*0.5;
-  asphalt_color.g+=asphalt_color_noise*f;
-
-  asphalt_color_noise=(snoise(s*vUV+1000.0)+1.0)*0.5;
-  asphalt_color.b+=asphalt_color_noise*f;
-
-  vec4 line_color=vec4(1.0,1.0,1.0,1.0);
-  f=snoise(200000.0*vUV)*0.2-0.1;
-  float wf=1.0-(clamp((vD+0.3)*0.01,0.1,1.0));
-  float line_factor=clamp(((sin(vUV.x*5000.0)-0.985)*(200.0*wf)+f),0.0,0.9);
-
-  line_factor=clamp(line_factor,0.0,1.0);
-
-  gl_FragColor = mix(asphalt_color*asphalt_noise,line_color*asphalt_noise,line_factor);
+  gl_FragColor = asphalt_color*asphalt_noise;
 }

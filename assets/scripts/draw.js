@@ -139,10 +139,10 @@ function draw_update() {
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 
-  prop.draw.camera.position.x=cos(time()*0.05)*10;
+  prop.draw.camera.position.x=cos(time()*0.05)*4;
   prop.draw.camera.position.y=1.8;
-  prop.draw.camera.position.z=sin(time()*0.05)*10;
-  prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
+  prop.draw.camera.position.z=sin(time()*0.05)*4;
+  prop.draw.camera.lookAt(new THREE.Vector3(sin(time()*0.1)*5,0,cos(time()*0.1)*5));
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }
