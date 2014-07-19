@@ -1,8 +1,8 @@
 
-var Track=function(options) {
+var Railway=function(options) {
   this.url="";
   this.name="";
-  this.data=null;
+  this.root={};
   this.skydome=null;
 
   if(options) {
@@ -11,7 +11,7 @@ var Track=function(options) {
 
   this.get=function() {
     this.content=new Content({
-      url: this.url+"track.json",
+      url: this.url+"railway.json",
       type: "json",
       that: this,
       callback: this.getCallback
@@ -38,23 +38,23 @@ var Track=function(options) {
 
 };
 
-function track_init_pre() {
+function railway_init_pre() {
 
-  prop.track={};
-  prop.track.tracks=[];
-  prop.track.current=null;
+  prop.railway={};
+  prop.railway.railways=[];
+  prop.railway.current=null;
 
 }
 
-function track_init() {
-  track_get("devtrack");
-  prop.track.current=prop.track.tracks[0];
+function railway_init() {
+  railway_get("devtrack");
+  prop.railway.current=prop.railway.railways[0];
 }
 
-function track_get(name) {
+function railway_get(name) {
   var url="assets/railways/"+name+"/";
-  var track=new Track({
+  var railway=new Railway({
     url: url
   })
-  prop.track.tracks.push(track);
+  prop.railway.railways.push(railway);
 }

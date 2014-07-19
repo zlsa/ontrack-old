@@ -64,10 +64,9 @@ function draw_ready() {
 
   // SKYDOME
 
-  console.log(prop.track.current.skydome.data);
   var skydome_geometry=new THREE.SphereGeometry(3000, 20, 10);
 
-  var texture=new THREE.Texture(prop.track.current.skydome.data);
+  var texture=new THREE.Texture(prop.railway.current.skydome.data);
   texture.needsUpdate=true;
 
   var uniforms={

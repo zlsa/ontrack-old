@@ -1,0 +1,29 @@
+{
+  "about":{
+    "name":"Devtrack",
+    "author":"Jon Ross",
+    "designer":"Jon Ross"
+  },
+  "environment":{
+    "skydome":"skydome.png"
+  },
+  "root":{
+    "master":{
+      "position":[0,0],
+      "elevation":0,
+      "gauge":1.435,
+      "segments":[
+        {
+          "type":"straight",
+          "length":10
+        },
+        {
+          "type":"right",
+          "arc":180,
+          "radius":50,
+          "cant":5
+        }
+      ]
+    }
+  }
+}
