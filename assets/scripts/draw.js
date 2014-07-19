@@ -18,7 +18,7 @@ function draw_init_pre() {
 
 function draw_init() {
 
-  draw_shader_get("asphalt","assets/shaders/grass.frag");
+  draw_shader_get("asphalt","assets/shaders/grass-fast.frag");
 
 }
 
@@ -63,7 +63,7 @@ function draw_ready() {
   prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
 
   // SKYDOME
-  var skydome_geometry=new THREE.SphereGeometry(3000, 60, 40);
+  var skydome_geometry=new THREE.SphereGeometry(3000, 20, 10);
 
   var uniforms={
     texture: {
@@ -97,9 +97,17 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  var ground_geometry=new THREE.PlaneGeometry(600, 600, 2, 2);
+  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 20, 20);
+  
+  var grass=THREE.ImageUtils.loadTexture("assets/textures/grass.png");
+  grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
+  grass.repeat.set(2,2);
 
   window.ground_uniforms={
+    texture: {
+      type: "t",
+      value: grass
+    },
     time: {
       type: "f",
       value: 1.0
@@ -147,7 +155,7 @@ function draw_resize() {
 
 function draw_update() {
 
-  prop.draw.camera.position.y=1.8;
+  prop.draw.camera.position.y=trange(-1,sin(time()),1,0.2,2.0);
   prop.draw.camera.position.z-=delta()*4;
 
   window.ground_uniforms.time.value+=delta();
