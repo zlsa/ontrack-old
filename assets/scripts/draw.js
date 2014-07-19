@@ -16,12 +16,6 @@ function draw_init_pre() {
 
 }
 
-function draw_init() {
-
-  draw_shader_get("asphalt","assets/shaders/grass-fast.frag");
-
-}
-
 function draw_shader_get(name,url) {
   var shader=new Content({
     url: url,
@@ -30,7 +24,9 @@ function draw_shader_get(name,url) {
   prop.draw.shaders[name]=shader;
 }
 
-function draw_ready() {
+function draw_init() {
+
+  draw_shader_get("asphalt","assets/shaders/grass-fast.frag");
 
   // SCENE
   prop.draw.scene=new THREE.Scene();
@@ -61,6 +57,10 @@ function draw_ready() {
   prop.draw.camera.position.z=10;
   prop.draw.camera.position.y=1;
   prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
+
+}
+
+function draw_ready() {
 
   // SKYDOME
 
@@ -161,11 +161,10 @@ function draw_update() {
 
   var t=time()*0.02;
 
-  prop.draw.camera.position.y=trange(-1,sin(time()*0.5),1,1.7,1.8);
-  prop.draw.camera.position.x=-cos(t)*100;
-  prop.draw.camera.position.z=-sin(t)*100;
+  prop.draw.camera.position.y=300;
+  prop.draw.camera.position.z=-1;
 
-  prop.draw.camera.rotation.y=-t;
+  prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
 
   window.ground_uniforms.time.value+=delta();
 

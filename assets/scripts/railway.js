@@ -18,18 +18,52 @@ var Railway=function(options) {
     });
   };
 
+  this.verifyRoot=function(root) {
+    if(!root) root=this.root.master;
+    var valid=
+      root &&
+      root.position &&
+      typeof root.position == typeof [] &&
+      root.position.length == 2 &&
+      root.elevation != null &&
+      root.elevation != undefined &&
+      root.segments;
+    return valid;
+  }
+
+  this.verifyData=function() {
+    var valid=
+      this.data &&
+      this.data.about &&
+      this.data.about.name &&
+      this.data.about.description &&
+      this.data.environment &&
+      this.data.environment.skydome &&
+      this.data.root &&
+      this.data.root.master &&
+      this.verifyRoot(this.data.root.master);
+    return valid;
+  };
+
   this.parseData=function() {
     this.name=this.data.about.name;
     this.skydome=new Content({
       url: this.url+this.data.environment.skydome,
       type: "image",
     })
-    console.log(this.skydome);
+    this.root.master=new Segments({
+      type: "master",
+      position: this.data.root.master.position,
+      elevation: this.data.root.master.elevation,
+      gauge: this.data.root.master.gauge,
+      segments:this.data.root.master.segments
+    });
   };
 
   this.getCallback=function(status, data) {
     if(status == "ok") {
       this.data=data;
+      this.verifyData();
       this.parseData();
     }
   };

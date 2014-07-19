@@ -1,6 +1,17 @@
 
 window.AudioContext = window.AudioContext||window.webkitAudioContext;
 
+function clone(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+    return temp;
+}
+
 (function() {
     var lastTime = 0;
     var vendors = ['webkit', 'moz'];

@@ -2,7 +2,8 @@
   "about":{
     "name":"Devtrack",
     "author":"Jon Ross",
-    "designer":"Jon Ross"
+    "designer":"Jon Ross",
+    "description":"A test railway for debugging"
   },
   "environment":{
     "skydome":"skydome.png"
@@ -10,18 +11,24 @@
   "root":{
     "master":{
       "position":[0,0],
-      "elevation":0,
+      "elevation":1,
       "gauge":1.435,
       "segments":[
         {
           "type":"straight",
-          "length":10
+          "length":0,
+          "cant":[0,5]
         },
         {
-          "type":"right",
+          "type":"curve",
           "arc":180,
-          "radius":50,
+          "radius":10,
           "cant":5
+        },
+        {
+          "type":"straight",
+          "length":0,
+          "cant":[5,0]
         }
       ]
     }
