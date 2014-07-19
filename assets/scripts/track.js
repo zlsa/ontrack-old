@@ -52,7 +52,7 @@ function track_init() {
 }
 
 function track_get(name) {
-  var url="assets/tracks/"+name+"/";
+  var url="assets/railways/"+name+"/";
   var track=new Track({
     url: url
   })

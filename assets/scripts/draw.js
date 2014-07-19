@@ -68,7 +68,7 @@ function draw_ready() {
   var uniforms={
     texture: {
       type: "t",
-      value: THREE.ImageUtils.loadTexture("assets/tracks/devtrack/skydome.png")
+      value: THREE.ImageUtils.loadTexture("assets/railways/devtrack/skydome.png")
     }
   };
 
