@@ -90,7 +90,7 @@ void main() {
   float d=0.05;
   float t=trange(-1.0,snoise(vp*s),1.0,1.0-d,1.0+d);
   color.r*=t;
-  color.g*=t;
+  color.g*=t*1.4;
   color.b*=trange(-1.0,snoise(vp*s+10000.0),1.0,1.0-d,1.0+d);
 
   s=0.3;
