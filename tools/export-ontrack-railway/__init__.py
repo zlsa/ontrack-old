@@ -50,6 +50,53 @@ class ExportOnTrackRailway(bpy.types.Operator,ExportHelper):
     wm.fileselect_add(self)
     return {"RUNNING_MODAL"}
 
+class AddOnTrackRailwayObject(bpy.types.Operator):
+  """Adds an onTrack railway object"""
+  bl_idname="mesh.ontrack_object_add"
+  bl_label="Add onTrack object"
+
+  def getName(self):
+    return "onTrack object"
+
+  def add(self):
+    return ([],[],[])
+
+  def execute(self,context):
+    bpy.context.user_preferences.edit.use_global_undo=False
+    mesh = bpy.data.meshes.new(self.getName())
+
+    verts, edges, faces=self.add()
+    mesh.from_pydata(verts, edges, faces)
+
+    mesh.update()
+
+    bpy.ops.object.add(type="MESH")
+    ob=bpy.context.object
+    ob.data=mesh
+    ob.select = True
+    bpy.context.user_preferences.edit.use_global_undo=True
+    return {"FINISHED"}
+
+class AddOnTrackRailwayRoot(AddOnTrackRailwayObject):
+  """Adds an onTrack railway root"""
+  bl_idname="mesh.ontrack_root_add"
+  bl_label="Add onTrack root"
+
+  def getName(self):
+    return "object root"
+
+  def add(self):
+    verts=[]
+    edges=[]
+    faces=[]
+
+    for i in range(0,200):
+      verts.append([math.sin(i/200*math.pi*2),math.cos(i/200*math.pi*2),0]);
+      if i%2 == 0:
+        edges.append([i-1,i])
+    return (verts,edges,faces)
+
+ 
 class OnTrackRailwaySettings(bpy.types.PropertyGroup):
 
   Name=bpy.props.StringProperty(
@@ -71,7 +118,8 @@ class OnTrackRailwaySettings(bpy.types.PropertyGroup):
 def onTrackRailwayRootUpdate(self,context):
   OnTrackRailwayRoot=context.active_object.OnTrackRailwayRoot
   for mesh in bpy.data.meshes:
-    if mesh.name == ""
+    if mesh.name == "railway end":
+      pass
 
 class OnTrackRailwayRootSettings(bpy.types.PropertyGroup):
 
@@ -83,9 +131,12 @@ class OnTrackRailwayRootSettings(bpy.types.PropertyGroup):
       ("master-track","Master","This object is a track root for the user-controlled train"),
       ("track","Track","This object is a track root for trains"),
       ("road","Road","This object is a road root for wheeled vehicles"),
+      ("object","Object","This object is a root position for other objects"),
     ],
     default="none",
     update=onTrackRailwayRootUpdate)
+
+# Panels
 
 class OnTrackRailwayWorldOptionsPanel(bpy.types.Panel):
   """onTrack Railway Options"""
@@ -121,16 +172,33 @@ class OnTrackRailwayRootPanel(bpy.types.Panel):
     OnTrackRailwayRoot=bpy.context.active_object.OnTrackRailwayRoot
     row.prop(OnTrackRailwayRoot,"Type")
 
-def menu_func(self,context):
+# Menu
+
+class OnTrackRailwayMenu(bpy.types.Menu):
+  """Add item for an onTrack railway"""
+  bl_idname="onTrack_railway_add"
+  bl_label="onTrack railway"
+
+  def draw(self,context):
+    layout=self.layout
+    layout.operator_context="INVOKE_REGION_WIN"
+    layout.operator(AddOnTrackRailwayRoot.bl_idname, text="Root")
+
+def export_menu_func(self,context):
   self.layout.operator(ExportOnTrackRailway.bl_idname,text="onTrack railway (.otr)")
+
+def add_menu_func(self,context):
+  self.layout.menu(OnTrackRailwayMenu.bl_idname, icon="PLUGIN")
 
 def register():
   bpy.utils.register_module(__name__)
   bpy.types.World.OnTrackRailway=bpy.props.PointerProperty(type=OnTrackRailwaySettings)
   bpy.types.Object.OnTrackRailwayRoot=bpy.props.PointerProperty(type=OnTrackRailwayRootSettings)
-  bpy.types.INFO_MT_file_export.append(menu_func)
+  bpy.types.INFO_MT_file_export.append(export_menu_func)
+  bpy.types.INFO_MT_mesh_add.append(add_menu_func)
 
 def unregister():
   bpy.utils.unregister_module(__name__)
-  bpy.types.INFO_MT_file_export.remove(menu_func)
+  bpy.types.INFO_MT_file_export.remove(export_menu_func)
+  bpy.types.INFO_MT_mesh_add.remove(add_menu_func)
 
