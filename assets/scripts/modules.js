@@ -121,7 +121,7 @@ function async_loaded(name) {
   async_modules[name]-=1;
   setTimeout(function() {
     async_check();
-  },10);
+  },0);
 }
 
 function async_wait(callback) {

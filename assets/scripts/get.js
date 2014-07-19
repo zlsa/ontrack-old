@@ -20,21 +20,21 @@ var Content=function(options) {
   this.getJSON=function() {
     log("Getting JSON file "+this.url+"...",LOG_DEBUG);
     var that=this;
-    $.getJSON(that.url)
+    $.getJSON(that.url+"?time="+time())
       .done(that.dl_done)
       .fail(that.dl_fail);
   };
 
   this.getString=function() {
     log("Getting plain file "+this.url+"...",LOG_DEBUG);
-    $.get(this.url)
+    $.get(this.url+"?time="+time())
       .done(this.dl_done)
       .fail(this.dl_fail);
   };
 
   this.getImage=function() {
     log("Getting image "+this.url+"...",LOG_DEBUG);
-    this.data=new Image(this.url);
+    this.data=new Image(this.url+"?time="+time());
     this.data.onload=function() {
       var that=get_queue_current(); // we better be in a queue
       if(!that) {

@@ -81,19 +81,29 @@ float trange(float il, float i, float ih, float ol, float oh) {
   return ((i-il)/(ih-il)*(oh-ol))+ol;
 }
 
-void main() {
-  vec2 vp=vUV*800.0;
+float crange(float il, float i, float ih, float ol, float oh) {
+  return clamp(trange(il,i,ih,ol,oh),ol,oh);
+}
 
-  vec4 color=texture2D(texture, vp);
+void main() {
+  vec2 vp=vUV*80.0;
+
+  vec4 color=texture2D(texture, vp*1.3);
+  color+=texture2D(texture, vp*0.3)*0.5;
+  color*=0.7;
 
   float s=1.0;
   float d=0.05;
   float t=trange(-1.0,snoise(vp*s),1.0,1.0-d,1.0+d);
   color.r*=t;
-  color.g*=t*1.4;
+  color.g*=t*1.3;
   color.b*=trange(-1.0,snoise(vp*s+10000.0),1.0,1.0-d,1.0+d);
 
   s=0.3;
+  d=0.1;
+  color.rgb*=trange(-1.0,snoise(vp*s-1000.0),1.0,1.0-d,1.0+d);
+
+  s=300.0;
   d=0.1;
   color.rgb*=trange(-1.0,snoise(vp*s-1000.0),1.0,1.0-d,1.0+d);
 
