@@ -203,8 +203,10 @@ function draw_update() {
   var position=track.getPosition(prop.draw.train_position);
   var rotation=track.getRotation(prop.draw.train_position);
   var cant=track.getCant(prop.draw.train_position);
+  var elevation=track.getElevation(prop.draw.train_position);
 
   prop.draw.train.position.x=-position[0];
+  prop.draw.train.position.y=elevation;
   prop.draw.train.position.z=position[1];
   prop.draw.train.rotation.y=rotation;
   prop.draw.train.rotation.z=cant;

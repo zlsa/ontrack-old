@@ -9,11 +9,12 @@ var Segment=Fiber.extend(function() {
       this.arc       = radians(options.arc) || 0;
       this.radius    = [0,0];
       this.cant      = [0,0];
-      // vertical offset reached at end of segment
-      this.elevation = options.elevation || 0;
+      // grade == percent gain over distance
+      this.grade     = [0,0];
 
       this.setRadius(options.radius);
       this.setCant(options.cant);
+      this.setGrade(options.grade);
 
       this.cached_length=null;
 
@@ -33,8 +34,14 @@ var Segment=Fiber.extend(function() {
       if(typeof cant == typeof 0 && arguments.length == 2) this.setCant(arguments);
       if(typeof cant == typeof 0) this.setCant([cant,cant]);
     },
+    setGrade: function(grade) {
+      if(!grade) return;
+      if(typeof grade == typeof []) this.grade=[grade[0]*0.01,grade[1]*0.01];
+      if(typeof grade == typeof 0 && arguments.length == 2) this.setGrade(arguments);
+      if(typeof grade == typeof 0) this.setGrade([grade,grade]);
+    },
     getElevationDifference: function() {
-      return this.elevation;
+      return this.getElevation(this.getLength())-this.getElevation(0);
     },
     // returns the position for a given distance along the segment
     getPosition: function(distance) {
@@ -59,6 +66,10 @@ var Segment=Fiber.extend(function() {
     },
     getCant: function(distance) {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
+    },
+    getElevation: function(distance) {
+      var grade=srange(0,distance,this.getLength(),this.grade[0]*100,this.grade[1]*100);
+      return trange(0,grade,100,0,distance);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -107,6 +118,7 @@ var Segments=Fiber.extend(function() {
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
         var cant=this.getCant(i);
+        var elevation=this.getElevation(i);
         if(!position) continue;
 
         var geometry=new THREE.BoxGeometry(this.gauge*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05));
@@ -116,6 +128,7 @@ var Segments=Fiber.extend(function() {
         var material=new THREE.MeshPhongMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
         mesh.position.x=-position[0];
+        mesh.position.y=elevation;
         mesh.position.z=position[1];
         mesh.rotation.y=rotation;
         mesh.rotation.z=cant;
@@ -190,6 +203,14 @@ var Segments=Fiber.extend(function() {
         return null;
       }
       return segment[1].getCant(distance-segment[0][0]);
+    },
+    getElevation: function(distance) {
+      var segment=this.getSegment(distance);
+      if(!segment) {
+        console.log("no segment!");
+        return null;
+      }
+      return segment[0][3]+segment[1].getElevation(distance-segment[0][0]);
     },
     parseSegment: function(segment) {
       var s=new Segment(segment);
