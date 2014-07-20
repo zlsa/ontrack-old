@@ -10,7 +10,7 @@
   },
   "root":{
     "master":{
-      "position":[-15,-5],
+      "position":[-25,-25],
       "elevation":1,
       "gauge":1.435,
       "segments":[
@@ -21,7 +21,7 @@
         },
         {
           "type":"curve",
-          "arc":90,
+          "arc":20,
           "radius":10,
           "cant":5
         },
@@ -32,19 +32,40 @@
         },
         {
           "type":"curve",
-          "arc":45,
+          "arc":20,
           "radius":30,
           "cant":5
         },
         {
+          "type":"straight",
+          "length":5,
+          "cant":[0,5]
+        },
+        {
           "type":"curve",
-          "arc":45,
+          "arc":80,
           "radius":10,
           "cant":5
         },
         {
+          "type":"straight",
+          "length":20,
+          "cant":[0,5]
+        },
+        {
           "type":"curve",
-          "arc":-90,
+          "arc":-20,
+          "radius":20,
+          "cant":5
+        },
+        {
+          "type":"straight",
+          "length":20,
+          "cant":[0,5]
+        },
+        {
+          "type":"curve",
+          "arc":-40,
           "radius":20,
           "cant":5
         }
