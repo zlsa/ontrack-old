@@ -14,6 +14,12 @@ var Segment=Fiber.extend(function() {
 
       this.setRadius(options.radius);
       this.setCant(options.cant);
+
+      this.cached_length=null;
+
+      if(this.type == "straight" && !window.straight) {
+        window.straight=this;
+      }
     },
     setRadius: function(radius) {
       if(!radius) return;
@@ -23,9 +29,9 @@ var Segment=Fiber.extend(function() {
     },
     setCant: function(cant) {
       if(!cant) return;
-      if(typeof cant == typeof []) this.cant=cant;
-      if(typeof cant == typeof 0 && arguments.length == 2) this.cant=[cant,arguments[1]];
-      if(typeof cant == typeof 0) this.cant=[cant,cant];
+      if(typeof cant == typeof []) this.cant=[radians(cant[0]),radians(cant[1])];
+      if(typeof cant == typeof 0 && arguments.length == 2) this.setCant(arguments);
+      if(typeof cant == typeof 0) this.setCant([cant,cant]);
     },
     getElevationDifference: function() {
       return this.elevation;
@@ -51,6 +57,9 @@ var Segment=Fiber.extend(function() {
         else return -mod((Math.PI*2+trange(0,distance,this.getLength(),0,Math.abs(this.arc))),Math.PI*2);
       }
     },
+    getCant: function(distance) {
+      return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
+    },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
     getPositionDifference: function() {
@@ -61,9 +70,12 @@ var Segment=Fiber.extend(function() {
       if(this.type == "curve") return this.arc;
       else return 0;
     },
-    getLength: function() {
-      if(this.type == "straight") return this.length;
-      if(this.type == "curve") return Math.abs(this.arc)*this.radius[0];
+    getLength: function(cache) {
+      if(this.cached_length == null || cache) {
+        if(this.type == "straight") this.cached_length=this.length;
+        if(this.type == "curve") this.cached_length=Math.abs(this.arc)*this.radius[0];
+      }
+      return this.cached_length;
     }
   };
 });
@@ -94,16 +106,18 @@ var Segments=Fiber.extend(function() {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
+        var cant=this.getCant(i);
         if(!position) continue;
 
         var geometry=new THREE.BoxGeometry(this.gauge,0.2,0.2);
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
-        var material=new THREE.MeshBasicMaterial( { color: color } );
+        var material=new THREE.MeshPhongMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
         mesh.position.x=-position[0];
         mesh.position.z=position[1];
         mesh.rotation.y=rotation;
+        mesh.rotation.z=cant;
         prop.draw.scene.add(mesh);
       }
 
@@ -129,6 +143,9 @@ var Segments=Fiber.extend(function() {
         elevation+=segment.getElevationDifference();
         rotation+=segment.getAngleDifference();
       }
+    },
+    getGauge: function() {
+      return this.gauge;
     },
     getLength: function() {
       var last_segment=this.segment_cache[this.segment_cache.length-1];
@@ -164,6 +181,14 @@ var Segments=Fiber.extend(function() {
         return null;
       }
       return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0])),Math.PI*2);
+    },
+    getCant: function(distance) {
+      var segment=this.getSegment(distance);
+      if(!segment) {
+        console.log("no segment!");
+        return null;
+      }
+      return segment[1].getCant(distance-segment[0][0]);
     },
     parseSegment: function(segment) {
       var s=new Segment(segment);

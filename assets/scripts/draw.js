@@ -54,9 +54,9 @@ function draw_init() {
 
   // MOVE THE CAMERA... or something
 
-  prop.draw.camera.position.z=10;
-  prop.draw.camera.position.y=1;
-  prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
+//  prop.draw.camera.position.z=10;
+//  prop.draw.camera.position.y=1;
+//  prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
 
 }
 
@@ -139,6 +139,19 @@ function draw_ready() {
   prop.draw.ground.rotation.set(-Math.PI/2,0,0);
   prop.draw.scene.add(prop.draw.ground);
 
+  var gauge=prop.railway.current.getRoot("master").getGauge();
+  var geometry=new THREE.BoxGeometry(gauge,1,gauge*2);
+  var color=0xdddddd;
+  var material=new THREE.MeshPhongMaterial( { color: color } );
+  prop.draw.train=new THREE.Mesh(geometry, material);
+  prop.draw.train.position.y=0.5;
+
+  prop.draw.train_position=0;
+  prop.draw.train_direction=1;
+
+  prop.draw.train.add(prop.draw.camera);
+  prop.draw.scene.add(prop.draw.train);
+
 }
 
 function draw_resize() {
@@ -167,11 +180,35 @@ function draw_update() {
   prop.draw.camera.position.x=sin(t)*30;
   prop.draw.camera.position.z=cos(t)*30;
 
+  prop.draw.camera.position.y=0.4;
+  prop.draw.camera.position.x=0;
+  prop.draw.camera.position.z=-1;
+
   prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
 
   window.ground_uniforms.time.value+=delta();
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
+
+  var track=prop.railway.current.getRoot("master");
+
+  prop.draw.train_position+=20*delta()*prop.draw.train_direction;
+  if(prop.draw.train_position >= track.getLength()) {
+    prop.draw.train_direction*=-1;
+    prop.draw.train_position=track.getLength()-0.1;
+  } else if(prop.draw.train_position <= 0.01) {
+    prop.draw.train_direction*=-1;
+    prop.draw.train_position=0.1;
+  }
+
+  var position=track.getPosition(prop.draw.train_position);
+  var rotation=track.getRotation(prop.draw.train_position);
+  var cant=track.getCant(prop.draw.train_position);
+
+  prop.draw.train.position.x=-position[0];
+  prop.draw.train.position.z=position[1];
+  prop.draw.train.rotation.y=rotation;
+  prop.draw.train.rotation.z=cant;
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }

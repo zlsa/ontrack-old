@@ -29,6 +29,11 @@ var Railway=function(options) {
       root.elevation != undefined &&
       root.segments;
     return valid;
+  };
+
+  this.getRoot=function(type, number) {
+    if(number != undefined) return this.root[type][number];
+    return this.root[type];
   }
 
   this.verifyData=function() {

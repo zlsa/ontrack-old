@@ -17,7 +17,7 @@
         {
           "type":"straight",
           "length":10,
-          "cant":5
+          "cant":[0,5]
         },
         {
           "type":"curve",
@@ -28,36 +28,36 @@
         {
           "type":"straight",
           "length":10,
-          "cant":5
+          "cant":[5,-5]
         },
         {
           "type":"curve",
           "arc":-180,
           "radius":5,
-          "cant":5
+          "cant":-5
         },
         {
           "type":"straight",
           "length":10,
-          "cant":5
+          "cant":-5
         },
         {
           "type":"curve",
           "arc":-180,
           "radius":20,
-          "cant":5
+          "cant":[-5,-50]
         },
         {
           "type":"curve",
           "arc":-180,
           "radius":2.5,
-          "cant":5
+          "cant":[-50,5]
         },
         {
           "type":"curve",
           "arc":180,
           "radius":15,
-          "cant":5
+          "cant":[5,5]
         },
         {
           "type":"straight",
