@@ -55,7 +55,8 @@ var Segment=Fiber.extend(function() {
     getRotation: function(distance) {
       if(this.type == "straight") return 0;
       if(this.type == "curve") {
-        return mod(trange(0,distance,this.getLength(),0,Math.abs(this.arc)),Math.PI*2);
+        if(this.arc > 0) return mod((Math.PI*2-trange(0,distance,this.getLength(),0,-Math.abs(this.arc))),Math.PI*2);
+        else return -mod((Math.PI*2+trange(0,distance,this.getLength(),0,Math.abs(this.arc))),Math.PI*2);
       }
     },
     // returns the end position for the segment relative to the start;
@@ -174,8 +175,7 @@ var Segments=Fiber.extend(function() {
         console.log("no segment!");
         return null;
       }
-      return mod(Math.PI*2-(segment[1].getRotation(distance)),Math.PI*2);
-      return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance)),Math.PI*2);
+      return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0])),Math.PI*2);
       //segment[0][4]+
       //      return segment[0][4]+segment[1].getRotation(distance);
     },
