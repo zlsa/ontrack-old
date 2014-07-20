@@ -180,11 +180,11 @@ function draw_update() {
   prop.draw.camera.position.x=sin(t)*30;
   prop.draw.camera.position.z=cos(t)*30;
 
-  prop.draw.camera.position.y=0.4;
+  prop.draw.camera.position.y=1;
   prop.draw.camera.position.x=0;
-  prop.draw.camera.position.z=-1;
+  prop.draw.camera.position.z=1;
 
-  prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
+  prop.draw.camera.lookAt(new THREE.Vector3(0,1,10));
 
   window.ground_uniforms.time.value+=delta();
 
@@ -194,8 +194,7 @@ function draw_update() {
 
   prop.draw.train_position+=20*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
-    prop.draw.train_direction*=-1;
-    prop.draw.train_position=track.getLength()-0.1;
+    prop.draw.train_position=0.02;
   } else if(prop.draw.train_position <= 0.01) {
     prop.draw.train_direction*=-1;
     prop.draw.train_position=0.1;

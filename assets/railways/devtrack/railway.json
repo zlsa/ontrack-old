@@ -16,53 +16,53 @@
       "segments":[
         {
           "type":"straight",
-          "length":10,
-          "cant":[0,5]
+          "length":100,
+          "cant":[40,0]
+        },
+        {
+          "type":"straight",
+          "length":50,
+          "cant":[0,2]
         },
         {
           "type":"curve",
-          "arc":180,
-          "radius":10,
+          "arc":10,
+          "radius":100,
+          "cant":[2,4]
+        },
+        {
+          "type":"curve",
+          "arc":10,
+          "radius":70,
+          "cant":[4,5]
+        },
+        {
+          "type":"curve",
+          "arc":50,
+          "radius":50,
           "cant":5
         },
         {
-          "type":"straight",
-          "length":10,
-          "cant":[5,-5]
+          "type":"curve",
+          "arc":10,
+          "radius":70,
+          "cant":[5,4]
         },
         {
           "type":"curve",
-          "arc":-180,
-          "radius":5,
-          "cant":-5
-        },
-        {
-          "type":"straight",
-          "length":10,
-          "cant":-5
-        },
-        {
-          "type":"curve",
-          "arc":-180,
-          "radius":20,
-          "cant":[-5,-50]
-        },
-        {
-          "type":"curve",
-          "arc":-180,
-          "radius":2.5,
-          "cant":[-50,5]
-        },
-        {
-          "type":"curve",
-          "arc":180,
-          "radius":15,
-          "cant":[5,5]
+          "arc":10,
+          "radius":100,
+          "cant":[4,2]
         },
         {
           "type":"straight",
-          "length":10,
-          "cant":5
+          "length":50,
+          "cant":[2,0]
+        },
+        {
+          "type":"straight",
+          "length":100,
+          "cant":0
         }
       ]
     }
