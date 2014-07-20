@@ -40,7 +40,7 @@ function draw_init() {
 
   // RENDERER
   prop.draw.renderer=new THREE.WebGLRenderer({
-    antialias:true,
+    antialias:false,
   });
 
   prop.draw.renderer.setSize(prop.draw.size.width, prop.draw.size.height);
@@ -136,8 +136,7 @@ function draw_ready() {
   });
 
   prop.draw.ground=new THREE.Mesh(ground_geometry, ground_material);
-  prop.draw.ground.rotation.set(Math.PI/2,0,0);
-  prop.draw.ground.renderDepth=1000.0;
+  prop.draw.ground.rotation.set(-Math.PI/2,0,0);
   prop.draw.scene.add(prop.draw.ground);
 
 }
@@ -159,10 +158,14 @@ function draw_resize() {
 
 function draw_update() {
 
-  var t=time()*0.02;
+  var t=time()*0.5;
 
   prop.draw.camera.position.y=50;
   prop.draw.camera.position.z=-1;
+
+  prop.draw.camera.position.y=10;
+  prop.draw.camera.position.x=sin(t)*30;
+  prop.draw.camera.position.z=cos(t)*30;
 
   prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
 
