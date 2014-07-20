@@ -161,7 +161,7 @@ function draw_update() {
 
   var t=time()*0.02;
 
-  prop.draw.camera.position.y=300;
+  prop.draw.camera.position.y=50;
   prop.draw.camera.position.z=-1;
 
   prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
