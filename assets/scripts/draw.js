@@ -101,7 +101,7 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  var ground_geometry=new THREE.PlaneGeometry(600, 600, 1, 1);
+  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
   
   var grass=THREE.ImageUtils.loadTexture("assets/textures/grass.png");
   grass.wrapS = grass.wrapT = THREE.RepeatWrapping;

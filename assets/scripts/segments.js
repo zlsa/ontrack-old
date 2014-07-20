@@ -102,16 +102,17 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=0.5) {
+      for(var i=0;i<this.getLength();i+=1) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
         var cant=this.getCant(i);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(this.gauge,0.2,0.2);
+        var geometry=new THREE.BoxGeometry(this.gauge*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05));
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
+        var color=0x555555;
         var material=new THREE.MeshPhongMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
         mesh.position.x=-position[0];

@@ -27,31 +27,31 @@
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[2,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[4,5]
         },
         {
           "type":"curve",
           "arc":50,
-          "radius":50,
+          "radius":120,
           "cant":5
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[5,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[4,2]
         },
         {
@@ -72,31 +72,31 @@
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[2,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[4,5]
         },
         {
           "type":"curve",
           "arc":50,
-          "radius":50,
+          "radius":120,
           "cant":5
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[5,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[4,2]
         },
         {
@@ -117,31 +117,31 @@
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[2,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[4,5]
         },
         {
           "type":"curve",
           "arc":50,
-          "radius":50,
+          "radius":120,
           "cant":5
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[5,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[4,2]
         },
         {
@@ -162,31 +162,31 @@
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[2,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[4,5]
         },
         {
           "type":"curve",
           "arc":50,
-          "radius":50,
+          "radius":120,
           "cant":5
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":70,
+          "radius":220,
           "cant":[5,4]
         },
         {
           "type":"curve",
           "arc":10,
-          "radius":100,
+          "radius":1200,
           "cant":[4,2]
         },
         {

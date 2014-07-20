@@ -86,7 +86,7 @@ float crange(float il, float i, float ih, float ol, float oh) {
 }
 
 void main() {
-  vec2 vp=vUV*80.0;
+  vec2 vp=vUV*800.0;
 
   vec4 color=texture2D(texture, vp*1.3);
   color+=texture2D(texture, vp*0.3)*0.5;
