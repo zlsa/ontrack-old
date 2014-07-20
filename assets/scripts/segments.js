@@ -68,8 +68,9 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      var grade=srange(0,distance,this.getLength(),this.grade[0]*100,this.grade[1]*100);
-      return trange(0,grade,100,0,distance);
+      var difference=Math.abs(this.grade[0]-this.grade[1]);
+      var grade=srange(0,distance,this.getLength(),this.grade[0],this.grade[1]);
+      return (grade)*distance;
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation

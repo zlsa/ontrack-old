@@ -15,17 +15,27 @@
       "gauge":1.435,
       "segments":[
         {
-          "type":"curve",
-          "arc":-90,
-          "radius":50,
-          "grade":[20,0],
+          "type":"straight",
+          "length":100,
+          "grade":[0,20],
           "cant":0
         },
         {
-          "type":"curve",
-          "arc":90,
-          "radius":100,
-          "grade":0,
+          "type":"straight",
+          "length":100,
+          "grade":20,
+          "cant":0
+        },
+        {
+          "type":"straight",
+          "length":100,
+          "grade":[20,-20],
+          "cant":0
+        },
+        {
+          "type":"straight",
+          "length":100,
+          "grade":[-20,0],
           "cant":0
         }
       ]
