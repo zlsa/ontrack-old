@@ -98,7 +98,7 @@ function draw_ready() {
   prop.draw.skydome=new THREE.Mesh(skydome_geometry, skydome_material);
   prop.draw.skydome.scale.set(-1,1,1);
   prop.draw.skydome.renderDepth=1000.0;
-//  prop.draw.scene.add(prop.draw.skydome);
+  prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
   var ground_geometry=new THREE.PlaneGeometry(600, 600, 1, 1);
@@ -163,9 +163,9 @@ function draw_update() {
   prop.draw.camera.position.y=40;
   prop.draw.camera.position.z=-1;
 
-//  prop.draw.camera.position.y=10;
-//  prop.draw.camera.position.x=sin(t)*30;
-//  prop.draw.camera.position.z=cos(t)*30;
+  prop.draw.camera.position.y=10;
+  prop.draw.camera.position.x=sin(t)*30;
+  prop.draw.camera.position.z=cos(t)*30;
 
   prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
 
@@ -175,3 +175,13 @@ function draw_update() {
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }
+
+
+
+
+
+
+
+
+
+

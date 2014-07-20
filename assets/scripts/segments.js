@@ -12,14 +12,6 @@ var Segment=Fiber.extend(function() {
       // vertical offset reached at end of segment
       this.elevation = options.elevation || 0;
 
-      if(this.type == "curve") {
-        console.log(this);
-        if(!window.curve)
-          window.curve=this;
-      } else {
-        window.straight=this;
-      }
-
       this.setRadius(options.radius);
       this.setCant(options.cant);
     },
@@ -98,16 +90,15 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=1) {
+      for(var i=0;i<this.getLength();i+=0.5) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
-        console.log(rotation);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(5,0.2,0.2);
+        var geometry=new THREE.BoxGeometry(this.gauge,0.2,0.2);
         var color=0xff0000;
-        if(segment[1].type == "straight") color=0x000000;
+        if(segment[1].type == "straight") color=0x0000ff;
         var material=new THREE.MeshBasicMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
         mesh.position.x=-position[0];
@@ -162,11 +153,8 @@ var Segments=Fiber.extend(function() {
       var position=clone(segment[0][2]); // start position of the segment
       var rotation=clone(segment[0][4]); // start rotation of the segment
       var pos=segment[1].getPosition(distance-segment[0][0]);
-//      position[0]+=pos[0];
-//      position[1]+=pos[1];
       position[0]+=(cos(rotation)*pos[0])+(sin(rotation)*pos[1]);
       position[1]+=(cos(rotation)*pos[1])+(-sin(rotation)*pos[0]);
-//      console.log(position);
       return position;
     },
     getRotation: function(distance) {
@@ -176,8 +164,6 @@ var Segments=Fiber.extend(function() {
         return null;
       }
       return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0])),Math.PI*2);
-      //segment[0][4]+
-      //      return segment[0][4]+segment[1].getRotation(distance);
     },
     parseSegment: function(segment) {
       var s=new Segment(segment);
