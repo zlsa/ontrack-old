@@ -187,7 +187,6 @@ function draw_update() {
 
   prop.draw.camera.position.set(0,1,2);
   
-  prop.draw.camera.lookAt(new THREE.Vector3(-10,1,10));
   prop.draw.camera.lookAt(new THREE.Vector3(0,1,4));
 
   window.ground_uniforms.time.value+=delta();
@@ -196,7 +195,7 @@ function draw_update() {
 
   var track=prop.railway.current.getRoot("master");
 
-  prop.draw.train_position+=2*delta()*prop.draw.train_direction;
+  prop.draw.train_position+=10*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
     prop.draw.train_position=0.02;
   } else if(prop.draw.train_position <= 0.01) {

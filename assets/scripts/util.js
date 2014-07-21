@@ -148,3 +148,7 @@ function mod(x,y) {
     x=(y-x)-2;
   return x;
 }
+
+function fresnelS(x,t) {
+  return sin(Math.pow(t,2));
+}

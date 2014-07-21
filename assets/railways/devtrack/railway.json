@@ -16,9 +16,16 @@
       "segments":[
         {
           "type":"curve",
-          "arc":360,
+          "arc":180,
           "radius":30,
-          "elevation":0,
+          "elevation":[0,5],
+          "cant":20
+        },
+        {
+          "type":"curve",
+          "arc":180,
+          "radius":30,
+          "elevation":[5,0],
           "cant":20
         }
       ]
