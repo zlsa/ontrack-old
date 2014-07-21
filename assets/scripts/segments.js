@@ -128,7 +128,7 @@ var Segments=Fiber.extend(function() {
         var elevation=this.getElevation(i);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(this.gauge,0.1,12);
+        var geometry=new THREE.BoxGeometry(this.gauge,0.1,2);
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
         var material=new THREE.MeshPhongMaterial( { color: color } );

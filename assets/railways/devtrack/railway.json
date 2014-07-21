@@ -46,14 +46,14 @@
           "type":"straight",
           "length":100,
           "rise":2,
-          "cant":[-2,0]
+          "cant":[-2,-5]
         },
         {
           "type":"curve",
           "length":3000,
-          "radius":-5000,
+          "radius":-100,
           "rise":60,
-          "cant":0
+          "cant":-5
         }
       ]
     }
