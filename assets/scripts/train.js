@@ -15,33 +15,59 @@ var Car=Fiber.extend(function() {
         passengers: 0,
         derail: 0
       };
-      this.acceleration = 0;
+      this.tilt         = 0;
       this.acceleration_factors = {
-        friction: 0,
-        wind: 0,
         engine: 0,
         gravity: 0
       };
-      this.tilt         = 0;
+      this.acceleration = 0;
+      this.friction_factors = {
+        rolling: 0,
+        brake: 0,
+        aero: 0
+      };
+      this.friction=0;
     },
     update: function() {
       if(!this.train) return;
       if(!this.track) return;
 
       this.tilt_factors.cant=this.track.getCant(this.distance);
-      this.tilt_factors.wobble=sin(time()*5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
-      this.tilt_factors.wobble+=sin(time()*20)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
-      this.tilt_factors.wobble+=sin(time()*50)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
-      this.tilt_factors.wind=sin(time()*0.3)*radians(2);
+      this.tilt_factors.wobble=sin(time()*5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
+      this.tilt_factors.wobble+=sin(time()*20)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
+      this.tilt_factors.wobble+=sin(time()*50)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
+      this.tilt_factors.wobble+=sin(time()*100)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
+      this.tilt_factors.wind=sin(time()*0.3)*radians(0.5);
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
       var pitch=this.track.getPitch(this.distance);
 
       this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,10);
-      this.acceleration_factors.friction=-0.01*this.velocity;
       this.acceleration=0;
-      for(var i in this.acceleration_factors) this.acceleration+=this.acceleration_factors[i];
+
+      for(var i in this.acceleration_factors) {
+        var factor=this.acceleration_factors[i];
+        if(i == "brake" || i == "friction") {
+          factor=Math.abs(factor);
+          if(this.velocity >= 0) factor*=-1;
+        }
+        this.acceleration+=factor;
+      }
+
+      this.friction_factors.rolling=0.01*this.velocity;
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.2);
+      this.friction_factors.brake=1;
+
+      this.friction=0;
+      for(var i in this.friction_factors) {
+        var factor=this.friction_factors[i];
+        if(i == "rolling" || i == "aero" || i == "brake") {
+          factor=Math.abs(factor);
+          if(this.velocity >= 0) factor*=-1;
+        }
+        this.friction+=factor;
+      }
     },
   };
 });
@@ -79,9 +105,16 @@ var Train=Fiber.extend(function() {
         distance-=this.cars[i].length;
         this.cars[i].update();
       }
+
+      var velocity_sign=1;
+      if(this.velocity < 0) velocity_sign=-1;
+      
       for(var i=0;i<this.cars.length;i++) {
-        this.velocity+=this.cars[i].acceleration*delta();
+        var friction=Math.abs(this.cars[i].friction*delta());
+        this.velocity+=this.cars[i].acceleration*delta()*friction;
+        this.velocity-=friction*velocity_sign;
       }
+
       this.distance+=this.velocity*delta();
     }
   };

@@ -120,6 +120,7 @@ var Segments=Fiber.extend(function() {
       this.buildSegmentCache();
 
       for(var i=0;i<this.getLength();i+=1) {
+        break;
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -320,6 +321,7 @@ var Segments=Fiber.extend(function() {
       }
       var material=new THREE.MeshPhongMaterial({
         color: 0x444444,
+        wireframe: true,
         side:THREE.DoubleSide
       });
       this.geometry.computeBoundingSphere();
