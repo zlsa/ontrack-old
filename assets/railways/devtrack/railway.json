@@ -17,42 +17,28 @@
       "segments":[
         {
           "type":"straight",
-          "length":50,
-          "rise":1,
-          "cant":[0,2]
-        },
-        {
-          "type":"curve",
-          "length":200,
-          "radius":2000,
-          "rise":4,
-          "cant":2
-        },
-        {
-          "type":"curve",
-          "length":200,
-          "radius":2000,
-          "rise":4,
-          "cant":[2,-2]
-        },
-        {
-          "type":"curve",
           "length":500,
-          "radius":-3000,
-          "rise":10,
-          "cant":-2
+          "rise":0,
+          "cant":-5
+        },
+        {
+          "type":"curve",
+          "arc":1620,
+          "radius":-100,
+          "rise":60,
+          "cant":-5
         },
         {
           "type":"straight",
-          "length":100,
-          "rise":2,
-          "cant":[-2,-5]
+          "length":500,
+          "rise":0,
+          "cant":-5
         },
         {
           "type":"curve",
-          "length":3000,
+          "arc":1620,
           "radius":-100,
-          "rise":60,
+          "rise":-60,
           "cant":-5
         }
       ]

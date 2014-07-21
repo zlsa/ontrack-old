@@ -153,7 +153,7 @@ function draw_ready() {
   prop.draw.train_position=track.start;
   prop.draw.train_direction=1;
 
-  prop.draw.train.add(prop.draw.camera);
+//  prop.draw.train.add(prop.draw.camera);
   prop.draw.scene.add(prop.draw.train);
 
 }
@@ -191,8 +191,6 @@ function draw_update() {
 
   window.ground_uniforms.time.value+=delta();
 
-  prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
-
   var track=prop.railway.current.getRoot("master");
 
   prop.draw.train_position+=150*delta()*prop.draw.train_direction;
@@ -210,12 +208,21 @@ function draw_update() {
   var elevation=track.getElevation(prop.draw.train_position);
 
   prop.draw.train.position.x=-position[0];
-  prop.draw.train.position.y=elevation;
+  prop.draw.train.position.y=elevation+0.5;
   prop.draw.train.position.z=position[1];
   prop.draw.train.rotation.order="YZX";
   prop.draw.train.rotation.y=rotation;
   prop.draw.train.rotation.x=pitch;
   prop.draw.train.rotation.z=cant;
+
+  var cp=new THREE.Vector3(50,3+prop.draw.train.position.y,300);
+  prop.draw.camera.position=cp;
+  prop.draw.camera.lookAt(prop.draw.train.position);
+
+  prop.draw.camera.fov=srange(0,prop.draw.train.position.distanceTo(cp),500,40,0.5);
+  prop.draw.camera.updateProjectionMatrix();
+
+  prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }

@@ -70,7 +70,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return crange(0,distance,this.getLength(),0,this.rise);
+      return srange(0,distance,this.getLength(),0,this.rise);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -119,7 +119,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=10) {
+      for(var i=0;i<this.getLength();i+=2) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -128,7 +128,7 @@ var Segments=Fiber.extend(function() {
         var elevation=this.getElevation(i);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(this.gauge,0.1,2);
+        var geometry=new THREE.BoxGeometry(this.gauge,0.1,0.5);
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
         var material=new THREE.MeshPhongMaterial( { color: color } );
