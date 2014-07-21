@@ -44,20 +44,17 @@ var Car=Fiber.extend(function() {
       var pitch=this.track.getPitch(this.distance);
 
       this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,10);
+      this.acceleration_factors.engine=100;
       this.acceleration=0;
 
       for(var i in this.acceleration_factors) {
         var factor=this.acceleration_factors[i];
-        if(i == "brake" || i == "friction") {
-          factor=Math.abs(factor);
-          if(this.velocity >= 0) factor*=-1;
-        }
         this.acceleration+=factor;
       }
 
       this.friction_factors.rolling=0.01*this.velocity;
       this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.2);
-      this.friction_factors.brake=1;
+      this.friction_factors.brake=0;
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -116,6 +113,8 @@ var Train=Fiber.extend(function() {
       }
 
       this.distance+=this.velocity*delta();
+
+      $("#speed").text((this.velocity*3.6).toFixed(2)+" kph")
     }
   };
 });

@@ -22,12 +22,13 @@ canvas {
 }
 
 #stats > * {
-  display: inline-block;
-}
-
-#fps {
   font-family: "monoOne";
   color: #fff;
 
+  display: inline-block;
   padding: 5px 15px;
+}
+
+#fps {
+  float: right;
 }
