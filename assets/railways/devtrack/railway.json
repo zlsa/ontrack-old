@@ -18,15 +18,8 @@
           "type":"curve",
           "arc":360,
           "radius":30,
-          "elevation":[0,10],
-          "cant":[10,-10]
-        },
-        {
-          "type":"curve",
-          "arc":-360,
-          "radius":30,
-          "elevation":[0,-10],
-          "cant":[-10,10]
+          "elevation":0,
+          "cant":20
         }
       ]
     }

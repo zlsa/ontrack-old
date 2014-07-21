@@ -16,17 +16,26 @@ function draw_init_pre() {
 
 }
 
-function draw_shader_get(name,url) {
+function draw_fragment_shader_get(name,url) {
   var shader=new Content({
     url: url,
     type: "string",
+    payload: name,
+    callback: function(status,data,payload) {
+      console.log(arguments);
+      prop.draw.shaders[payload]=data
+        .replace("$PARAMETERS","")
+        .replace("$COLOR","");
+//        .replace("$PARAMETERS",THREE.ShaderChunk["shadowmap_pars_fragment"])
+//        .replace("$COLOR",THREE.ShaderChunk["shadowmap_fragment"]);
+    }
   });
-  prop.draw.shaders[name]=shader;
 }
 
 function draw_init() {
 
-  draw_shader_get("asphalt","assets/shaders/grass-fast.frag");
+  draw_fragment_shader_get("grass","assets/shaders/grass-fast.frag");
+//  draw_fragment_shader_get("grass","assets/shaders/water.frag");
 
   // SCENE
   prop.draw.scene=new THREE.Scene();
@@ -51,12 +60,6 @@ function draw_init() {
   prop.draw.sun=new THREE.DirectionalLight(0xffeedd, 2);
   prop.draw.sun.position.clone(prop.environment.sun_direction);
   prop.draw.scene.add(prop.draw.sun);
-
-  // MOVE THE CAMERA... or something
-
-//  prop.draw.camera.position.z=10;
-//  prop.draw.camera.position.y=1;
-//  prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
 
 }
 
@@ -104,6 +107,7 @@ function draw_ready() {
   var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
   
   var grass=THREE.ImageUtils.loadTexture("assets/textures/grass.png");
+//  var grass=THREE.ImageUtils.loadTexture("assets/textures/water.png");
   grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
   grass.repeat.set(2,2);
 
@@ -131,7 +135,7 @@ function draw_ready() {
       "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
       "  vD=gl_Position.z;\n"+
       "}",
-    fragmentShader: prop.draw.shaders.asphalt.data,
+    fragmentShader: prop.draw.shaders.grass,
     side:THREE.DoubleSide
   });
 
@@ -173,18 +177,18 @@ function draw_update() {
 
   var t=time()*0.5;
 
-  prop.draw.camera.position.y=40;
+  prop.draw.camera.position.x=10;
+  prop.draw.camera.position.y=100;
   prop.draw.camera.position.z=-1;
 
-  prop.draw.camera.position.y=10;
-  prop.draw.camera.position.x=sin(t)*30;
-  prop.draw.camera.position.z=cos(t)*30;
+  // prop.draw.camera.position.y=10;
+  // prop.draw.camera.position.x=sin(t)*30;
+  // prop.draw.camera.position.z=cos(t)*30;
 
-  prop.draw.camera.position.y=1;
-  prop.draw.camera.position.x=0;
-  prop.draw.camera.position.z=1;
-
-  prop.draw.camera.lookAt(new THREE.Vector3(0,1,10));
+  prop.draw.camera.position.set(0,1,2);
+  
+  prop.draw.camera.lookAt(new THREE.Vector3(-10,1,10));
+  prop.draw.camera.lookAt(new THREE.Vector3(0,1,4));
 
   window.ground_uniforms.time.value+=delta();
 
@@ -192,7 +196,7 @@ function draw_update() {
 
   var track=prop.railway.current.getRoot("master");
 
-  prop.draw.train_position+=20*delta()*prop.draw.train_direction;
+  prop.draw.train_position+=2*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
     prop.draw.train_position=0.02;
   } else if(prop.draw.train_position <= 0.01) {
@@ -209,20 +213,10 @@ function draw_update() {
   prop.draw.train.position.x=-position[0];
   prop.draw.train.position.y=elevation;
   prop.draw.train.position.z=position[1];
-  prop.draw.train.eulerOrder="YZX";
+  prop.draw.train.rotation.order="YZX";
   prop.draw.train.rotation.y=rotation;
   prop.draw.train.rotation.x=pitch;
   prop.draw.train.rotation.z=cant;
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }
-
-
-
-
-
-
-
-
-
-

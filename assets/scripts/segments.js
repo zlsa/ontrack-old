@@ -115,8 +115,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=1) {
-        if(Math.random() > 0.7) continue;
+      for(var i=0;i<this.getLength();i+=5) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -130,6 +129,7 @@ var Segments=Fiber.extend(function() {
         var color=0x555555;
         var material=new THREE.MeshPhongMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
+        mesh.castShadow=true;
         mesh.position.x=-position[0];
         mesh.position.y=elevation;
         mesh.position.z=position[1];
