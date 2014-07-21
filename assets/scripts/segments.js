@@ -75,7 +75,10 @@ var Segment=Fiber.extend(function() {
     },
     // the difference in angle between the start and end of this segment
     getAngleDifference: function() {
-      if(this.type == "curve") return this.arc;
+      if(this.type == "curve") {
+        if(this.radius < 0) return -this.arc;
+        return this.arc;
+      }
       else return 0;
     },
     getLength: function(cache) {
