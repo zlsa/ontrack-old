@@ -16,30 +16,11 @@
       "start":10,
       "segments":[
         {
-          "type":"straight",
-          "length":500,
-          "rise":0,
-          "cant":-5
-        },
-        {
           "type":"curve",
-          "arc":1620,
-          "radius":-100,
-          "rise":60,
-          "cant":-5
-        },
-        {
-          "type":"straight",
-          "length":500,
+          "arc":360,
+          "radius":100,
           "rise":0,
-          "cant":-5
-        },
-        {
-          "type":"curve",
-          "arc":1620,
-          "radius":-100,
-          "rise":-60,
-          "cant":-5
+          "cant":5
         }
       ]
     }

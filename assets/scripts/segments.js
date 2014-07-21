@@ -120,6 +120,7 @@ var Segments=Fiber.extend(function() {
       this.buildSegmentCache();
 
       for(var i=0;i<this.getLength();i+=5) {
+        break;
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -225,7 +226,15 @@ var Segments=Fiber.extend(function() {
       for(var i=0;i<segments.length;i++) {
         this.parseSegment(segments[i]);
       }
+    },
+    buildMesh: function() {
+      var
+      for(var i=0;i<this.getLength();i+=5) {
+        
+      }
     }
+  };
+
   };
 });
 
