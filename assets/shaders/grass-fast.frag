@@ -99,7 +99,8 @@ void main() {
 
   vec4 color=texture2D(texture, vp*1.3);
   color+=texture2D(texture, vp*0.3)*2.0;
-  color*=0.35;
+  color+=texture2D(texture, vp*10.8)*1.0;
+  color*=0.25;
 
   s=1.0;
   float d=0.05;

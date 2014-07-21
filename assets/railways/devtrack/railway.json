@@ -11,13 +11,32 @@
   "root":{
     "master":{
       "position":[0,0],
-      "elevation":0,
+      "elevation":10,
       "gauge":1.435,
-      "start":10,
+      "start":0,
       "segments":[
         {
+          "type":"straight",
+          "length":50,
+          "rise":0,
+          "cant":5
+        },
+        {
           "type":"curve",
-          "arc":360,
+          "arc":180,
+          "radius":100,
+          "rise":0,
+          "cant":5
+        },
+        {
+          "type":"straight",
+          "length":50,
+          "rise":0,
+          "cant":5
+        },
+        {
+          "type":"curve",
+          "arc":180,
           "radius":100,
           "rise":0,
           "cant":5

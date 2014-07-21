@@ -54,7 +54,7 @@ var Train=Fiber.extend(function() {
       this.track        = options.track || null;
       this.cars         = options.cars || [];
 
-      this.distance     = 50;
+      this.distance     = 10;
       this.velocity     = 10;
 
     },

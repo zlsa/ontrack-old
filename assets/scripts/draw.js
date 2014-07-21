@@ -121,7 +121,7 @@ function draw_ready() {
     }
   };
 
-  var ground_material=new THREE.ShaderMaterial({
+  window.ground_material=new THREE.ShaderMaterial({
     uniforms:window.ground_uniforms,
     vertexShader: ""+
       "varying vec2 vUV;\n"+
@@ -138,7 +138,7 @@ function draw_ready() {
     side:THREE.DoubleSide
   });
 
-  prop.draw.ground=new THREE.Mesh(ground_geometry, ground_material);
+  prop.draw.ground=new THREE.Mesh(ground_geometry, window.ground_material);
   prop.draw.ground.rotation.set(-Math.PI/2,0,0);
   prop.draw.scene.add(prop.draw.ground);
 
@@ -211,11 +211,11 @@ function draw_update() {
   prop.draw.train.rotation.z=cant;
 
 //
-//  var cp=new THREE.Vector3(50,3+prop.draw.train.position.y,300);
+//  var cp=new THREE.Vector3(-100,250,-1);
 //  var cp=new THREE.Vector3(50,3,300);
 //  prop.draw.camera.position=cp;
 //  prop.draw.camera.lookAt(prop.draw.train.position);
-//  prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
+//  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
 
 //  prop.draw.camera.fov=srange(0,prop.draw.train.position.distanceTo(cp),500,40,0.5);
 //  prop.draw.camera.updateProjectionMatrix();

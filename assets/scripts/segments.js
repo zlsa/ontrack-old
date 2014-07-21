@@ -145,6 +145,8 @@ var Segments=Fiber.extend(function() {
         prop.draw.scene.add(mesh);
       }
 
+      this.buildMesh();
+
     },
     buildSegmentCache: function() {
       // segment_cache saves the [distance, length, position, elevation, rotation] of each segment
@@ -228,13 +230,118 @@ var Segments=Fiber.extend(function() {
       }
     },
     buildMesh: function() {
-      var
-      for(var i=0;i<this.getLength();i+=5) {
-        
+      this.geometry=new THREE.Geometry();
+      var g=this.getGauge();
+      var bv=0.02; // bevel (on the rail)
+      var rw=0.05; // rail width
+      var rh=0.1; // rail height
+      var s=5; // the flat area on the sides
+      // _______/-\_____/-\_________
+      var profile=[
+        [[-g/2*60,    -8    ], null],
+        [[-g/2*30,    -4    ], null],
+        [[-g/2-rw-s-bv,0    ], null],
+        [[-g/2-rw-s,   0    ], null],
+        [[-g/2-rw-bv,  0    ], null],
+        [[-g/2-rw,     bv   ], null],
+        [[-g/2-rw,     rh-bv], null],
+        [[-g/2-rw+bv,  rh   ], null],
+        [[-g/2-bv,     rh   ], null],
+        [[-g/2,        rh-bv], null],
+        [[-g/2,        bv   ], null],
+        [[-g/2+bv,     0    ], null],
+
+        [[ g/2-bv,     0    ], null],
+        [[ g/2,        bv   ], null],
+        [[ g/2,        rh-bv], null],
+        [[ g/2+bv,     rh   ], null],
+        [[ g/2+rw,     rh-bv], null],
+        [[ g/2+rw,     bv   ], null],
+        [[ g/2+rw-bv,  rh   ], null],
+        [[ g/2+rw+bv,  0    ], null],
+        [[ g/2+rw+s,   0    ], null],
+        [[ g/2+rw+s+bv,0    ], null],
+        [[ g/2*30,    -4    ], null],
+        [[ g/2*60,    -8    ], null],
+//        [[-g/2+bv,     0   ], null],
+      ];
+      var step=0;
+      var vertices=0;
+      for(var i=0;i<this.getLength();i+=1,step++) {
+        var position=this.getPosition(i);
+        position[0]*=-1;
+        var rotation=this.getRotation(i);
+        var cant=this.getCant(i);
+        var elevation=this.getElevation(i);
+
+        function transform(profile_position) {
+          var x=-profile_position[0];
+          var y=profile_position[1];
+          var z=0;
+
+          x=cos(cant)*x+sin(cant)*y;
+          y=cos(cant)*y+sin(cant)*x;
+
+          z=sin(-rotation)*x;
+          x=cos(rotation)*x;
+
+          y+=elevation;
+          
+          x+=position[0];
+          z+=position[1];
+
+          return [x,y,z];
+        }
+
+        for(var j=0;j<profile.length;j++) {
+          var profile_index=profile[j];
+          var profile_position=profile_index[0];
+          var vp=transform(profile_position);
+          var v=new THREE.Vector3(vp[0],vp[1],vp[2]);
+          this.geometry.vertices.push(v);
+          vertices+=1;
+        }
+//        if(step%2 == 1 && step > 2) {
+        if(step > 2) {
+          for(var j=0;j<profile.length;j++) {
+            var previous_profile_offset=vertices-profile.length*2+j;
+            var profile_offset=vertices-profile.length+j;
+            if(profile_offset+1 >= this.geometry.vertices.length) continue;
+            var f1=new THREE.Face3(previous_profile_offset+0,
+                                   previous_profile_offset+1,
+                                            profile_offset+1);
+            var f2=new THREE.Face3(         profile_offset+0,
+                                   previous_profile_offset+0,
+                                            profile_offset+1);
+            this.geometry.faces.push(f1);
+            this.geometry.faces.push(f2);
+          }
+        }
+      }
+      var material=new THREE.MeshPhongMaterial({
+        color: 0x444444,
+        side:THREE.DoubleSide
+      });
+      this.geometry.computeBoundingSphere();
+      this.geometry.verticesNeedUpdate=true;
+      this.geometry.normalsNeedUpdate=true;
+      this.geometry.buffersNeedUpdate=true;
+      this.geometry.computeFaceNormals();
+      this.geometry.computeVertexNormals();
+      if(false) {
+        material=new THREE.ParticleBasicMaterial({
+          color: 0xff00ff,
+          size: 2
+        });
+        var particles=new THREE.ParticleSystem(this.geometry,material);
+        prop.draw.scene.add(particles);
+        console.log(particles);
+      } else {
+        this.mesh=new THREE.Mesh(this.geometry,material);
+        prop.draw.scene.add(this.mesh);
+        console.log(this.mesh);
       }
     }
-  };
-
   };
 });
 
