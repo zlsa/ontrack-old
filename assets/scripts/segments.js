@@ -5,8 +5,8 @@ var Segment=Fiber.extend(function() {
       if(!options) options={};
       this.type      = options.type || "straight";
       this.length    = options.length || 0;
-      // set arc negative to turn left
       this.arc       = radians(options.arc) || 0;
+      // set radius negative to turn left
       this.radius    = [0,0];
       this.cant      = [0,0];
       // elevation == percent gain over distance
@@ -16,6 +16,11 @@ var Segment=Fiber.extend(function() {
       this.setCant(options.cant);
 
       this.cached_length=null;
+
+      if(this.type == "arc" && options.length) {
+        this.arc=options.length/(Math.PI*2);
+      }
+      // length=Math.abs(this.arc)*((this.radius[0]+this.radius[1])/2);
 
       if(this.type == "straight" && !window.straight) {
         window.straight=this;
@@ -40,10 +45,10 @@ var Segment=Fiber.extend(function() {
     getPosition: function(distance) {
       if(this.type == "straight") return [0,distance];
       if(this.type == "curve") {
-        var arc=crange(0,distance,this.getLength(),0,Math.abs(this.arc));
-        var radius=srange(0,distance,this.getLength(),this.radius[0],this.radius[1]);
-        var position=[-(cos(arc)*radius)+radius,sin(arc)*radius*(this.radius[0]/this.radius[1])];
-        if(this.arc < 0) {
+        var arc=crange(0,distance,this.getLength(),0,this.arc);
+        var radius=Math.abs(this.radius[0]);
+        var position=[-(cos(arc)*radius)+radius,sin(arc)*radius];
+        if(this.radius[0] < 0) {
           position[0]*=-1;
         }
         return position;
@@ -53,7 +58,7 @@ var Segment=Fiber.extend(function() {
     getRotation: function(distance) {
       if(this.type == "straight") return 0;
       if(this.type == "curve") {
-        if(this.arc > 0) return mod((Math.PI*2-trange(0,distance,this.getLength(),0,-Math.abs(this.arc))),Math.PI*2);
+        if(this.radius > 0) return mod((Math.PI*2-trange(0,distance,this.getLength(),0,-Math.abs(this.arc))),Math.PI*2);
         else return -mod((Math.PI*2+trange(0,distance,this.getLength(),0,Math.abs(this.arc))),Math.PI*2);
       }
     },
@@ -76,7 +81,7 @@ var Segment=Fiber.extend(function() {
     getLength: function(cache) {
       if(this.cached_length == null || cache) {
         if(this.type == "straight") this.cached_length=this.length;
-        if(this.type == "curve") this.cached_length=Math.abs(this.arc)*((this.radius[0]+this.radius[1])/2);
+        if(this.type == "curve") this.cached_length=this.arc*Math.abs(this.radius[0]);
       }
       return this.cached_length;
     }
@@ -107,7 +112,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=1) {
+      for(var i=0;i<this.getLength();i+=10) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
