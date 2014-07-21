@@ -183,7 +183,7 @@ function draw_update() {
   // prop.draw.camera.position.x=sin(t)*30;
   // prop.draw.camera.position.z=cos(t)*30;
 
-  prop.draw.camera.position.set(0,0,0);
+  prop.draw.camera.position.set(0,0.5,0);
   
   prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,4));
 
@@ -203,7 +203,7 @@ function draw_update() {
   prop.draw.train.position.y=elevation+0.5;
   prop.draw.train.position.z=position[1];
 
-  prop.draw.train.rotation.order="YZX";
+  prop.draw.train.rotation.order="YXZ";
 
   var cant=prop.train.current.cars[0].tilt;
   prop.draw.train.rotation.y=rotation;
