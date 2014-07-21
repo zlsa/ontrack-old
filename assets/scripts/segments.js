@@ -9,12 +9,12 @@ var Segment=Fiber.extend(function() {
       this.arc       = radians(options.arc) || 0;
       this.radius    = [0,0];
       this.cant      = [0,0];
-      // grade == percent gain over distance
-      this.grade     = [0,0];
+      // elevation == percent gain over distance
+      this.elevation     = [0,0];
 
       this.setRadius(options.radius);
       this.setCant(options.cant);
-      this.setGrade(options.grade);
+      this.setElevation(options.elevation);
 
       this.cached_length=null;
 
@@ -34,11 +34,11 @@ var Segment=Fiber.extend(function() {
       if(typeof cant == typeof 0 && arguments.length == 2) this.setCant(arguments);
       if(typeof cant == typeof 0) this.setCant([cant,cant]);
     },
-    setGrade: function(grade) {
-      if(!grade) return;
-      if(typeof grade == typeof []) this.grade=[grade[0]*0.01,grade[1]*0.01];
-      if(typeof grade == typeof 0 && arguments.length == 2) this.setGrade(arguments);
-      if(typeof grade == typeof 0) this.setGrade([grade,grade]);
+    setElevation: function(elevation) {
+      if(!elevation) return;
+      if(typeof elevation == typeof []) this.elevation=[elevation[0],elevation[1]];
+      if(typeof elevation == typeof 0 && arguments.length == 2) this.setElevation(arguments);
+      if(typeof elevation == typeof 0) this.setElevation([elevation,elevation]);
     },
     getElevationDifference: function() {
       return this.getElevation(this.getLength())-this.getElevation(0);
@@ -68,9 +68,10 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      var difference=Math.abs(this.grade[0]-this.grade[1]);
-      var grade=srange(0,distance,this.getLength(),this.grade[0],this.grade[1]);
-      return (grade)*distance;
+      return srange(0,distance,this.getLength(),0,this.elevation[1]-this.elevation[0]);
+      var difference=Math.abs(this.elevation[0]-this.elevation[1]);
+      var elevation=srange(0,distance,this.getLength(),this.elevation[0],this.elevation[1]);
+      return (elevation)*distance;
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -115,6 +116,7 @@ var Segments=Fiber.extend(function() {
       this.buildSegmentCache();
 
       for(var i=0;i<this.getLength();i+=1) {
+        if(Math.random() > 0.7) continue;
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -122,7 +124,7 @@ var Segments=Fiber.extend(function() {
         var elevation=this.getElevation(i);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(this.gauge*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05),0.1*crange(0,Math.random(),1,0.95,1.05));
+        var geometry=new THREE.BoxGeometry(this.gauge,0.1,0.1);
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
         var color=0x555555;
@@ -212,6 +214,13 @@ var Segments=Fiber.extend(function() {
         return null;
       }
       return segment[0][3]+segment[1].getElevation(distance-segment[0][0]);
+    },
+    getPitch: function(distance, difference) {
+      if(!difference) difference=0.1;
+      difference=Math.max(0.01,difference);
+      var start=Math.max(0,distance-0.5);
+      var end=start+difference;
+      return Math.atan2(this.getElevation(start)-this.getElevation(end),difference);
     },
     parseSegment: function(segment) {
       var s=new Segment(segment);

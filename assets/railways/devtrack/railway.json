@@ -16,26 +16,33 @@
       "segments":[
         {
           "type":"straight",
-          "length":100,
-          "grade":[0,20],
-          "cant":0
+          "length":50,
+          "elevation":0,
+          "cant":[0,0]
         },
         {
           "type":"straight",
-          "length":100,
-          "grade":20,
-          "cant":0
+          "length":50,
+          "elevation":[0,20],
+          "cant":[0,10]
+        },
+        {
+          "type":"curve",
+          "arc":180,
+          "radius":50,
+          "elevation":20,
+          "cant":10
         },
         {
           "type":"straight",
-          "length":100,
-          "grade":[20,-20],
-          "cant":0
+          "length":50,
+          "elevation":[20,0],
+          "cant":[10,0]
         },
         {
           "type":"straight",
-          "length":100,
-          "grade":[-20,0],
+          "length":50,
+          "elevation":0,
           "cant":0
         }
       ]
