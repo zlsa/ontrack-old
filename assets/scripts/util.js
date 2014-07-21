@@ -149,6 +149,8 @@ function mod(x,y) {
   return x;
 }
 
-function fresnelS(x,t) {
-  return sin(Math.pow(t,2));
+function average() {
+  var n=0;
+  for(var i=0;i<arguments.length;i++) n+=arguments[i];
+  return n/arguments.length;
 }

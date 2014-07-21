@@ -150,7 +150,8 @@ function draw_ready() {
   prop.draw.train=new THREE.Mesh(geometry, material);
   prop.draw.train.position.y=0.5;
 
-  prop.draw.train_position=0;
+  var track=prop.railway.current.getRoot("master");
+  prop.draw.train_position=track.start;
   prop.draw.train_direction=1;
 
   prop.draw.train.add(prop.draw.camera);
@@ -197,7 +198,7 @@ function draw_update() {
 
   prop.draw.train_position+=10*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
-    prop.draw.train_position=0.02;
+    prop.draw.train_position=track.start;
   } else if(prop.draw.train_position <= 0.01) {
     prop.draw.train_direction*=-1;
     prop.draw.train_position=0.1;
@@ -206,7 +207,7 @@ function draw_update() {
   var position=track.getPosition(prop.draw.train_position);
   var rotation=track.getRotation(prop.draw.train_position);
   var cant=track.getCant(prop.draw.train_position);
-  var pitch=track.getPitch(prop.draw.train_position);
+//  var pitch=track.getPitch(prop.draw.train_position);
   var elevation=track.getElevation(prop.draw.train_position);
 
   prop.draw.train.position.x=-position[0];
@@ -214,7 +215,7 @@ function draw_update() {
   prop.draw.train.position.z=position[1];
   prop.draw.train.rotation.order="YZX";
   prop.draw.train.rotation.y=rotation;
-  prop.draw.train.rotation.x=pitch;
+//  prop.draw.train.rotation.x=pitch;
   prop.draw.train.rotation.z=cant;
 
   $("#fps").text(prop.time.fps.toFixed(0));

@@ -10,11 +10,10 @@ var Segment=Fiber.extend(function() {
       this.radius    = [0,0];
       this.cant      = [0,0];
       // elevation == percent gain over distance
-      this.elevation     = [0,0];
+      this.rise      = options.rise || 0;
 
       this.setRadius(options.radius);
       this.setCant(options.cant);
-      this.setElevation(options.elevation);
 
       this.cached_length=null;
 
@@ -33,12 +32,6 @@ var Segment=Fiber.extend(function() {
       if(typeof cant == typeof []) this.cant=[radians(cant[0]),radians(cant[1])];
       if(typeof cant == typeof 0 && arguments.length == 2) this.setCant(arguments);
       if(typeof cant == typeof 0) this.setCant([cant,cant]);
-    },
-    setElevation: function(elevation) {
-      if(!elevation) return;
-      if(typeof elevation == typeof []) this.elevation=[elevation[0],elevation[1]];
-      if(typeof elevation == typeof 0 && arguments.length == 2) this.setElevation(arguments);
-      if(typeof elevation == typeof 0) this.setElevation([elevation,elevation]);
     },
     getElevationDifference: function() {
       return this.getElevation(this.getLength())-this.getElevation(0);
@@ -68,10 +61,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return srange(0,distance,this.getLength(),0,this.elevation[1]-this.elevation[0]);
-      var difference=Math.abs(this.elevation[0]-this.elevation[1]);
-      var elevation=srange(0,distance,this.getLength(),this.elevation[0],this.elevation[1]);
-      return (elevation)*distance;
+      return srange(0,distance,this.getLength(),0,this.rise);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -101,6 +91,8 @@ var Segments=Fiber.extend(function() {
       this.position  = options.position || [0,0];
       this.elevation = options.elevation || 0;
       this.rotation  = options.rotation || 0;
+      this.start     = options.start || 0;
+      this.end       = options.end || 0;
       this.segments  = [];
 
       if(this.type == "master" || this.type == "track") {
@@ -179,11 +171,8 @@ var Segments=Fiber.extend(function() {
       }
     },
     getPosition: function(distance) {
+      distance=clamp(0,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
-      if(!segment) {
-        console.log("no segment!");
-        return null;
-      }
       var position=clone(segment[0][2]); // start position of the segment
       var rotation=clone(segment[0][4]); // start rotation of the segment
       var pos=segment[1].getPosition(distance-segment[0][0]);
@@ -192,30 +181,22 @@ var Segments=Fiber.extend(function() {
       return position;
     },
     getRotation: function(distance) {
+      distance=clamp(0,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
-      if(!segment) {
-        console.log("no segment!");
-        return null;
-      }
       return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0])),Math.PI*2);
     },
     getCant: function(distance) {
+      distance=clamp(0,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
-      if(!segment) {
-        console.log("no segment!");
-        return null;
-      }
       return segment[1].getCant(distance-segment[0][0]);
     },
     getElevation: function(distance) {
+      distance=clamp(0,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
-      if(!segment) {
-        console.log("no segment!");
-        return null;
-      }
       return segment[0][3]+segment[1].getElevation(distance-segment[0][0]);
     },
     getPitch: function(distance, difference) {
+      distance=clamp(0,distance,this.getLength()-0.01);
       if(!difference) difference=0.1;
       difference=Math.max(0.01,difference);
       var start=Math.max(0,distance-0.5);
