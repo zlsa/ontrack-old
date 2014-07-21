@@ -115,9 +115,16 @@
           "cant":0
         },
         {
+          "type":"curve",
+          "arc":180,
+          "radius":-30,
+          "rise":0,
+          "cant":0
+        },
+        {
           "type":"straight",
           "length":200,
-          "rise":50,
+          "rise":0,
           "cant":0
         }
       ]
