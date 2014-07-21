@@ -195,7 +195,7 @@ function draw_update() {
 
   var track=prop.railway.current.getRoot("master");
 
-  prop.draw.train_position+=50*delta()*prop.draw.train_direction;
+  prop.draw.train_position+=150*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
     prop.draw.train_position=track.start;
   } else if(prop.draw.train_position <= 0.01) {

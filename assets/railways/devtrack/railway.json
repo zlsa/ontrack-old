@@ -47,6 +47,13 @@
           "length":100,
           "rise":2,
           "cant":[-2,0]
+        },
+        {
+          "type":"curve",
+          "length":3000,
+          "radius":-5000,
+          "rise":60,
+          "cant":0
         }
       ]
     }
