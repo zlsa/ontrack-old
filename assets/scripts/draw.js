@@ -150,10 +150,8 @@ function draw_ready() {
   prop.draw.train.position.y=0.5;
 
   var track=prop.railway.current.getRoot("master");
-  prop.draw.train_position=track.start;
-  prop.draw.train_direction=1;
 
-//  prop.draw.train.add(prop.draw.camera);
+  prop.draw.train.add(prop.draw.camera);
   prop.draw.scene.add(prop.draw.train);
 
 }
@@ -185,42 +183,42 @@ function draw_update() {
   // prop.draw.camera.position.x=sin(t)*30;
   // prop.draw.camera.position.z=cos(t)*30;
 
-  prop.draw.camera.position.set(0,1,2);
+  prop.draw.camera.position.set(0,0,0);
   
-  prop.draw.camera.lookAt(new THREE.Vector3(0,1,4));
+  prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,4));
 
   window.ground_uniforms.time.value+=delta();
 
   var track=prop.railway.current.getRoot("master");
 
-  prop.draw.train_position+=150*delta()*prop.draw.train_direction;
-  if(prop.draw.train_position >= track.getLength()) {
-    prop.draw.train_position=track.start;
-  } else if(prop.draw.train_position <= 0.01) {
-    prop.draw.train_direction*=-1;
-    prop.draw.train_position=0.1;
-  }
+  var train_distance=prop.train.current.distance;
 
-  var position=track.getPosition(prop.draw.train_position);
-  var rotation=track.getRotation(prop.draw.train_position);
-  var cant=track.getCant(prop.draw.train_position);
-  var pitch=track.getPitch(prop.draw.train_position);
-  var elevation=track.getElevation(prop.draw.train_position);
+  var position= track.getPosition( train_distance);
+  var rotation= track.getRotation( train_distance);
+//  var cant=     track.getCant(     train_distance);
+  var pitch=    track.getPitch(    train_distance);
+  var elevation=track.getElevation(train_distance);
 
-  prop.draw.train.position.x=-position[0];
+  prop.draw.train.position.x=-position[0]
   prop.draw.train.position.y=elevation+0.5;
   prop.draw.train.position.z=position[1];
+
   prop.draw.train.rotation.order="YZX";
+
+  var cant=prop.train.current.cars[0].tilt;
   prop.draw.train.rotation.y=rotation;
   prop.draw.train.rotation.x=pitch;
   prop.draw.train.rotation.z=cant;
 
-  var cp=new THREE.Vector3(50,3+prop.draw.train.position.y,300);
-  prop.draw.camera.position=cp;
-  prop.draw.camera.lookAt(prop.draw.train.position);
+//
+//  var cp=new THREE.Vector3(50,3+prop.draw.train.position.y,300);
+//  var cp=new THREE.Vector3(50,3,300);
+//  prop.draw.camera.position=cp;
+//  prop.draw.camera.lookAt(prop.draw.train.position);
+//  prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
 
-  prop.draw.camera.fov=srange(0,prop.draw.train.position.distanceTo(cp),500,40,0.5);
-  prop.draw.camera.updateProjectionMatrix();
+//  prop.draw.camera.fov=srange(0,prop.draw.train.position.distanceTo(cp),500,40,0.5);
+//  prop.draw.camera.updateProjectionMatrix();
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 

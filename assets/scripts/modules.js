@@ -8,6 +8,7 @@ var MODULES=[
   "load",
   "segments",
   "railway",
+  "train",
   "get",
   "environment",
   "draw",
@@ -223,7 +224,9 @@ function done() {
   call_module("*","done");
   async_wait(function() {
     prop.loaded=true;
+    call_module("*","ready_pre");
     call_module("*","ready");
+    call_module("*","ready_post");
     $(window).resize(resize);
     resize();
     if(UPDATE)

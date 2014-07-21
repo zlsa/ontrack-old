@@ -86,8 +86,8 @@ function railway_init_pre() {
 }
 
 function railway_init() {
-  railway_get("devtrack");
-  prop.railway.current=prop.railway.railways[0];
+//  railway_get("devtrack");
+  railway_set_current(railway_get("train-test"));
 }
 
 function railway_get(name) {
@@ -96,4 +96,9 @@ function railway_get(name) {
     url: url
   })
   prop.railway.railways.push(railway);
+  return railway;
+}
+
+function railway_set_current(railway) {
+  prop.railway.current=railway;
 }

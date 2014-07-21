@@ -119,7 +119,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=2) {
+      for(var i=0;i<this.getLength();i+=8) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
