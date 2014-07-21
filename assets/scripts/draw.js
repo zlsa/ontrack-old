@@ -22,7 +22,6 @@ function draw_fragment_shader_get(name,url) {
     type: "string",
     payload: name,
     callback: function(status,data,payload) {
-      console.log(arguments);
       prop.draw.shaders[payload]=data
         .replace("$PARAMETERS","")
         .replace("$COLOR","");
@@ -196,7 +195,7 @@ function draw_update() {
 
   var track=prop.railway.current.getRoot("master");
 
-  prop.draw.train_position+=10*delta()*prop.draw.train_direction;
+  prop.draw.train_position+=50*delta()*prop.draw.train_direction;
   if(prop.draw.train_position >= track.getLength()) {
     prop.draw.train_position=track.start;
   } else if(prop.draw.train_position <= 0.01) {
@@ -207,7 +206,7 @@ function draw_update() {
   var position=track.getPosition(prop.draw.train_position);
   var rotation=track.getRotation(prop.draw.train_position);
   var cant=track.getCant(prop.draw.train_position);
-//  var pitch=track.getPitch(prop.draw.train_position);
+  var pitch=track.getPitch(prop.draw.train_position);
   var elevation=track.getElevation(prop.draw.train_position);
 
   prop.draw.train.position.x=-position[0];
@@ -215,7 +214,7 @@ function draw_update() {
   prop.draw.train.position.z=position[1];
   prop.draw.train.rotation.order="YZX";
   prop.draw.train.rotation.y=rotation;
-//  prop.draw.train.rotation.x=pitch;
+  prop.draw.train.rotation.x=pitch;
   prop.draw.train.rotation.z=cant;
 
   $("#fps").text(prop.time.fps.toFixed(0));
