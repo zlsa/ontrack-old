@@ -119,8 +119,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=5) {
-        break;
+      for(var i=0;i<this.getLength();i+=1) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -129,9 +128,10 @@ var Segments=Fiber.extend(function() {
         var elevation=this.getElevation(i);
         if(!position) continue;
 
-        var geometry=new THREE.BoxGeometry(this.gauge,0.1,0.5);
+        var geometry=new THREE.BoxGeometry(this.gauge*1.3,0.1,0.2);
         var color=0xff0000;
         if(segment[1].type == "straight") color=0x0000ff;
+        color=0x665544;
         var material=new THREE.MeshPhongMaterial( { color: color } );
         var mesh=new THREE.Mesh(geometry, material);
         mesh.castShadow=true;
@@ -275,12 +275,12 @@ var Segments=Fiber.extend(function() {
         var elevation=this.getElevation(i);
 
         function transform(profile_position) {
-          var x=-profile_position[0];
-          var y=profile_position[1];
+          var tx=-profile_position[0];
+          var ty=profile_position[1];
           var z=0;
 
-          x=cos(cant)*x+sin(cant)*y;
-          y=cos(cant)*y+sin(cant)*x;
+          var x=cos(cant)*tx+sin(cant)*ty;
+          var y=cos(cant)*ty+sin(cant)*tx;
 
           z=sin(-rotation)*x;
           x=cos(rotation)*x;
