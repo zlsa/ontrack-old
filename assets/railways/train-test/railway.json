@@ -135,7 +135,7 @@
         },
         {
           "type":"straight",
-          "length":50,
+          "length":200,
           "rise":100,
           "cant":[0,90]
         }
