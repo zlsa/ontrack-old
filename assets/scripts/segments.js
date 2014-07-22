@@ -296,7 +296,7 @@ var Segments=Fiber.extend(function() {
       uv_width=1/uv_width;
       for(var i=0;i<uv_profile.length;i++) {
         uv_profile[i]*=uv_width;
-        uv_profile[i]+=0.25;
+//        uv_profile[i]+=0.25;
       }
       console.log(uv_profile);
       var extent=left_extent-right_extent;
@@ -346,7 +346,7 @@ var Segments=Fiber.extend(function() {
             if(profile_offset+1 >= geometry.vertices.length) continue;
             var left_offset=profile[j][0][0];
             var right_offset=profile[j+1][0][0];
-            var s=5;
+            var s=2.5;
             var f1=new THREE.Face3(previous_profile_offset+0,
                                    previous_profile_offset+1,
                                             profile_offset+1);

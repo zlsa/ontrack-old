@@ -13,7 +13,10 @@ var Shader=Fiber.extend(function() {
 
       this.color           = options.color || null;
       this.shininess       = options.shininess || 20;
+
       this.map             = options.map || null;
+      this.bumpMap         = options.bumpMap || null;
+      this.bumpScale       = options.bumpScale || null;
 
       this.uniforms        = {};
 
@@ -133,11 +136,21 @@ var Shader=Fiber.extend(function() {
           map.repeat.set(2,2);
           map.needsUpdate=true;
         }
-        
+
+        var bumpMap=null;
+        if(this.bumpMap) {
+          bumpMap=new THREE.Texture(prop.shader.textures[this.bumpMap]);
+          bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
+          bumpMap.repeat.set(2,2);
+          bumpMap.needsUpdate=true;
+        }
+
         this.material=new THREE.MeshPhongMaterial({
           color: this.color,
           shininess: this.shininess,
           map: map,
+          bumpMap: bumpMap,
+          bumpScale: this.bumpScale,
           side: THREE.DoubleSide
         });
       }
@@ -188,11 +201,14 @@ function shader_init() {
   shader_load("skydome");
   shader_load("grass");
 //  shader_load("gravel");
-  shader_get_texture("gravel","concrete-sleeper.png");
+  shader_get_texture("concrete-sleeper");
+  shader_get_texture("concrete-sleeper-bump");
   shader_add(new Shader({
     name: "gravel",
     type: "phong",
-    map: "gravel",
+    map: "concrete-sleeper",
+    bumpMap: "concrete-sleeper-bump",
+    bumpScale: 0.1
   }));
   shader_add(new Shader({
     name: "rails",
