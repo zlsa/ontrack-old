@@ -6,5 +6,5 @@ function ui_init_pre() {
 
   };
 
-  prop.ui.camera.mode="chase";
+  prop.ui.camera.mode="cab";
 }

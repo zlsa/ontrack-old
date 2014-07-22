@@ -19,18 +19,17 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:0.2
+        force:0.4
       };
       
       this.audio={
-        flange: audio_load("flange"),
         rails: audio_load("rails")
       };
 
     },
     calculateFriction: function() {
       this.flange_offset_angle=Math.max(0,Math.abs(this.track_angle)-Math.atan2(this.gap,this.wheel_distance));
-      if(this.articulated) this.flange_offset_angle*=0.05;
+      if(this.articulated) this.flange_offset_angle*=0.03;
       this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,0.1*this.car.velocity);
       this.friction_factors.rolling=0.001*this.car.velocity;
       this.friction_factors.brake=trange(0,this.car.train.brake.value,this.car.train.brake.max,0,this.brake.force);
@@ -44,9 +43,6 @@ var Bogie=Fiber.extend(function() {
       this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.07));
       this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),10,0.3,1.2));
       this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
-
-      this.audio.flange.setVolume(scrange(0,Math.abs(this.car.velocity)*this.flange_offset_angle,0.05,0,0.5));
-      this.audio.flange.setDelay((this.wheel_distance*this.car.velocity)%5);
     }
   };
 });
@@ -99,11 +95,13 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 3500
+        force: 7000
       };
 
       this.audio={
-        motor: audio_load("motor")
+        motor: audio_load("motor"),
+        geartrain: audio_load("geartrain"),
+        flange: audio_load("flange")
       };
 
     },
@@ -128,7 +126,7 @@ var Car=Fiber.extend(function() {
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.7);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.5);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -161,16 +159,25 @@ var Car=Fiber.extend(function() {
 
     },
     updateAudio: function() {
-      var motor_speed=trange(0,this.velocity%2,2,0.7,1.1);
-      var mix=0.6;
+      var motor_speed=trange(0,this.velocity,20,0.2,1.1);
+      var mix=0.8;
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
       this.audio.motor.setVolume(crange(0,Math.abs(this.train.power.value),this.train.power.max,0,0.2));
       this.audio.motor.setRate(this.power.speed*prop.game.speedup);
+
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateAudio();
       }
+
+      var flange_offset_angle=this.bogies[0].flange_offset_angle;
+      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*flange_offset_angle,0.0,0,0.0));
+      this.audio.flange.setDelay((this.bogies[0].wheel_distance*this.velocity)%5);
+
+      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),40,0,0.5));
+      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),40,0.1,1.2));
+
     },
     updateModel: function() {
 //      var bogey_distances=[];
@@ -267,7 +274,7 @@ var Train=Fiber.extend(function() {
 
       this.distance+=this.velocity*game_delta();
 
-      $("#speed").text((this.velocity*3.6).toFixed(2)+" kph")
+      $("#speed").text(Math.abs(this.velocity*3.6).toFixed(2)+" kph")
 
       distance=this.distance+0;
       for(var i=0;i<this.cars.length;i++) {

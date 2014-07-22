@@ -42,6 +42,7 @@ var AudioSource=Fiber.extend(function() {
       this.source.connect(this.delay);
 
       this.gain=prop.audio.context.createGain();
+      this.setVolume(0);
       this.delay.connect(this.gain);
 
       this.gain.connect(prop.audio.context.destination);
