@@ -247,7 +247,7 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.ground);
 
   var gauge=prop.railway.current.getRoot("master").getGauge();
-  var geometry=new THREE.BoxGeometry(gauge,1,gauge*2);
+  var geometry=new THREE.BoxGeometry(gauge*1.5,2.0,20);
   var color=0xdddddd;
   var material=new THREE.MeshPhongMaterial( { color: color } );
   prop.draw.train=new THREE.Mesh(geometry, material);
@@ -331,9 +331,9 @@ function draw_update() {
   // prop.draw.camera.position.x=sin(t)*30;
   // prop.draw.camera.position.z=cos(t)*30;
 
-  prop.draw.camera.position.set(0,0.4,0);
+  prop.draw.camera.position.set(0,0.4,9.5);
   
-  prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,4));
+  prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,20));
 
   window.ground_uniforms.time.value+=delta();
 
@@ -348,7 +348,7 @@ function draw_update() {
   var elevation=track.getElevation(train_distance);
 
   prop.draw.train.position.x=-position[0]
-  prop.draw.train.position.y=elevation+0.5;
+  prop.draw.train.position.y=elevation+1.1;
   prop.draw.train.position.z=position[1];
 
   prop.draw.train.rotation.order="YXZ";

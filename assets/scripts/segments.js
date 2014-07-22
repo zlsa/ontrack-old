@@ -69,7 +69,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return crange(0,distance,this.getLength(),0,this.rise);
+      return srange(0,distance,this.getLength(),0,this.rise);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -159,6 +159,45 @@ var Segments=Fiber.extend(function() {
       this.geometry=this.buildProfileMesh(profile);
       this.mesh=new THREE.Mesh(this.geometry,null);
       prop.draw.scene.add(this.mesh);
+
+      var rw=0.07;
+      var rh=0.1;
+      var b=0.01;
+      profile=[
+        [[-g/2-rw   , 0 ], null],
+        [[-g/2-rw   , b ], null],
+        [[-g/2-rw   , rh-b], null],
+        [[-g/2-rw   , rh], null],
+        [[-g/2-rw+b , rh], null],
+        [[-g/2-b    , rh], null],
+        [[-g/2      , rh], null],
+        [[-g/2      , rh-b], null],
+        [[-g/2      , b ], null],
+        [[-g/2      ,-10 ], null],
+
+        [[g/2-rw   ,-10 ], null],
+        [[g/2-rw   , b ], null],
+        [[g/2-rw   , rh-b], null],
+        [[g/2-rw   , rh], null],
+        [[g/2-rw+b , rh], null],
+        [[g/2-b    , rh], null],
+        [[g/2      , rh], null],
+        [[g/2      , rh-b], null],
+        [[g/2      , b ], null],
+        [[g/2      , 0 ], null],
+      ];
+
+      var material=new THREE.MeshPhongMaterial({
+        color:0x776655,
+        shininess:20,
+      });
+      var geometry=this.buildProfileMesh(profile);
+      var mesh=new THREE.Mesh(geometry,material);
+      prop.draw.scene.add(mesh);
+
+      geometry=this.buildProfileMesh(profile);
+      mesh=new THREE.Mesh(geometry,material);
+      prop.draw.scene.add(mesh);
 
     },
     buildSegmentCache: function() {
