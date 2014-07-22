@@ -71,6 +71,8 @@ function input_keydown(keycode) {
     controls_move("direction",1);
   } else if(keycode == prop.input.keysym.v) {
     controls_move("direction",-1);
+  } else if(keycode == prop.input.keysym.p) {
+    prop.game.paused=!prop.game.paused;
   }
 }
 

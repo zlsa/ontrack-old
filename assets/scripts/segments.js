@@ -190,7 +190,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile);
+      geometry=this.buildProfileMesh(profile,2);
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -247,7 +247,17 @@ var Segments=Fiber.extend(function() {
     getRotation: function(distance) {
       distance=clamp(0.01,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
-      return mod(Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0])),Math.PI*2);
+      return Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0]));
+    },
+    getRotationDifference: function(distance,difference) {
+      distance=clamp(0.01,distance,this.getLength()-0.01);
+      if(!difference) difference=10;
+      difference=Math.max(0.01,difference);
+      var start=Math.max(0,distance-0.5);
+      var end=start+difference;
+      start=this.getRotation(start);
+      end=this.getRotation(end);
+      return Math.abs(start-end);
     },
     getCant: function(distance) {
       distance=clamp(0.01,distance,this.getLength()-0.01);

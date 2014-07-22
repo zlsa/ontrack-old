@@ -9,6 +9,7 @@ var MODULES=[
   "shader",
   "get",
 
+  "audio",
   "game",
 
   "environment",

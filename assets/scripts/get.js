@@ -34,6 +34,23 @@ var Content=function(options) {
       .fail(this.dl_fail);
   };
 
+  this.getAudio=function() {
+    this.request=new XMLHttpRequest();
+    this.request.open("GET",this.url,true);
+    this.request.responseType="arraybuffer";
+
+    var that=this;
+
+    this.request.onload=function() {
+      prop.audio.context.decodeAudioData(that.request.response,function(buffer) {
+        that.dl_done(buffer);
+      },function() {
+        that.dl_fail({status: "unknown error"},"unknown error");
+      });
+    }
+    this.request.send();
+  };
+
   this.getImage=function() {
     log("Getting image "+this.url+"...",LOG_DEBUG);
     this.data.src=this.url+"?time="+time();
@@ -54,12 +71,6 @@ var Content=function(options) {
       that.dl_fail({status:"unknown error"},"unknown error");
     };
     this.data.src=this.url;
-  };
-
-  this.getAudio=function() {
-//    log("Getting audio "+this.url+"...",LOG_DEBUG);
-    this.data=new Audio(this.url);
-    this.dl_done(this.data);
   };
 
   this.dl_done=function(data) {

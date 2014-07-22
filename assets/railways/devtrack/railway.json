@@ -16,73 +16,53 @@
       "start":100,
       "segments":[
         {
-          "type":"straight",
+          "type":"curve",
           "length":100,
+          "radius":2000,
           "rise":0,
-          "cant":[-0.2,0.5]
+          "cant":[0.2,-0.1]
         },
         {
           "type":"curve",
-          "length":100,
-          "radius":500,
+          "arc":90,
+          "radius":-80,
           "rise":0,
-          "cant":[-0.2,0.5]
-        },
-        {
-          "type":"curve",
-          "length":300,
-          "radius":900,
-          "rise":0,
-          "cant":[0.5,0.0]
+          "cant":[-0.5,-0.2]
         },
         {
           "type":"curve",
           "length":1000,
-          "radius":-1000,
+          "radius":2000,
           "rise":0,
-          "cant":[0.0,-0.2]
+          "cant":[-0.2,-0.1]
         },
         {
           "type":"curve",
-          "length":100,
-          "radius":500,
-          "rise":0,
-          "cant":[-0.2,0.5]
+          "length":700,
+          "radius":-1000,
+          "rise":1,
+          "cant":[-0.1,0.2]
+        },
+        {
+          "type":"curve",
+          "length":500,
+          "radius":700,
+          "rise":1,
+          "cant":[0.2,0.3]
         },
         {
           "type":"curve",
           "length":300,
-          "radius":900,
-          "rise":0,
-          "cant":[0.5,0.0]
+          "radius":600,
+          "rise":-1,
+          "cant":[0.3,0.1]
         },
         {
           "type":"curve",
           "length":1000,
-          "radius":-1000,
+          "radius":-1700,
           "rise":0,
-          "cant":[0.0,-0.2]
-        },
-        {
-          "type":"curve",
-          "length":100,
-          "radius":500,
-          "rise":0,
-          "cant":[-0.2,0.5]
-        },
-        {
-          "type":"curve",
-          "length":300,
-          "radius":900,
-          "rise":0,
-          "cant":[0.5,0.0]
-        },
-        {
-          "type":"curve",
-          "length":1000,
-          "radius":-1000,
-          "rise":0,
-          "cant":[0.0,-0.2]
+          "cant":[0.1,-0.1]
         }
       ]
     }
