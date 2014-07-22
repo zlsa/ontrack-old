@@ -36,8 +36,6 @@ var AudioSource=Fiber.extend(function() {
       this.source=prop.audio.context.createBufferSource();
       this.source.buffer=this.buffer;
 
-      this.source.playbackRate.value=0.2;
-
       this.delay=prop.audio.context.createDelay();
       this.source.connect(this.delay);
 
