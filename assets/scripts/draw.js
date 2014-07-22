@@ -4,8 +4,8 @@ function draw_init_pre() {
 
   prop.draw.fov=70;
 
-  prop.draw.znear=0.1;
-  prop.draw.zfar=5000;
+  prop.draw.znear=1;
+  prop.draw.zfar=500;
 
   prop.draw.size={
     width:128,
@@ -167,7 +167,7 @@ function draw_ready() {
 
   // SKYDOME
 
-  var skydome_geometry=new THREE.SphereGeometry(3000, 20, 10);
+  var skydome_geometry=new THREE.SphereGeometry(prop.draw.zfar*0.9, 20, 10);
 
   var texture=new THREE.Texture(prop.railway.current.skydome.data);
   texture.needsUpdate=true;
@@ -258,7 +258,7 @@ function draw_ready() {
   prop.draw.train.add(prop.draw.camera);
   prop.draw.scene.add(prop.draw.train);
 
-  var gravel=THREE.ImageUtils.loadTexture("assets/textures/gravel.png");
+  var gravel=THREE.ImageUtils.loadTexture("assets/textures/concrete-sleeper.png");
   gravel.wrapS = gravel.wrapT = THREE.RepeatWrapping;
   gravel.repeat.set(2,2);
   var gravel_normal=THREE.ImageUtils.loadTexture("assets/textures/gravel-normal.png");
@@ -290,7 +290,7 @@ function draw_ready() {
       "varying float vD;\n"+
       "varying vec3 vNormal;\n"+
       "void main() {\n"+
-      "  vUV=position.xz;\n"+
+      "  vUV=uv;\n"+
       "  vNormal=normal;\n"+
       "  vec4 pos=vec4(position,1.0);\n"+
       "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
@@ -369,6 +369,8 @@ function draw_update() {
 //  prop.draw.camera.updateProjectionMatrix();
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
+
+  prop.draw.skydome.position=prop.draw.train.position;
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }

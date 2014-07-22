@@ -7,7 +7,7 @@ function environment_init_pre() {
   prop.environment.gravity=-9.8;
 
   prop.environment.fog={};
-  prop.environment.fog.near=10;
-  prop.environment.fog.far=1000;
-  prop.environment.fog.color=new THREE.Color(0xccbbbb);
+  prop.environment.fog.near=5;
+  prop.environment.fog.far=200;
+  prop.environment.fog.color=new THREE.Color(0xcccdd9);
 }

@@ -11,18 +11,15 @@ $PARAMETERS
 $UTILS
 
 void main() {
-  vec2 vp=vUV*0.8;
+  vec2 vp=vUV;
+  vp.x*=2.0;
+  vp.x+=1.25;
+  vp.x*=2.0;
+  vp.y*=0.08;
   
   float tt=time*0.8;
 
-  float s=10.0;
-  float v=0.00001;
-
-  vec4 color=texture2D(tColor, vp)*1.3;
-
-  color*=trange(-1.0,snoise(vp*0.08),1.0,0.95,1.05);
-  color*=trange(-1.0,snoise(vp*2.0),1.0,0.95,1.05);
-  color*=1.5;
+  vec4 color=texture2D(tColor, vp)*2.2;
 
   // lighting
 

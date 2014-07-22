@@ -147,22 +147,23 @@ var Segments=Fiber.extend(function() {
 
       var g=this.getGauge();
       var profile=[
-        [[-g/2*60,    -4    ], null],
-        [[-g/2*30,    -2    ], null],
-        [[-g/2*10,     0   ], null],
+        [[-g/2*60,    -16], null],
+        [[-g/2*30,    -6 ], null],
+        [[-g/2*10,     0 ], null],
 
-        [[ g/2*10,     0   ], null],
-        [[ g/2*30,    -2    ], null],
-        [[ g/2*60,    -4    ], null],
+        [[ g/2*10,     0 ], null],
+        [[ g/2*30,    -6 ], null],
+        [[ g/2*60,    -16], null],
       ];
 
-      this.geometry=this.buildProfileMesh(profile);
+      this.geometry=this.buildProfileMesh(profile,20);
       this.mesh=new THREE.Mesh(this.geometry,null);
       prop.draw.scene.add(this.mesh);
 
       var rw=0.07;
       var rh=0.1;
       var b=0.01;
+      h=g+rw*2;
       profile=[
         [[-g/2-rw   , 0 ], null],
         [[-g/2-rw   , b ], null],
@@ -175,16 +176,17 @@ var Segments=Fiber.extend(function() {
         [[-g/2      , b ], null],
         [[-g/2      ,-10 ], null],
 
-        [[g/2-rw   ,-10 ], null],
-        [[g/2-rw   , b ], null],
-        [[g/2-rw   , rh-b], null],
-        [[g/2-rw   , rh], null],
-        [[g/2-rw+b , rh], null],
-        [[g/2-b    , rh], null],
-        [[g/2      , rh], null],
-        [[g/2      , rh-b], null],
-        [[g/2      , b ], null],
-        [[g/2      , 0 ], null],
+        [[h/2-rw   , 0 ], null],
+        [[h/2-rw   , b ], null],
+        [[h/2-rw   , rh-b], null],
+        [[h/2-rw   , rh], null],
+        [[h/2-rw+b , rh], null],
+        [[h/2-b    , rh], null],
+        [[h/2      , rh], null],
+        [[h/2      , rh-b], null],
+        [[h/2      , b ], null],
+        [[h/2      ,-10 ], null],
+
       ];
 
       var material=new THREE.MeshPhongMaterial({
@@ -281,11 +283,30 @@ var Segments=Fiber.extend(function() {
         this.parseSegment(segments[i]);
       }
     },
-    buildProfileMesh: function(profile) {
+    buildProfileMesh: function(profile,accuracy) {
+      if(!accuracy) accuracy=5;
+      var left_extent=Infinity;
+      var right_extent=-Infinity;
+      for(var i=0;i<profile.length;i++) {
+        if(profile[i][0][0] < left_extent) left_extent=profile[i][0][0];
+        if(profile[i][0][0] > right_extent) right_extent=profile[i][0][0];
+      }
+      var uv_profile=[];
+      var uv_width=0;
+      for(var i=0;i<profile.length;i++) {
+        uv_profile.push(profile[i][0][0]);
+        if(i >= 1) uv_width+=distance(profile[i-1][0],profile[i][0]);
+      }
+      uv_width=1/uv_width;
+      for(var i=0;i<uv_profile.length;i++) {
+        uv_profile[i]*=uv_width;
+      }
+      var extent=left_extent-right_extent;
       var geometry=new THREE.Geometry();
+      geometry.faceVertexUvs[0]=[];
       var step=0;
       var vertices=0;
-      for(var i=0;i<this.getLength();i+=1,step++) {
+      for(var i=0;i<this.getLength();i+=accuracy,step++) {
         var position=this.getPosition(i);
         position[0]*=-1;
         var rotation=this.getRotation(i);
@@ -320,18 +341,30 @@ var Segments=Fiber.extend(function() {
           vertices+=1;
         }
 //        if(step%2 == 1 && step > 2) {
-        if(step > 2) {
+        if(step > 1) {
           for(var j=0;j<profile.length;j++) {
             var previous_profile_offset=vertices-profile.length*2+j;
             var profile_offset=vertices-profile.length+j;
             if(profile_offset+1 >= geometry.vertices.length) continue;
+            var left_offset=profile[j][0][0];
+            var right_offset=profile[j+1][0][0];
             var f1=new THREE.Face3(previous_profile_offset+0,
                                    previous_profile_offset+1,
                                             profile_offset+1);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(uv_profile[j],i-accuracy),
+              new THREE.Vector2(uv_profile[j+1],i-accuracy),
+              new THREE.Vector2(uv_profile[j+1],i),
+            ]);
+            geometry.faces.push(f1);
             var f2=new THREE.Face3(         profile_offset+0,
                                    previous_profile_offset+0,
                                             profile_offset+1);
-            geometry.faces.push(f1);
+            geometry.faceVertexUvs[0].push([
+              new THREE.Vector2(uv_profile[j],i),
+              new THREE.Vector2(uv_profile[j],i-accuracy),
+              new THREE.Vector2(uv_profile[j+1],i),
+            ]);
             geometry.faces.push(f2);
           }
         }
