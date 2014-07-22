@@ -12,11 +12,13 @@ var Shader=Fiber.extend(function() {
       this.fragment        = options.fragment || "";
 
       this.color           = options.color || null;
+      this.metal           = options.metal || 20;
       this.shininess       = options.shininess || 20;
 
       this.map             = options.map || null;
       this.bumpMap         = options.bumpMap || null;
       this.bumpScale       = options.bumpScale || null;
+      this.normalMap         = options.normalMap || null;
 
       this.uniforms        = {};
 
@@ -145,12 +147,22 @@ var Shader=Fiber.extend(function() {
           bumpMap.needsUpdate=true;
         }
 
+        var normalMap=null;
+        if(this.normalMap) {
+          normalMap=new THREE.Texture(prop.shader.textures[this.normalMap]);
+          normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+          normalMap.repeat.set(2,2);
+          normalMap.needsUpdate=true;
+        }
+
         this.material=new THREE.MeshPhongMaterial({
           color: this.color,
           shininess: this.shininess,
+          metal: this.metal,
           map: map,
           bumpMap: bumpMap,
           bumpScale: this.bumpScale,
+          normalMap: normalMap,
           side: THREE.DoubleSide
         });
       }
@@ -202,13 +214,14 @@ function shader_init() {
   shader_load("grass");
 //  shader_load("gravel");
   shader_get_texture("concrete-sleeper");
-  shader_get_texture("concrete-sleeper-bump");
+  shader_get_texture("concrete-sleeper-normal");
   shader_add(new Shader({
     name: "gravel",
     type: "phong",
     map: "concrete-sleeper",
-    bumpMap: "concrete-sleeper-bump",
-    bumpScale: 0.2
+    normalMap: "concrete-sleeper-normal",
+    metal: false,
+    shininess: 5,
   }));
   shader_add(new Shader({
     name: "rails",
@@ -244,6 +257,7 @@ function shader_parse(text) {
 }
 
 function shader_get_texture(name,url) {
+  if(name in prop.shader.textures) return;
   if(!url) url="assets/textures/"+name+".png";
   else url="assets/textures/"+url;
   var image_content=new Content({

@@ -5,14 +5,19 @@
 var MODULES=[
   "-util",
   "-animation",
-  "shader",
   "load",
+  "shader",
+  "get",
   "game",
+
+  "environment",
+
   "segments",
   "railway",
+
   "train",
-  "get",
-  "environment",
+
+  "ui",
   "draw",
 ];
 
@@ -130,7 +135,9 @@ function async_loaded(name) {
 
 function async_wait(callback) {
   async_done_callback=callback;
-  async_check();
+  setTimeout(function() {
+    async_check();
+  },0);
 }
 
 function async_check() {

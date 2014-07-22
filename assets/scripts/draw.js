@@ -5,7 +5,7 @@ function draw_init_pre() {
   prop.draw.fov=70;
 
   prop.draw.znear=1;
-  prop.draw.zfar=500;
+  prop.draw.zfar=5000;
 
   prop.draw.size={
     width:128,
@@ -134,9 +134,15 @@ function draw_init() {
   $("body #view").append(prop.draw.renderer.domElement);
 
   // SUN
-  prop.draw.sun=new THREE.DirectionalLight(0xffeedd, 2);
+  prop.draw.sun=new THREE.DirectionalLight(0xffeedd, 1.1);
   prop.draw.sun.position=prop.environment.sun_direction;
   prop.draw.scene.add(prop.draw.sun);
+  
+  prop.draw.fog=new THREE.Fog(prop.environment.fog.color,
+                             prop.environment.fog.near,
+                              prop.environment.fog.far);
+
+  prop.draw.scene.fog=prop.draw.fog;
 
 }
 
@@ -152,22 +158,11 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
+  //  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
   
-  prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
-  prop.draw.ground.rotation.set(-Math.PI/2,0,0);
-  prop.draw.scene.add(prop.draw.ground);
-
-  var gauge=prop.railway.current.getRoot("master").getGauge();
-  var geometry=new THREE.BoxGeometry(gauge*1.5,2.0,20);
-  var color=0xdddddd;
-  var material=new THREE.MeshPhongMaterial( { color: color } );
-  prop.draw.train=new THREE.Mesh(geometry, material);
-
-  var track=prop.railway.current.getRoot("master");
-
-  prop.draw.train.add(prop.draw.camera);
-  prop.draw.scene.add(prop.draw.train);
+  //  prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
+  //  prop.draw.ground.rotation.set(-Math.PI/2,0,0);
+  //  prop.draw.scene.add(prop.draw.ground);
 
 }
 
@@ -188,6 +183,8 @@ function draw_resize() {
 
 function draw_update() {
 
+  prop.load.loaded=true;
+
   var t=time()*0.5;
 
   prop.draw.camera.position.x=10;
@@ -204,38 +201,19 @@ function draw_update() {
 
   var track=prop.railway.current.getRoot("master");
 
-  var train_distance=prop.train.current.distance;
-
-  var position= track.getPosition( train_distance);
-  var rotation= track.getRotation( train_distance);
-//  var cant=     track.getCant(     train_distance);
-  var pitch=    track.getPitch(    train_distance);
-  var elevation=track.getElevation(train_distance);
-
-  prop.draw.train.position.x=-position[0]
-  prop.draw.train.position.y=elevation+1.1;
-  prop.draw.train.position.z=position[1];
-
-  prop.draw.train.rotation.order="YXZ";
-
-  var cant=prop.train.current.cars[0].tilt;
-  prop.draw.train.rotation.y=rotation;
-  prop.draw.train.rotation.x=pitch;
-  prop.draw.train.rotation.z=cant;
-
-//
-//  var cp=new THREE.Vector3(-100,250,-1);
-//  var cp=new THREE.Vector3(50,3,300);
-//  prop.draw.camera.position=cp;
-//  prop.draw.camera.lookAt(prop.draw.train.position);
-//  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
-
-//  prop.draw.camera.fov=srange(0,prop.draw.train.position.distanceTo(cp),500,40,0.5);
-//  prop.draw.camera.updateProjectionMatrix();
+  if(prop.ui.camera.mode == "chase") {
+    var dist=prop.train.current.distance-60;
+    var position=track.getPosition(dist);
+    var cp=new THREE.Vector3(-position[0],5,position[1]);
+    prop.draw.camera.position=cp;
+    //  prop.draw.camera.lookAt(prop.draw.train.position);
+    //  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
+    dist=prop.train.current.distance-30;
+    position=track.getPosition(dist);
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],1,position[1]));
+  }
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
-
-  prop.draw.skydome.position=prop.draw.train.position;
 
   $("#fps").text(prop.time.fps.toFixed(0));
 }

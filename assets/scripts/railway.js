@@ -52,10 +52,10 @@ var Railway=function(options) {
 
   this.parseData=function() {
     this.name=this.data.about.name;
-    this.skydome=new Content({
-      url: this.url+this.data.environment.skydome,
-      type: "image",
-    })
+//    this.skydome=new Content({
+//      url: this.url+this.data.environment.skydome,
+//      type: "image",
+//    })
     this.root.master=new Segments({
       type: "master",
       position: this.data.root.master.position,
@@ -69,6 +69,7 @@ var Railway=function(options) {
     if(status == "ok") {
       this.data=data;
       this.verifyData();
+      shader_get_texture("skydome-"+this.data.environment.skydome);
     }
   };
 

@@ -6,6 +6,7 @@ var Car=Fiber.extend(function() {
       this.distance     = 0; // set by the train
       this.velocity     = 0; // set by the train
       this.train        = options.train || null;
+      this.track        = options.track || null;
       this.length       = options.length || 0;
       this.weight       = options.weight || 0;
       this.tilt_factors = {
@@ -27,6 +28,12 @@ var Car=Fiber.extend(function() {
         aero: 0
       };
       this.friction=0;
+
+    },
+    setTrain: function(train) {
+      this.train=train;
+      this.track=train.track;
+      this.createModel();
     },
     update: function() {
       if(!this.train) return;
@@ -52,9 +59,9 @@ var Car=Fiber.extend(function() {
         this.acceleration+=factor;
       }
 
-      this.friction_factors.rolling=0.01*this.velocity;
-      this.friction_factors.aero=srange(0,Math.abs(this.velocity),100,0,10);
-      this.friction_factors.brake=1;
+      this.friction_factors.rolling=0.001*this.velocity;
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.2);
+      this.friction_factors.brake=0;
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -64,6 +71,32 @@ var Car=Fiber.extend(function() {
         }
         this.friction+=factor;
       }
+    },
+    updateModel: function() {
+      var position= this.track.getPosition( this.distance);
+      var rotation= this.track.getRotation( this.distance);
+      var cant=     this.track.getCant(     this.distance);
+      var pitch=    this.track.getPitch(    this.distance);
+      var elevation=this.track.getElevation(this.distance);
+      
+      this.model.position.x=-position[0]
+      this.model.position.y=elevation+1.1;
+      this.model.position.z=position[1];
+
+      this.model.rotation.order="YXZ";
+
+      this.model.rotation.y=rotation;
+      this.model.rotation.x=pitch;
+      this.model.rotation.z=this.tilt;
+    },
+    createModel: function() {
+      var gauge=this.track.getGauge();
+      var geometry=new THREE.BoxGeometry(gauge*1.5,2.0,this.length-1);
+      var color=0xdddddd;
+      var material=new THREE.MeshPhongMaterial( { color: color } );
+      this.model=new THREE.Mesh(geometry, material);
+
+      prop.draw.scene.add(this.model);
     },
   };
 });
@@ -76,14 +109,13 @@ var Train=Fiber.extend(function() {
       this.track        = options.track || null;
       this.cars         = options.cars || [];
 
-      this.distance     = 10;
-      this.velocity     = 10;
+      this.distance     = options.distance || 10;
+      this.velocity     = options.velocity || 0;
 
     },
     push: function(car) {
       this.cars.push(car);
-      car.train=this;
-      car.track=this.track;
+      car.setTrain(this);
     },
     update: function() {
       if(!this.track) return;
@@ -108,12 +140,20 @@ var Train=Fiber.extend(function() {
         var friction=Math.abs(this.cars[i].friction);
         var acceleration=this.cars[i].acceleration;
         this.velocity+=acceleration*delta();
-        this.velocity-=friction*velocity_sign*delta();
+        this.velocity-=friction*velocity_sign;//*delta();
       }
 
       this.distance+=this.velocity*delta();
 
       $("#speed").text((this.velocity*3.6).toFixed(2)+" kph")
+
+      distance=this.distance+0;
+      for(var i=0;i<this.cars.length;i++) {
+        this.cars[i].distance=distance;
+        this.cars[i].velocity=this.velocity;
+        distance-=this.cars[i].length;
+        this.cars[i].updateModel();
+      }
     }
   };
 });
@@ -129,9 +169,15 @@ function train_init_pre() {
 function train_ready_post() {
   var train=new Train({
     track: prop.railway.current.getRoot("master"),
-    position: 10,
-    velocity: 10
+    distance: 100,
+    velocity: 0
   });
+  train.push(new Car({
+    length: 20,
+  }));
+  train.push(new Car({
+    length: 20,
+  }));
   train.push(new Car({
     length: 20,
   }));

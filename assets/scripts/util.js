@@ -123,7 +123,7 @@ function srange(il,i,ih,ol,oh) {
   return trange(-1,Math.sin(trange(il,i,ih,-Math.PI/2,Math.PI/2)),1,ol,oh);
 }
 
-function distance(a,b) {
+function distance2d(a,b) {
     var x=a[0]-b[0];
     var y=a[1]-b[1];
     return Math.sqrt((x*x)+(y*y));

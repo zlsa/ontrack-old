@@ -6,7 +6,7 @@
     "description":"A test railway for debugging"
   },
   "environment":{
-    "skydome":"skydome.png"
+    "skydome":"noon-clear"
   },
   "root":{
     "master":{
