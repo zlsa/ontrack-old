@@ -2,6 +2,7 @@
 @import "reset.css";
 @import "stats.css";
 @import "loading.css";
+@import "controls.css";
 
 * {
   margin: 0;

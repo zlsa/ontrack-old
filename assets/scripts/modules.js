@@ -13,6 +13,8 @@ var MODULES=[
 
   "environment",
 
+  "input",
+
   "controls",
 
   "segments",
@@ -101,6 +103,7 @@ function prop_init() {
   prop.time.frame.last=time();
   prop.time.frame.delta=0;
   prop.time.fps=0;
+  prop.complete=false;
   prop.log=LOG_DEBUG;
   prop.loaded=false;
   if(RELEASE)
@@ -252,6 +255,10 @@ function resize() {
 }
 
 function update() {
+  if(!prop.complete) {
+    prop.complete=true;
+    call_module("*","complete");
+  }
   call_module("*","update_pre");
   call_module("*","update");
   call_module("*","update_post");

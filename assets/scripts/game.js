@@ -27,6 +27,6 @@ function game_update_pre() {
   prop.game.time+=prop.game.delta;
 }
 
-function game_ready() {
+function game_complete() {
   prop.game.paused=false;
 }

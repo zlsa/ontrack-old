@@ -18,21 +18,21 @@
         {
           "type":"straight",
           "length":100,
-          "rise":1,
+          "rise":0,
           "cant":[-0.2,0.5]
         },
         {
           "type":"curve",
           "length":100,
           "radius":500,
-          "rise":1,
+          "rise":0,
           "cant":[-0.2,0.5]
         },
         {
           "type":"curve",
           "length":300,
           "radius":900,
-          "rise":1,
+          "rise":0,
           "cant":[0.5,0.0]
         },
         {
@@ -46,14 +46,14 @@
           "type":"curve",
           "length":100,
           "radius":500,
-          "rise":1,
+          "rise":0,
           "cant":[-0.2,0.5]
         },
         {
           "type":"curve",
           "length":300,
           "radius":900,
-          "rise":1,
+          "rise":0,
           "cant":[0.5,0.0]
         },
         {
@@ -67,14 +67,14 @@
           "type":"curve",
           "length":100,
           "radius":500,
-          "rise":1,
+          "rise":0,
           "cant":[-0.2,0.5]
         },
         {
           "type":"curve",
           "length":300,
           "radius":900,
-          "rise":1,
+          "rise":0,
           "cant":[0.5,0.0]
         },
         {

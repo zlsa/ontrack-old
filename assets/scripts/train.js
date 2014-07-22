@@ -9,6 +9,7 @@ var Car=Fiber.extend(function() {
       this.track        = options.track || null;
       this.length       = options.length || 0;
       this.weight       = options.weight || 0;
+
       this.tilt_factors = {
         cant: 0,
         wind: 0,
@@ -17,17 +18,27 @@ var Car=Fiber.extend(function() {
         derail: 0
       };
       this.tilt         = 0;
+
       this.acceleration_factors = {
         engine: 0,
         gravity: 0
       };
       this.acceleration = 0;
+
       this.friction_factors = {
         rolling: 0,
         brake: 0,
         aero: 0
       };
       this.friction=0;
+
+      this.brake={
+        force:0.5
+      };
+      
+      this.power={
+        force: 1500
+      };
 
     },
     setTrain: function(train) {
@@ -54,8 +65,8 @@ var Car=Fiber.extend(function() {
 
       var pitch=this.track.getPitch(this.distance);
 
-      this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,10);
-      this.acceleration_factors.engine=2;
+      this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,3*this.weight);
+      this.acceleration_factors.power=trange(-this.train.power.max,this.train.power.value,this.train.power.max,-this.power.force,this.power.force);
       this.acceleration=0;
 
       for(var i in this.acceleration_factors) {
@@ -63,18 +74,19 @@ var Car=Fiber.extend(function() {
         this.acceleration+=factor;
       }
 
-      this.friction_factors.rolling=0.003*this.velocity;
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,10);
-      this.friction_factors.brake=0;
+      this.acceleration/=this.weight;
+
+      this.friction_factors.rolling=0.001*this.velocity;
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.7);
+      this.friction_factors.brake=trange(0,this.train.brake.value,this.train.brake.max,0,this.brake.force);
 
       this.friction=0;
       for(var i in this.friction_factors) {
-        var factor=this.friction_factors[i];
-        if(i == "rolling" || i == "aero" || i == "brake") {
-          factor=Math.abs(factor);
-        }
-        this.friction+=factor;
+        this.friction+=Math.abs(this.friction_factors[i]);
       }
+
+      this.friction=clamp(0,this.friction,1);
+
     },
     updateModel: function() {
       var position= this.track.getPosition( this.distance);
@@ -116,6 +128,20 @@ var Train=Fiber.extend(function() {
       this.distance     = options.distance || this.track.start;
       this.velocity     = options.velocity || 0;
 
+      
+      this.brake = {
+        value: 0,
+        max: 5,
+        force: 1
+      };
+
+      this.power = {
+        value: 0,
+        min: -5,
+        max: 5,
+        force: 20000
+      };
+
     },
     push: function(car) {
       this.cars.push(car);
@@ -130,6 +156,10 @@ var Train=Fiber.extend(function() {
         this.distance=this.track.getLength()-1;
         this.velocity=Math.abs(this.velocity)*-0.3;
       }
+
+      this.brake.value=clamp(0,this.brake.value,this.brake.max);
+      this.power.value=clamp(this.power.min,this.power.value,this.power.max);
+
       var distance=this.distance+0;
       for(var i=0;i<this.cars.length;i++) {
         this.cars[i].distance=distance;
@@ -142,9 +172,9 @@ var Train=Fiber.extend(function() {
       
       for(var i=0;i<this.cars.length;i++) {
         var friction=Math.abs(this.cars[i].friction);
-        var acceleration=this.cars[i].acceleration;
+        var acceleration=this.cars[i].acceleration*crange(0,friction,1,1,0.0);
         this.velocity+=acceleration*game_delta();
-        this.velocity-=friction*velocity_sign*game_delta();
+        this.velocity-=friction*velocity_sign*game_delta()*0.2;
       }
 
       this.distance+=this.velocity*game_delta();
@@ -173,16 +203,19 @@ function train_init_pre() {
 function train_ready_post() {
   var train=new Train({
     track: prop.railway.current.getRoot("master"),
-    velocity: 0
+    velocity:10,
   });
   train.push(new Car({
     length: 20,
+    weight: 30000
   }));
   train.push(new Car({
     length: 20,
+    weight: 30000
   }));
   train.push(new Car({
     length: 20,
+    weight: 30000
   }));
   train_set_current(train_add(train));
 }
@@ -197,5 +230,8 @@ function train_set_current(train) {
 }
 
 function train_update() {
+  prop.train.current.power.value=prop.controls.power*prop.controls.direction;
+  prop.train.current.brake.value=prop.controls.brake;
+
   prop.train.current.update();
 }

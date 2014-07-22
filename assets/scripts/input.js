@@ -14,7 +14,32 @@ function input_init() {
   prop.input.keysym={
     shift:16,
     control:17,
+    a:65,
+    b:66,
+    c:67,
+    d:68,
+    e:69,
+    f:70,
+    g:71,
+    h:72,
+    i:73,
+    j:74,
+    k:75,
+    l:76,
+    m:77,
+    n:78,
+    o:79,
+    p:80,
+    q:81,
+    r:82,
+    s:83,
+    t:84,
+    u:85,
+    v:86,
+    w:87,
     x:88,
+    y:89,
+    z:90,
     left:37,
     up:38,
     right:39,
@@ -25,7 +50,7 @@ function input_init() {
 function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
-    input_keydown(e);
+    input_keydown(e.which);
   });
 
   $(window).keyup(function(e) {
@@ -36,7 +61,17 @@ function input_done() {
 }
 
 function input_keydown(keycode) {
-  // called with the users' key-repeat settings
+  if(keycode == prop.input.keysym.a) {
+    controls_move("power",0);
+  } else if(keycode == prop.input.keysym.z) {
+    controls_move("power",1);
+  } else if(keycode == prop.input.keysym.q) {
+    controls_move("power",-1);
+  } else if(keycode == prop.input.keysym.f) {
+    controls_move("direction",1);
+  } else if(keycode == prop.input.keysym.v) {
+    controls_move("direction",-1);
+  }
 }
 
 function input_update() {
