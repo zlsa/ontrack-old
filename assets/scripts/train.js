@@ -161,7 +161,7 @@ var Car=Fiber.extend(function() {
 
     },
     updateAudio: function() {
-      var motor_speed=trange(0,this.velocity,20,0.2,1.1);
+      var motor_speed=trange(0,Math.abs(this.velocity),20,0.2,1.1);
       var mix=0.8;
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
