@@ -149,9 +149,9 @@ var Segments=Fiber.extend(function() {
       var profile=[
         [[-g/2*60,    -4    ], null],
         [[-g/2*30,    -2    ], null],
-        [[-g/2,        0   ], null],
+        [[-g/2*10,     0   ], null],
 
-        [[ g/2,        0   ], null],
+        [[ g/2*10,     0   ], null],
         [[ g/2*30,    -2    ], null],
         [[ g/2*60,    -4    ], null],
       ];
