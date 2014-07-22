@@ -145,7 +145,20 @@ var Segments=Fiber.extend(function() {
         prop.draw.scene.add(mesh);
       }
 
-      this.buildMesh();
+      var g=this.getGauge();
+      var profile=[
+        [[-g/2*60,    -4    ], null],
+        [[-g/2*30,    -2    ], null],
+        [[-g/2,        0   ], null],
+
+        [[ g/2,        0   ], null],
+        [[ g/2*30,    -2    ], null],
+        [[ g/2*60,    -4    ], null],
+      ];
+
+      this.geometry=this.buildProfileMesh(profile);
+      this.mesh=new THREE.Mesh(this.geometry,null);
+      prop.draw.scene.add(this.mesh);
 
     },
     buildSegmentCache: function() {
@@ -229,42 +242,8 @@ var Segments=Fiber.extend(function() {
         this.parseSegment(segments[i]);
       }
     },
-    buildMesh: function() {
-      this.geometry=new THREE.Geometry();
-      var g=this.getGauge();
-      var bv=0.005; // bevel (on the rail)
-      var rw=0.05; // rail width
-      var rh=0.1; // rail height
-      var s=5; // the flat area on the sides
-      // _______/-\_____/-\_________
-      var profile=[
-        [[-g/2*60,    -8    ], null],
-        [[-g/2*30,    -4    ], null],
-        [[-g/2-rw-s-bv,0    ], null],
-        [[-g/2-rw-s,   0    ], null],
-        [[-g/2-rw-bv,  0    ], null],
-        [[-g/2-rw,     bv   ], null],
-        [[-g/2-rw,     rh-bv], null],
-        [[-g/2-rw+bv,  rh   ], null],
-        [[-g/2-bv,     rh   ], null],
-        [[-g/2,        rh-bv], null],
-        [[-g/2,        bv   ], null],
-        [[-g/2+bv,     0    ], null],
-
-        [[ g/2-bv,     0    ], null],
-        [[ g/2,        bv   ], null],
-        [[ g/2,        rh-bv], null],
-        [[ g/2+bv,     rh   ], null],
-        [[ g/2+rw,     rh-bv], null],
-        [[ g/2+rw,     bv   ], null],
-        [[ g/2+rw-bv,  rh   ], null],
-        [[ g/2+rw+bv,  0    ], null],
-        [[ g/2+rw+s,   0    ], null],
-        [[ g/2+rw+s+bv,0    ], null],
-        [[ g/2*30,    -4    ], null],
-        [[ g/2*60,    -8    ], null],
-//        [[-g/2+bv,     0   ], null],
-      ];
+    buildProfileMesh: function(profile) {
+      var geometry=new THREE.Geometry();
       var step=0;
       var vertices=0;
       for(var i=0;i<this.getLength();i+=1,step++) {
@@ -298,7 +277,7 @@ var Segments=Fiber.extend(function() {
           var profile_position=profile_index[0];
           var vp=transform(profile_position);
           var v=new THREE.Vector3(vp[0],vp[1],vp[2]);
-          this.geometry.vertices.push(v);
+          geometry.vertices.push(v);
           vertices+=1;
         }
 //        if(step%2 == 1 && step > 2) {
@@ -306,15 +285,15 @@ var Segments=Fiber.extend(function() {
           for(var j=0;j<profile.length;j++) {
             var previous_profile_offset=vertices-profile.length*2+j;
             var profile_offset=vertices-profile.length+j;
-            if(profile_offset+1 >= this.geometry.vertices.length) continue;
+            if(profile_offset+1 >= geometry.vertices.length) continue;
             var f1=new THREE.Face3(previous_profile_offset+0,
                                    previous_profile_offset+1,
                                             profile_offset+1);
             var f2=new THREE.Face3(         profile_offset+0,
                                    previous_profile_offset+0,
                                             profile_offset+1);
-            this.geometry.faces.push(f1);
-            this.geometry.faces.push(f2);
+            geometry.faces.push(f1);
+            geometry.faces.push(f2);
           }
         }
       }
@@ -325,14 +304,13 @@ var Segments=Fiber.extend(function() {
       //   transparent:true,
       //   side:THREE.DoubleSide
       // });
-      this.geometry.computeBoundingSphere();
-      this.geometry.verticesNeedUpdate=true;
-      this.geometry.normalsNeedUpdate=true;
-      this.geometry.buffersNeedUpdate=true;
-      this.geometry.computeFaceNormals();
-      this.geometry.computeVertexNormals();
-      this.mesh=new THREE.Mesh(this.geometry,null);
-      prop.draw.scene.add(this.mesh);
+      geometry.computeBoundingSphere();
+      geometry.verticesNeedUpdate=true;
+      geometry.normalsNeedUpdate=true;
+      geometry.buffersNeedUpdate=true;
+      geometry.computeFaceNormals();
+      geometry.computeVertexNormals();
+      return geometry;
     }
   };
 });
