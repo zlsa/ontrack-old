@@ -18,7 +18,6 @@ var Segment=Fiber.extend(function() {
       this.cached_length=null;
 
       if(this.type == "curve" && options.length) {
-        console.log(this.radius[0]);
         this.arc=options.length/Math.abs(this.radius[0]);
       }
       // length=Math.abs(this.arc)*((this.radius[0]+this.radius[1])/2);
@@ -70,7 +69,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return srange(0,distance,this.getLength(),0,this.rise);
+      return crange(0,distance,this.getLength(),0,this.rise);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -233,7 +232,7 @@ var Segments=Fiber.extend(function() {
     buildMesh: function() {
       this.geometry=new THREE.Geometry();
       var g=this.getGauge();
-      var bv=0.02; // bevel (on the rail)
+      var bv=0.005; // bevel (on the rail)
       var rw=0.05; // rail width
       var rh=0.1; // rail height
       var s=5; // the flat area on the sides
@@ -319,30 +318,21 @@ var Segments=Fiber.extend(function() {
           }
         }
       }
-      var material=new THREE.MeshPhongMaterial({
-        color: 0x444444,
-        wireframe: true,
-        side:THREE.DoubleSide
-      });
+
+      // var material=new THREE.MeshPhongMaterial({
+      //   color: 0x444444,
+      //   wireframe: true,
+      //   transparent:true,
+      //   side:THREE.DoubleSide
+      // });
       this.geometry.computeBoundingSphere();
       this.geometry.verticesNeedUpdate=true;
       this.geometry.normalsNeedUpdate=true;
       this.geometry.buffersNeedUpdate=true;
       this.geometry.computeFaceNormals();
       this.geometry.computeVertexNormals();
-      if(false) {
-        material=new THREE.ParticleBasicMaterial({
-          color: 0xff00ff,
-          size: 2
-        });
-        var particles=new THREE.ParticleSystem(this.geometry,material);
-        prop.draw.scene.add(particles);
-        console.log(particles);
-      } else {
-        this.mesh=new THREE.Mesh(this.geometry,material);
-        prop.draw.scene.add(this.mesh);
-        console.log(this.mesh);
-      }
+      this.mesh=new THREE.Mesh(this.geometry,null);
+      prop.draw.scene.add(this.mesh);
     }
   };
 });

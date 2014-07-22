@@ -6,6 +6,7 @@ var MODULES=[
   "-util",
   "-animation",
   "load",
+  "game",
   "segments",
   "railway",
   "train",

@@ -44,7 +44,7 @@ var Car=Fiber.extend(function() {
       var pitch=this.track.getPitch(this.distance);
 
       this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,10);
-      this.acceleration_factors.engine=100;
+      this.acceleration_factors.engine=2;
       this.acceleration=0;
 
       for(var i in this.acceleration_factors) {
@@ -53,15 +53,14 @@ var Car=Fiber.extend(function() {
       }
 
       this.friction_factors.rolling=0.01*this.velocity;
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.2);
-      this.friction_factors.brake=0;
+      this.friction_factors.aero=srange(0,Math.abs(this.velocity),100,0,10);
+      this.friction_factors.brake=1;
 
       this.friction=0;
       for(var i in this.friction_factors) {
         var factor=this.friction_factors[i];
         if(i == "rolling" || i == "aero" || i == "brake") {
           factor=Math.abs(factor);
-          if(this.velocity >= 0) factor*=-1;
         }
         this.friction+=factor;
       }
@@ -103,13 +102,13 @@ var Train=Fiber.extend(function() {
         this.cars[i].update();
       }
 
-      var velocity_sign=1;
-      if(this.velocity < 0) velocity_sign=-1;
+      var velocity_sign=crange(-0.01,this.velocity,0.01,-1,1);
       
       for(var i=0;i<this.cars.length;i++) {
-        var friction=Math.abs(this.cars[i].friction*delta());
-        this.velocity+=this.cars[i].acceleration*delta()*friction;
-        this.velocity-=friction*velocity_sign;
+        var friction=Math.abs(this.cars[i].friction);
+        var acceleration=this.cars[i].acceleration;
+        this.velocity+=acceleration*delta();
+        this.velocity-=friction*velocity_sign*delta();
       }
 
       this.distance+=this.velocity*delta();
