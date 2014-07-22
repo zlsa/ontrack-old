@@ -13,8 +13,14 @@
       "position":[0,0],
       "elevation":-0.1,
       "gauge":1.435,
-      "start":0,
+      "start":100,
       "segments":[
+        {
+          "type":"straight",
+          "length":100,
+          "rise":1,
+          "cant":[-0.2,0.5]
+        },
         {
           "type":"curve",
           "length":100,

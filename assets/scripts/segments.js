@@ -21,6 +21,8 @@ var Segment=Fiber.extend(function() {
         this.arc=options.length/Math.abs(this.radius[0]);
       }
       // length=Math.abs(this.arc)*((this.radius[0]+this.radius[1])/2);
+      
+      if(["straight","curve"].indexOf(this.type) < 0) return false;
 
       if(this.type == "straight" && !window.straight) {
         window.straight=this;
@@ -28,6 +30,7 @@ var Segment=Fiber.extend(function() {
       if(this.type == "curve" && !window.curve) {
         window.curve=this;
       }
+      return true;
     },
     setRadius: function(radius) {
       if(!radius) return;
@@ -69,7 +72,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return srange(0,distance,this.getLength(),0,this.rise);
+      return crange(0,distance,this.getLength(),0,this.rise*this.getLength()*0.01);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation
@@ -148,9 +151,9 @@ var Segments=Fiber.extend(function() {
       var g=this.getGauge();
       var profile=[
         [[-g/2-7,    -5 ], null],
-        [[-g/2-5,     0 ], null],
+        [[-g/2-3,     0 ], null],
 
-        [[ g/2+5,     0 ], null],
+        [[ g/2+3,     0 ], null],
         [[ g/2+7,    -5 ], null],
       ];
 
@@ -163,27 +166,27 @@ var Segments=Fiber.extend(function() {
       var b=0.01;
       h=g+rw*2;
       profile=[
-        [[-g/2-rw   , 0 ], null],
-        [[-g/2-rw   , b ], null],
-        [[-g/2-rw   , rh-b], null],
-        [[-g/2-rw   , rh], null],
-        [[-g/2-rw+b , rh], null],
-        [[-g/2-b    , rh], null],
-        [[-g/2      , rh], null],
-        [[-g/2      , rh-b], null],
-        [[-g/2      , b ], null],
-        [[-g/2      ,-10 ], null],
+        [[-g/2-rw  , 0   ], null],
+        [[-g/2-rw  , b   ], null],
+        [[-g/2-rw  , rh-b], null],
+        [[-g/2-rw  , rh  ], null],
+        [[-g/2-rw+b, rh  ], null],
+        [[-g/2-b   , rh  ], null],
+        [[-g/2     , rh  ], null],
+        [[-g/2     , rh-b], null],
+        [[-g/2     , b   ], null],
+        [[-g/2     ,-1   ], null],
 
-        [[h/2-rw   , 0 ], null],
-        [[h/2-rw   , b ], null],
+        [[h/2-rw   , 0   ], null],
+        [[h/2-rw   , b   ], null],
         [[h/2-rw   , rh-b], null],
-        [[h/2-rw   , rh], null],
-        [[h/2-rw+b , rh], null],
-        [[h/2-b    , rh], null],
-        [[h/2      , rh], null],
+        [[h/2-rw   , rh  ], null],
+        [[h/2-rw+b , rh  ], null],
+        [[h/2-b    , rh  ], null],
+        [[h/2      , rh  ], null],
         [[h/2      , rh-b], null],
-        [[h/2      , b ], null],
-        [[h/2      ,-10 ], null],
+        [[h/2      , b   ], null],
+        [[h/2      ,-1   ], null],
 
       ];
 
@@ -266,6 +269,7 @@ var Segments=Fiber.extend(function() {
     },
     parseSegment: function(segment) {
       var s=new Segment(segment);
+      if(!s) return;
       this.segments.push(s);
     },
     parseSegments: function(segments) {

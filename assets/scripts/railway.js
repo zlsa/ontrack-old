@@ -61,7 +61,8 @@ var Railway=function(options) {
       position: this.data.root.master.position,
       elevation: this.data.root.master.elevation,
       gauge: this.data.root.master.gauge,
-      segments:this.data.root.master.segments
+      segments:this.data.root.master.segments,
+      start: this.data.root.master.start
     });
   };
 

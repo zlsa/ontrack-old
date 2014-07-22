@@ -8,9 +8,12 @@ var MODULES=[
   "load",
   "shader",
   "get",
+
   "game",
 
   "environment",
+
+  "controls",
 
   "segments",
   "railway",
@@ -18,6 +21,7 @@ var MODULES=[
   "train",
 
   "ui",
+
   "draw",
 ];
 
@@ -266,5 +270,5 @@ function update() {
 }
 
 function delta() {
-  return prop.time.frame.delta;
+  return Math.min(prop.time.frame.delta,0.5);
 }

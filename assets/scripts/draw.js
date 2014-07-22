@@ -204,13 +204,14 @@ function draw_update() {
   if(prop.ui.camera.mode == "chase") {
     var dist=prop.train.current.distance-60;
     var position=track.getPosition(dist);
-    var cp=new THREE.Vector3(-position[0],5,position[1]);
+    var elevation=track.getElevation(dist);
+    var cp=new THREE.Vector3(-position[0],elevation+5,position[1]);
     prop.draw.camera.position=cp;
     //  prop.draw.camera.lookAt(prop.draw.train.position);
     //  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
     dist=prop.train.current.distance-30;
     position=track.getPosition(dist);
-    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],1,position[1]));
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
   }
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);

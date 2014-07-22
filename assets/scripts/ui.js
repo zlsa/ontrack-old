@@ -5,5 +5,6 @@ function ui_init_pre() {
   prop.ui.camera={
 
   };
+
   prop.ui.camera.mode="chase";
 }

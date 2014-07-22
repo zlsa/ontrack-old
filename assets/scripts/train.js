@@ -39,12 +39,16 @@ var Car=Fiber.extend(function() {
       if(!this.train) return;
       if(!this.track) return;
 
+      var time_seed=game_time()+this.distance;
       this.tilt_factors.cant=this.track.getCant(this.distance);
-      this.tilt_factors.wobble=sin(time()*5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
-      this.tilt_factors.wobble+=sin(time()*20)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
-      this.tilt_factors.wobble+=sin(time()*50)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
-      this.tilt_factors.wobble+=sin(time()*100)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
-      this.tilt_factors.wind=sin(time()*0.3)*radians(0.5);
+      this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
+      this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
+      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
+      this.tilt_factors.wobble+=sin(time_seed*10 )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.2));
+      this.tilt_factors.wobble*=3;
+
+      this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.5);
+
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
@@ -59,8 +63,8 @@ var Car=Fiber.extend(function() {
         this.acceleration+=factor;
       }
 
-      this.friction_factors.rolling=0.001*this.velocity;
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.2);
+      this.friction_factors.rolling=0.003*this.velocity;
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,10);
       this.friction_factors.brake=0;
 
       this.friction=0;
@@ -109,7 +113,7 @@ var Train=Fiber.extend(function() {
       this.track        = options.track || null;
       this.cars         = options.cars || [];
 
-      this.distance     = options.distance || 10;
+      this.distance     = options.distance || this.track.start;
       this.velocity     = options.velocity || 0;
 
     },
@@ -139,11 +143,11 @@ var Train=Fiber.extend(function() {
       for(var i=0;i<this.cars.length;i++) {
         var friction=Math.abs(this.cars[i].friction);
         var acceleration=this.cars[i].acceleration;
-        this.velocity+=acceleration*delta();
-        this.velocity-=friction*velocity_sign;//*delta();
+        this.velocity+=acceleration*game_delta();
+        this.velocity-=friction*velocity_sign*game_delta();
       }
 
-      this.distance+=this.velocity*delta();
+      this.distance+=this.velocity*game_delta();
 
       $("#speed").text((this.velocity*3.6).toFixed(2)+" kph")
 
@@ -169,7 +173,6 @@ function train_init_pre() {
 function train_ready_post() {
   var train=new Train({
     track: prop.railway.current.getRoot("master"),
-    distance: 100,
     velocity: 0
   });
   train.push(new Car({
