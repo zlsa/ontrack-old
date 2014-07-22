@@ -20,27 +20,12 @@ void main() {
   vp.x*=crange(-1.0,sin(tt+vp.y*s),1.0,1.0-v,1.0+v);
   vp.y*=crange(-1.0,sin(tt+vp.x*s),1.0,1.0-v,1.0+v);
 
-  vec4 color=texture2D(grass, vp*1.3);
+  vec4 color=texture2D(grass, vp*0.7);
   color+=texture2D(grass, vp*0.3)*2.0;
-  color+=texture2D(grass, vp*10.8)*1.0;
-  color*=0.25;
+  color+=texture2D(grass, vp*5.8)*3.0;
+  color*=0.3;
 
-  s=1.0;
-  float d=0.05;
-  float t=trange(-1.0,snoise(vp*s),1.0,1.0-d,1.0+d);
-  color.r*=t*1.1;
-  color.g*=t*1.3;
-  color.r*=1.1;
-  color.g*=1.3;
-  color.b*=trange(-1.0,snoise(vp*s+10000.0),1.0,1.0-d,1.0+d);
-
-  s=0.3;
-  d=0.1;
-  color.rgb*=trange(-1.0,snoise(vp*s-1000.0),1.0,1.0-d,1.0+d);
-
-  s=300.0;
-  d=0.1;
-  color.rgb*=trange(-1.0,snoise(vp*s-1000.0),1.0,1.0-d,1.0+d);
+  color.g*=1.2;
 
   // lighting
 
