@@ -345,5 +345,11 @@ function train_update() {
   prop.train.current.power.value=prop.controls.power*prop.controls.direction;
   prop.train.current.brake.value=prop.controls.brake;
 
+  if((prop.train.current.velocity < -0.2 && prop.controls.direction > 0) ||
+     (prop.train.current.velocity > 0.2 && prop.controls.direction < 0)) {
+    prop.train.current.power.value=0;
+    prop.train.current.brake.value=prop.train.current.brake.max;
+  }
+
   prop.train.current.update();
 }

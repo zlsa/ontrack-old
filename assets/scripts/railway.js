@@ -45,8 +45,16 @@ var Railway=function(options) {
       this.data.environment &&
       this.data.environment.skydome &&
       this.data.root &&
-      this.data.root.master &&
-      this.verifyRoot(this.data.root.master);
+      this.data.root.master;
+    for(var i in this.data.root) {
+      if(i == "master") {
+        valid=valid && this.verifyRoot(this.data.root[i]);
+      } else {
+        for(var j in this.data.root[i]) {
+          valid=valid && this.verifyRoot(this.data.root[i]);
+        }
+      }
+    }
     return valid;
   };
 
@@ -56,14 +64,15 @@ var Railway=function(options) {
 //      url: this.url+this.data.environment.skydome,
 //      type: "image",
 //    })
-    this.root.master=new Segments({
-      type: "master",
-      position: this.data.root.master.position,
-      elevation: this.data.root.master.elevation,
-      gauge: this.data.root.master.gauge,
-      segments:this.data.root.master.segments,
-      start: this.data.root.master.start
-    });
+    var options=this.data.root.master;
+    options.type="master";
+    this.root.master=new Segments(options);
+    this.root.rail=[];
+    for(var i=0;i<this.data.root.rail.length;i++) {
+      options=this.data.root.rail[i];
+      options.type="rail";
+      this.root.rail.push(new Segments(options));
+    }
   };
 
   this.getCallback=function(status, data) {

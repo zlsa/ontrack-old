@@ -11,7 +11,7 @@ $UTILS
 $FOG_PARAMETERS
 
 void main() {
-  vec2 vp=vUV*800.0;
+  vec2 vp=vUV*8000.0;
   
   float tt=time*0.8;
 

@@ -5,7 +5,7 @@ function draw_init_pre() {
   prop.draw.fov=70;
 
   prop.draw.znear=1;
-  prop.draw.zfar=5000;
+  prop.draw.zfar=50000;
 
   prop.draw.size={
     width:128,
@@ -158,7 +158,7 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
+  var ground_geometry=new THREE.PlaneGeometry(60000, 60000, 30, 30);
   prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
   prop.draw.ground.rotation.set(-Math.PI/2,0,0);
   prop.draw.scene.add(prop.draw.ground);
@@ -181,8 +181,6 @@ function draw_resize() {
 }
 
 function draw_update() {
-
-  prop.load.loaded=true;
 
   var t=time()*0.5;
 
