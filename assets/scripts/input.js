@@ -63,7 +63,7 @@ function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
     input_keydown(e.which);
-    if(e.which >= 112 && e.which <= 123)
+    if(e.which >= 112 && e.which <= 115)
       e.preventDefault();
   });
 

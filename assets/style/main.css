@@ -10,6 +10,10 @@
   overflow: hidden;
 }
 
+html {
+  font-family: "monoOne", monospace, sans-serif;
+}
+
 canvas {
   width: 100%;
   height: 100%;
