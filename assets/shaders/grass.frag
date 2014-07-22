@@ -13,13 +13,6 @@ $FOG_PARAMETERS
 void main() {
   vec2 vp=vUV*8000.0;
   
-  float tt=time*0.8;
-
-  float s=10.0;
-  float v=0.00001;
-  vp.x*=crange(-1.0,sin(tt+vp.y*s),1.0,1.0-v,1.0+v);
-  vp.y*=crange(-1.0,sin(tt+vp.x*s),1.0,1.0-v,1.0+v);
-
   vec4 color=texture2D(grass, vp*0.7);
   color+=texture2D(grass, vp*0.3)*2.0;
   color+=texture2D(grass, vp*5.8)*3.0;

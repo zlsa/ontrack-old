@@ -120,15 +120,14 @@ var Car=Fiber.extend(function() {
       this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
       this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
       this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
-      this.tilt_factors.wobble+=sin(time_seed*10 )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.2));
-      this.tilt_factors.wobble*=3;
+      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.2));
 
-      this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.5);
+      this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
 
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.5);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.7);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -167,7 +166,7 @@ var Car=Fiber.extend(function() {
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
       this.audio.motor.setVolume(crange(0,Math.abs(this.train.power.value),this.train.power.max,0,0.2));
-      this.audio.motor.setRate(this.power.speed*prop.game.speedup);
+      this.audio.motor.setRate(this.power.speed);
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateAudio();

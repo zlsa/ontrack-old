@@ -123,6 +123,7 @@ function draw_init() {
     prop.draw.size.width / prop.draw.size.height,
     prop.draw.znear,
     prop.draw.zfar);
+  prop.draw.camera.name="camera";
 
   // RENDERER
   prop.draw.renderer=new THREE.WebGLRenderer({
@@ -199,6 +200,10 @@ function draw_update() {
   var track=prop.railway.current.getRoot("master");
 
   if(prop.ui.camera.mode == "chase") {
+    var model=prop.train.current.cars[0].model;
+    if(model.getObjectByName("camera")) {
+      model.remove(prop.draw.camera);
+    }
     var dist=prop.train.current.distance-60;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
@@ -210,16 +215,11 @@ function draw_update() {
     position=track.getPosition(dist);
     prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
   } else if(prop.ui.camera.mode == "cab") {
-    var dist=prop.train.current.distance+10;
-    var position=track.getPosition(dist);
-    var elevation=track.getElevation(dist);
-    var cp=new THREE.Vector3(-position[0],elevation+2,position[1]);
-    prop.draw.camera.position=cp;
-    //  prop.draw.camera.lookAt(prop.draw.train.position);
-    //  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
-    dist=prop.train.current.distance+30;
-    position=track.getPosition(dist);
-    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+    var model=prop.train.current.cars[0].model;
+    if(!model.getObjectByName("camera")) {
+      model.add(prop.draw.camera);
+      prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,10));
+    }
   }
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);

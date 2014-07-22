@@ -121,8 +121,7 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=1) {
-        break;
+      for(var i=0;i<this.getLength();i+=50) {
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -338,13 +337,21 @@ var Segments=Fiber.extend(function() {
           x+=position[0];
           z+=position[1];
 
+          var temp=z;
+          z=sin(this.rotation)*x+cos(this.rotation)*z;
+          x=sin(this.rotation)*temp+cos(this.rotation)*x;
+
+          x+=this.position[0];
+          z+=this.position[1];
+          y+=this.elevation;
+
           return [x,y,z];
         }
 
         for(var j=0;j<profile.length;j++) {
           var profile_index=profile[j];
           var profile_position=profile_index[0];
-          var vp=transform(profile_position);
+          var vp=transform.call(this,profile_position);
           var v=new THREE.Vector3(vp[0],vp[1],vp[2]);
           geometry.vertices.push(v);
           vertices+=1;

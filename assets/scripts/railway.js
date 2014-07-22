@@ -48,7 +48,7 @@ var Railway=function(options) {
       this.data.root.master;
     for(var i in this.data.root) {
       if(i == "master") {
-        valid=valid && this.verifyRoot(this.data.root[i]);
+        valid=valid && this.verifyRoot(this.data.root.master);
       } else {
         for(var j in this.data.root[i]) {
           valid=valid && this.verifyRoot(this.data.root[i]);
@@ -64,15 +64,19 @@ var Railway=function(options) {
 //      url: this.url+this.data.environment.skydome,
 //      type: "image",
 //    })
-    var options=this.data.root.master;
-    options.type="master";
-    this.root.master=new Segments(options);
     this.root.rail=[];
     for(var i=0;i<this.data.root.rail.length;i++) {
-      options=this.data.root.rail[i];
+      var options=this.data.root.rail[i];
       options.type="rail";
+      console.log(options);
       this.root.rail.push(new Segments(options));
     }
+
+    options=this.data.root.master;
+    options.type="master";
+    console.log(options);
+    this.root.master=new Segments(options);
+
   };
 
   this.getCallback=function(status, data) {

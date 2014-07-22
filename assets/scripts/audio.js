@@ -31,7 +31,7 @@ var AudioSource=Fiber.extend(function() {
       this.delay.delayTime.value=delay;
     },
     createSource: function() {
-      if(!this.buffer) {
+      if(!this.buffer || this.buffer == true) {
         console.log(this);
         log("no buffer on object",LOG_WARNING);
         return;
@@ -59,7 +59,7 @@ var AudioSource=Fiber.extend(function() {
       this.createSource();
     },
     update: function() {
-      if(prop.game.paused) this.master_volume=0;
+      if(game_paused()) this.master_volume=0;
       else this.master_volume=1;
       this.setVolume(this.volume);
     }
