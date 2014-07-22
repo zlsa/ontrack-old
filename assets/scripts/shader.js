@@ -5,9 +5,15 @@ var Shader=Fiber.extend(function() {
       if(!options) options={};
       
       this.name            = options.name || null;
+      this.type            = options.type || "custom";
+
       this.json            = options.json || null;
       this.vertex          = options.vertex || "";
       this.fragment        = options.fragment || "";
+
+      this.color           = options.color || null;
+      this.shininess       = options.shininess || 20;
+      this.map             = options.map || null;
 
       this.uniforms        = {};
 
@@ -59,65 +65,90 @@ var Shader=Fiber.extend(function() {
       }
     },
     load: function() {
-      var url=prop.shader.url_root+this.name+".json";
-      this.json_content=new Content({
-        url: url,
-        type: "json",
-        payload: this.name,
-        that: this,
-        callback: function(status,data,payload) {
-          this.json=data;
-          this.loadedJSON();
-        }
-      });
+      if(this.type == "custom") {
+        var url=prop.shader.url_root+this.name+".json";
+        this.json_content=new Content({
+          url: url,
+          type: "json",
+          payload: this.name,
+          that: this,
+          callback: function(status,data,payload) {
+            this.json=data;
+            this.loadedJSON();
+          }
+        });
+      }
     },
     linkUniforms: function() {
-      this.uniforms={};
-      this.uniforms.time={
-        type: "f",
-        value: 0.0
-      };
-      this.uniforms.fogColor={
-        type: "c",
-        value: prop.environment.fog.color
-      };
-      this.uniforms.fogNear={
-        type: "f",
-        value: prop.environment.fog.near
-      };
-      this.uniforms.fogFar={
-        type: "f",
-        value: prop.environment.fog.far
-      };
-      if(this.json.textures) {
-        for(var i=0;i<this.json.textures.length;i++) {
-          var name=this.json.textures[i];
-          if(typeof name == typeof []) name=name[0];
+      if(this.type == "custom") {
+        this.uniforms={};
+        this.uniforms.time={
+          type: "f",
+          value: 0.0
+        };
+        this.uniforms.fogColor={
+          type: "c",
+          value: prop.environment.fog.color
+        };
+        this.uniforms.fogNear={
+          type: "f",
+          value: prop.environment.fog.near
+        };
+        this.uniforms.fogFar={
+          type: "f",
+          value: prop.environment.fog.far
+        };
+        if(this.json && this.json.textures) {
+          for(var i=0;i<this.json.textures.length;i++) {
+            var name=this.json.textures[i];
+            if(typeof name == typeof []) name=name[0];
 
-          var texture=new THREE.Texture(prop.shader.textures[name]);
-          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(2,2);
-          texture.needsUpdate=true;
+            var texture=new THREE.Texture(prop.shader.textures[name]);
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(2,2);
+            texture.needsUpdate=true;
 
-          this.uniforms[name]={
-            type: "t",
-            value: texture
-          };
+            this.uniforms[name]={
+              type: "t",
+              value: texture
+            };
+          }
         }
+      } else if(this.type == "phong") {
       }
-      console.log(this.name,this.uniforms);
     },
     createMaterial: function() {
-      this.material=new THREE.ShaderMaterial({
-        uniforms: this.uniforms,
-        vertexShader: this.vertex,
-        fragmentShader: this.fragment,
-        side: THREE.DoubleSide
-      });
+      if(this.type == "custom") {
+        this.material=new THREE.ShaderMaterial({
+          uniforms: this.uniforms,
+          vertexShader: this.vertex,
+          fragmentShader: this.fragment,
+          side: THREE.DoubleSide
+        });
+      } else if(this.type == "phong") {
+        var map=null;
+        if(this.map) {
+          map=new THREE.Texture(prop.shader.textures[this.map]);
+          map.wrapS = map.wrapT = THREE.RepeatWrapping;
+          map.repeat.set(2,2);
+          map.needsUpdate=true;
+        }
+        
+        this.material=new THREE.MeshPhongMaterial({
+          color: this.color,
+          shininess: this.shininess,
+          map: map,
+          side: THREE.DoubleSide
+        });
+      }
     },
     ready: function() {
-      this.linkUniforms();
-      this.createMaterial();
+      if(this.type == "custom") {
+        this.linkUniforms();
+        this.createMaterial();
+      } else {
+        this.createMaterial();
+      }
     }
   };
 });
@@ -156,7 +187,19 @@ function shader_init_pre() {
 function shader_init() {
   shader_load("skydome");
   shader_load("grass");
-  shader_load("gravel");
+//  shader_load("gravel");
+  shader_get_texture("gravel","concrete-sleeper.png");
+  shader_add(new Shader({
+    name: "gravel",
+    type: "phong",
+    map: "gravel",
+  }));
+  shader_add(new Shader({
+    name: "rails",
+    type: "phong",
+    color:0x776655,
+    shininess:20,
+  }));
 }
 
 function shader_ready_pre() {
@@ -169,8 +212,12 @@ function shader_load(name) {
   var shader=new Shader({
     name: name
   });
-  prop.shader.shaders[name]=shader;
+  shader_add(shader);
   return shader;
+}
+
+function shader_add(shader) {
+  prop.shader.shaders[shader.name]=shader;
 }
 
 function shader_parse(text) {
@@ -183,7 +230,7 @@ function shader_parse(text) {
 function shader_get_texture(name,url) {
   if(!url) url="assets/textures/"+name+".png";
   else url="assets/textures/"+url;
-  this.json_content=new Content({
+  var image_content=new Content({
     url: url,
     type: "image",
     payload: name,
@@ -191,6 +238,7 @@ function shader_get_texture(name,url) {
       prop.shader.textures[payload]=data;
     }
   });
+  prop.shader.textures[name]=image_content.data;
 }
 
 function shader_get(name) {

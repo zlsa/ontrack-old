@@ -17,6 +17,8 @@ var Content=function(options) {
     if("payload" in options) this.payload=options.payload;
   }
 
+  if(this.type == "image") this.data=new Image();
+
   this.getJSON=function() {
     log("Getting JSON file "+this.url+"...",LOG_DEBUG);
     var that=this;
@@ -34,7 +36,7 @@ var Content=function(options) {
 
   this.getImage=function() {
     log("Getting image "+this.url+"...",LOG_DEBUG);
-    this.data=new Image(this.url+"?time="+time());
+    this.data.src=this.url+"?time="+time();
     this.data.onload=function() {
       var that=get_queue_current(); // we better be in a queue
       if(!that) {
@@ -61,7 +63,6 @@ var Content=function(options) {
   };
 
   this.dl_done=function(data) {
-    async_loaded("get");
     var that=get_queue_current(); // we better be in a queue
     if(!that) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
@@ -74,6 +75,7 @@ var Content=function(options) {
       that.callback.call(that.that,"ok",data,that.payload);
     load_item_done();
     get_queue_check();
+    async_loaded("get");
   };
 
   this.dl_fail=function(d,error,retry) {
@@ -87,10 +89,10 @@ var Content=function(options) {
     if(that.tries > prop.get.retry.max) {
       if(that.callback)
         that.callback.call(that.that,"fail",data,that.payload);
-      async_loaded("get");
       that.status="fail";
       get_queue_check();
       load_item_done();
+      async_loaded("get");
     } else {
       if(retry) {
         setTimeout(function() {
