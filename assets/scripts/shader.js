@@ -1,0 +1,202 @@
+
+var Shader=Fiber.extend(function() {
+  return {
+    init: function(options) {
+      if(!options) options={};
+      
+      this.name            = options.name || null;
+      this.json            = options.json || null;
+      this.vertex          = options.vertex || "";
+      this.fragment        = options.fragment || "";
+
+      this.uniforms        = {};
+
+      this.textures        = {};
+      
+      this.material        = options.material || null;
+
+      this.load();
+    },
+    loadedJSON:function() {
+      if(this.json.fragment) {
+        if(this.json.fragment == true) this.json.fragment=this.name+".frag";
+        this.fragment_content=new Content({
+          url: prop.shader.url_root+this.json.fragment,
+          type: "string",
+          payload: this.name,
+          that: this,
+          callback: function(status,data,payload) {
+            this.fragment=shader_parse(data);
+          }
+        });
+      } else {
+        this.fragment=prop.shader.default_fragment;
+      }
+      if(this.json.vertex) {
+        if(this.json.vertex == true) this.json.vertex=this.name+".vert";
+        this.vertex_content=new Content({
+          url: prop.shader.url_root+this.json.vertex,
+          type: "string",
+          payload: this.name,
+          that: this,
+          callback: function(status,data,payload) {
+            this.vertex=shader_parse(data);
+          }
+        });
+      } else {
+        this.vertex=prop.shader.default_vertex;
+      }
+      if(this.json.textures) {
+        for(var i=0;i<this.json.textures.length;i++) {
+          var name=this.json.textures[i];
+          var url=null;
+          if(typeof name == typeof []) {
+            url=name[1];
+            name=name[0];
+          }
+          shader_get_texture(name,url);
+        }
+      }
+    },
+    load: function() {
+      var url=prop.shader.url_root+this.name+".json";
+      this.json_content=new Content({
+        url: url,
+        type: "json",
+        payload: this.name,
+        that: this,
+        callback: function(status,data,payload) {
+          this.json=data;
+          this.loadedJSON();
+        }
+      });
+    },
+    linkUniforms: function() {
+      this.uniforms={};
+      this.uniforms.time={
+        type: "f",
+        value: 0.0
+      };
+      this.uniforms.fogColor={
+        type: "c",
+        value: prop.environment.fog.color
+      };
+      this.uniforms.fogNear={
+        type: "f",
+        value: prop.environment.fog.near
+      };
+      this.uniforms.fogFar={
+        type: "f",
+        value: prop.environment.fog.far
+      };
+      if(this.json.textures) {
+        for(var i=0;i<this.json.textures.length;i++) {
+          var name=this.json.textures[i];
+          if(typeof name == typeof []) name=name[0];
+
+          var texture=new THREE.Texture(prop.shader.textures[name]);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(2,2);
+          texture.needsUpdate=true;
+
+          this.uniforms[name]={
+            type: "t",
+            value: texture
+          };
+        }
+      }
+      console.log(this.name,this.uniforms);
+    },
+    createMaterial: function() {
+      this.material=new THREE.ShaderMaterial({
+        uniforms: this.uniforms,
+        vertexShader: this.vertex,
+        fragmentShader: this.fragment,
+        side: THREE.DoubleSide
+      });
+    },
+    ready: function() {
+      this.linkUniforms();
+      this.createMaterial();
+    }
+  };
+});
+
+function shader_init_pre() {
+
+  prop.shader={};
+
+  prop.shader.url_root="assets/shaders/";
+
+  prop.shader.shaders={};
+
+  prop.shader.textures={};
+
+  prop.shader.default_vertex=[
+    "varying vec2 vUV;",
+    "varying float vD;",
+    "varying vec3 vNormal;",
+    "void main() {",
+    "  vUV = uv;",
+    "  vNormal = normal;",
+    "  vec4 pos = vec4(position,1.0);",
+    "  gl_Position=projectionMatrix * modelViewMatrix * pos;",
+    "  vD = gl_Position.z;",
+    "}",
+  ].join("\n");
+
+  prop.shader.default_fragment=[
+    "void main() {",
+    "  gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);",
+    "}",
+  ].join("\n");
+
+}
+
+function shader_init() {
+  shader_load("skydome");
+  shader_load("grass");
+  shader_load("gravel");
+}
+
+function shader_ready_pre() {
+  for(var i in prop.shader.shaders) {
+    prop.shader.shaders[i].ready();
+  }
+}
+
+function shader_load(name) {
+  var shader=new Shader({
+    name: name
+  });
+  prop.shader.shaders[name]=shader;
+  return shader;
+}
+
+function shader_parse(text) {
+  return text
+    .replace("$UTILS",prop.draw.shaders["utils"])
+    .replace("$FOG_PARAMETERS",prop.draw.shaders["fog-parameters"])
+    .replace("$FOG_COLOR",prop.draw.shaders["fog-color"]);
+}
+
+function shader_get_texture(name,url) {
+  if(!url) url="assets/textures/"+name+".png";
+  else url="assets/textures/"+url;
+  this.json_content=new Content({
+    url: url,
+    type: "image",
+    payload: name,
+    callback: function(status,data,payload) {
+      prop.shader.textures[payload]=data;
+    }
+  });
+}
+
+function shader_get(name) {
+  return prop.shader.shaders[name];
+}
+
+function shader_get_material(name) {
+  return shader_get(name).material;
+}

@@ -1,0 +1,7 @@
+{
+  "fragment":"gravel.frag",
+  "vertex":false,
+  "textures":[
+    ["gravel","concrete-sleeper.png"]
+  ]
+}
