@@ -19,7 +19,7 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:0.4
+        force:0.5
       };
       
       this.audio={
@@ -272,7 +272,7 @@ var Train=Fiber.extend(function() {
         var friction=Math.abs(this.cars[i].friction);
         var acceleration=this.cars[i].acceleration;
         this.velocity+=acceleration*game_delta();
-        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,3,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
+        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
       }
 
       this.distance+=this.velocity*game_delta();
