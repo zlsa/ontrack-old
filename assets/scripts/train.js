@@ -176,7 +176,7 @@ var Car=Fiber.extend(function() {
       var flange_offset_angle=average(this.bogies[0].flange_offset_angle,this.bogies[1].flange_offset_angle);
       var mix=0.4;
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;;
-      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.0,0,0.2));
+//      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.0,0,0.2));
 
       this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),40,0,0.5));
       this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),40,0.1,1.2));
