@@ -42,7 +42,7 @@ var Bogie=Fiber.extend(function() {
     updateAudio: function() {
       this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.07));
       this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),10,0.3,1.2));
-      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
+//      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
     }
   };
 });
