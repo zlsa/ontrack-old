@@ -37,7 +37,7 @@ var Car=Fiber.extend(function() {
       };
       
       this.power={
-        force: 1500
+        force: 3500
       };
 
     },
@@ -173,7 +173,7 @@ var Train=Fiber.extend(function() {
         var friction=Math.abs(this.cars[i].friction);
         var acceleration=this.cars[i].acceleration;
         this.velocity+=acceleration*game_delta();
-        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),5,5,1),1,1.0,0.93);
+        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),5,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
       }
 
       this.distance+=this.velocity*game_delta();
