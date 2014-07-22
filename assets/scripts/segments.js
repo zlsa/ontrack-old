@@ -298,7 +298,6 @@ var Segments=Fiber.extend(function() {
         uv_profile[i]*=uv_width;
 //        uv_profile[i]+=0.25;
       }
-      console.log(uv_profile);
       var extent=left_extent-right_extent;
       var geometry=new THREE.Geometry();
       geometry.faceVertexUvs[0]=[];

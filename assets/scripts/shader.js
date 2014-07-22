@@ -208,7 +208,7 @@ function shader_init() {
     type: "phong",
     map: "concrete-sleeper",
     bumpMap: "concrete-sleeper-bump",
-    bumpScale: 0.1
+    bumpScale: 0.2
   }));
   shader_add(new Shader({
     name: "rails",

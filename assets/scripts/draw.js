@@ -135,7 +135,7 @@ function draw_init() {
 
   // SUN
   prop.draw.sun=new THREE.DirectionalLight(0xffeedd, 2);
-  prop.draw.sun.position.clone(prop.environment.sun_direction);
+  prop.draw.sun.position=prop.environment.sun_direction;
   prop.draw.scene.add(prop.draw.sun);
 
 }
