@@ -3,11 +3,11 @@ varying float vD;
 varying vec2 vUV;
 varying vec3 vNormal;
 
-uniform sampler2D tColor;
-uniform sampler2D tNormal;
+uniform sampler2D gravel;
 uniform float time;
 
-$PARAMETERS
+$FOG_PARAMETERS
+
 $UTILS
 
 void main() {
@@ -16,27 +16,21 @@ void main() {
   vp.x+=1.25;
   vp.x*=2.0;
   vp.y*=0.08;
-  
-  float tt=time*0.8;
 
-  vec4 color=texture2D(tColor, vp)*2.2;
+  vec4 color=texture2D(gravel, vp);
 
   // lighting
 
-  vec3 vn=vec3(vNormal.x,vNormal.y,vNormal.z);
+  //  vec3 vn=vec3(vNormal.x,vNormal.y,vNormal.z);
 
-  vec4 normalColor=texture2D(tNormal, vp);
-  float vs=30.0;
-  vn.x*=normalColor.r*vs;
-  vn.y*=normalColor.g*vs;
-  vn.z*=normalColor.b*vs;
+  //  float vs=30.0;
 
-  vec3 light = vec3(0.0, 1.0, 0.0);
-  light = normalize(light);
-  vn = normalize(vn);
-  float ls = max(0.0, dot(vn,light))*0.7;
+  //  vec3 light = vec3(0.0, 1.0, 0.0);
+  //  light = normalize(light);
+  //  vn = normalize(vn);
+  //  float ls = max(0.0, dot(vn,light))*0.7;
 
-  gl_FragColor = vec4(color.rgb*ls, color.w);
+  gl_FragColor = color;
 
-  $COLOR
+  $FOG_COLOR
 }

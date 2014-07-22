@@ -157,7 +157,7 @@ var Segments=Fiber.extend(function() {
       ];
 
       this.geometry=this.buildProfileMesh(profile,20);
-      this.mesh=new THREE.Mesh(this.geometry,null);
+      this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
       prop.draw.scene.add(this.mesh);
 
       var rw=0.07;

@@ -1,0 +1,7 @@
+{
+  "fragment":"grass.frag",
+  "vertex":false,
+  "textures": [
+    "grass"
+  ]
+}

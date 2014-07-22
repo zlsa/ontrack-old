@@ -78,7 +78,6 @@ var Content=function(options) {
 
   this.dl_fail=function(d,error,retry) {
     if(retry == null) retry=true
-    async_loaded("get");
     var that=get_queue_current(); // we better be in a queue
     if(!that) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
@@ -88,6 +87,7 @@ var Content=function(options) {
     if(that.tries > prop.get.retry.max) {
       if(that.callback)
         that.callback.call(that.that,"fail",data,that.payload);
+      async_loaded("get");
       that.status="fail";
       get_queue_check();
       load_item_done();

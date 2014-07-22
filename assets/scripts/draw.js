@@ -105,37 +105,14 @@ function draw_init_pre() {
     "uniform float fogNear;",
     "uniform float fogFar;",
   ].join("\n");
-  prop.draw.shaders["fog-fragment"]=[
+  prop.draw.shaders["fog-color"]=[
     "float fog=scrange(fogNear,vD,fogFar,0.0,1.0);",
     "gl_FragColor=mix(gl_FragColor,vec4(fogColor.rgb,1.0),fog);",
   ].join("\n");
 
 }
 
-function draw_fragment_shader_get(name,url) {
-  var shader=new Content({
-    url: url,
-    type: "string",
-    payload: name,
-    callback: function(status,data,payload) {
-      prop.draw.shaders[payload]=data
-//        .replace("$PARAMETERS","")
-//        .replace("$COLOR","");
-//        .replace("$PARAMETERS",THREE.ShaderChunk["fog_pars_fragment"])
-//        .replace("$COLOR",THREE.ShaderChunk["fog_fragment"]);
-        .replace("$UTILS",prop.draw.shaders["utils"])
-        .replace("$PARAMETERS",prop.draw.shaders["fog-parameters"])
-        .replace("$COLOR",prop.draw.shaders["fog-fragment"]);
-      console.log(prop.draw.shaders[payload])
-    }
-  });
-}
-
 function draw_init() {
-
-  draw_fragment_shader_get("grass","assets/shaders/grass-fast.frag");
-  draw_fragment_shader_get("gravel","assets/shaders/gravel.frag");
-//  draw_fragment_shader_get("grass","assets/shaders/water.frag");
 
   // SCENE
   prop.draw.scene=new THREE.Scene();
@@ -169,36 +146,7 @@ function draw_ready() {
 
   var skydome_geometry=new THREE.SphereGeometry(prop.draw.zfar*0.9, 20, 10);
 
-  var texture=new THREE.Texture(prop.railway.current.skydome.data);
-  texture.needsUpdate=true;
-
-  var uniforms={
-    texture: {
-      type: "t",
-      value: texture
-    }
-  };
-
-  var skydome_material=new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: ""+
-      "varying vec2 vUV;\n"+
-      "void main() {\n"+
-      "  vUV=uv;\n"+
-      "  vec4 pos=vec4(position,1.0);\n"+
-      "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
-      "}",
-    fragmentShader: ""+
-      "uniform sampler2D texture;\n"+
-      "varying vec2 vUV;\n"+
-      "void main() {\n"+
-      "  vec4 sample = texture2D(texture, vUV);\n"+
-      "  gl_FragColor = vec4(sample.xyz, sample.w);\n"+
-      "}",
-    side:THREE.DoubleSide
-  });
-
-  prop.draw.skydome=new THREE.Mesh(skydome_geometry, skydome_material);
+  prop.draw.skydome=new THREE.Mesh(skydome_geometry, shader_get_material("skydome"));
   prop.draw.skydome.scale.set(-1,1,1);
   prop.draw.skydome.renderDepth=1000.0;
   prop.draw.scene.add(prop.draw.skydome);
@@ -206,43 +154,7 @@ function draw_ready() {
   // GROUND
   var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 1, 1);
   
-  var grass=THREE.ImageUtils.loadTexture("assets/textures/grass.png");
-//  var grass=THREE.ImageUtils.loadTexture("assets/textures/water.png");
-  grass.wrapS = grass.wrapT = THREE.RepeatWrapping;
-  grass.repeat.set(2,2);
-
-  window.ground_uniforms={
-    texture: {
-      type: "t",
-      value: grass
-    },
-    time: {
-      type: "f",
-      value: 1.0
-    },
-    fogColor:    { type: "c", value: prop.environment.fog.color },
-    fogNear:     { type: "f", value: prop.environment.fog.near },
-    fogFar:      { type: "f", value: prop.environment.fog.far }
-  };
-
-  var ground_material=new THREE.ShaderMaterial({
-    uniforms:window.ground_uniforms,
-    vertexShader: ""+
-      "varying vec2 vUV;\n"+
-      "varying float vD;\n"+
-      "varying vec3 vNormal;\n"+
-      "void main() {\n"+
-      "  vUV=uv;\n"+
-      "  vNormal=normal;\n"+
-      "  vec4 pos=vec4(position,1.0);\n"+
-      "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
-      "  vD=gl_Position.z;\n"+
-      "}",
-    fragmentShader: prop.draw.shaders.grass,
-    side:THREE.DoubleSide
-  });
-
-  prop.draw.ground=new THREE.Mesh(ground_geometry, ground_material);
+  prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
   prop.draw.ground.rotation.set(-Math.PI/2,0,0);
   prop.draw.scene.add(prop.draw.ground);
 
@@ -251,56 +163,11 @@ function draw_ready() {
   var color=0xdddddd;
   var material=new THREE.MeshPhongMaterial( { color: color } );
   prop.draw.train=new THREE.Mesh(geometry, material);
-  prop.draw.train.position.y=0.5;
 
   var track=prop.railway.current.getRoot("master");
 
   prop.draw.train.add(prop.draw.camera);
   prop.draw.scene.add(prop.draw.train);
-
-  var gravel=THREE.ImageUtils.loadTexture("assets/textures/concrete-sleeper.png");
-  gravel.wrapS = gravel.wrapT = THREE.RepeatWrapping;
-  gravel.repeat.set(2,2);
-  var gravel_normal=THREE.ImageUtils.loadTexture("assets/textures/gravel-normal.png");
-  gravel_normal.wrapS = gravel_normal.wrapT = THREE.RepeatWrapping;
-  gravel_normal.repeat.set(2,2);
-
-  var uniforms={
-    tColor: {
-      type: "t",
-      value: gravel
-    },
-    tNormal: {
-      type: "t",
-      value: gravel_normal
-    },
-    time: {
-      type: "f",
-      value: 1.0
-    },
-    fogColor:    { type: "c", value: prop.environment.fog.color },
-    fogNear:     { type: "f", value: prop.environment.fog.near },
-    fogFar:      { type: "f", value: prop.environment.fog.far }
-  };
-
-  var material=new THREE.ShaderMaterial({
-    uniforms:uniforms,
-    vertexShader: ""+
-      "varying vec2 vUV;\n"+
-      "varying float vD;\n"+
-      "varying vec3 vNormal;\n"+
-      "void main() {\n"+
-      "  vUV=uv;\n"+
-      "  vNormal=normal;\n"+
-      "  vec4 pos=vec4(position,1.0);\n"+
-      "  gl_Position=projectionMatrix * modelViewMatrix * pos;\n"+
-      "  vD=gl_Position.z;\n"+
-      "}",
-    fragmentShader: prop.draw.shaders.gravel,
-    side:THREE.DoubleSide
-  });
-
-  prop.railway.current.getRoot("master").mesh.material=material;
 
 }
 
@@ -334,8 +201,6 @@ function draw_update() {
   prop.draw.camera.position.set(0,0.4,9.5);
   
   prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,20));
-
-  window.ground_uniforms.time.value+=delta();
 
   var track=prop.railway.current.getRoot("master");
 

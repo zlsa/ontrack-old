@@ -69,18 +69,21 @@ var Railway=function(options) {
     if(status == "ok") {
       this.data=data;
       this.verifyData();
-      this.parseData();
     }
   };
 
   this.get();
+
+  this.ready=function() {
+    this.parseData();
+  };
 
 };
 
 function railway_init_pre() {
 
   prop.railway={};
-  prop.railway.railways=[];
+  prop.railway.railways={};
   prop.railway.current=null;
 
 }
@@ -90,12 +93,18 @@ function railway_init() {
 //  railway_set_current(railway_get("train-test"));
 }
 
+function railway_ready() {
+  for(var i in prop.railway.railways) {
+    prop.railway.railways[i].ready();
+  }
+}
+
 function railway_get(name) {
   var url="assets/railways/"+name+"/";
   var railway=new Railway({
     url: url
   })
-  prop.railway.railways.push(railway);
+  prop.railway.railways[name]=railway;
   return railway;
 }
 
