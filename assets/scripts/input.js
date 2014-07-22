@@ -44,6 +44,18 @@ function input_init() {
     up:38,
     right:39,
     down:40,
+    f1:112,
+    f2:113,
+    f3:114,
+    f4:115,
+    f5:116,
+    f6:117,
+    f7:118,
+    f8:119,
+    f9:120,
+    f10:121,
+    f11:122,
+    f12:123,
   };
 }
 
@@ -51,11 +63,15 @@ function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
     input_keydown(e.which);
+    if(e.which >= 112 && e.which <= 123)
+      e.preventDefault();
   });
 
   $(window).keyup(function(e) {
     prop.input.keys[e.which]=false;
     console.log(e.which);
+    if(e.which >= 112 && e.which <= 123)
+      e.preventDefault();
   });
 
 }
@@ -73,6 +89,10 @@ function input_keydown(keycode) {
     controls_move("direction",-1);
   } else if(keycode == prop.input.keysym.p) {
     prop.game.paused=!prop.game.paused;
+  } else if(keycode == prop.input.keysym.f1) {
+    prop.ui.camera.mode="cab";
+  } else if(keycode == prop.input.keysym.f2) {
+    prop.ui.camera.mode="chase";
   }
 }
 

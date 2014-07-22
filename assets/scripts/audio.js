@@ -15,15 +15,18 @@ var AudioSource=Fiber.extend(function() {
       this.load();
     },
     setVolume: function(volume) {
+      volume=clamp(0,volume,1);
       if(!this.gain) return;
       this.volume=volume;
       this.gain.gain.value=volume*this.master_volume;
     },
     setRate: function(rate) {
+      rate=clamp(0.01,rate,5);
       if(!this.source) return;
       this.source.playbackRate.value=rate;
     },
     setDelay: function(delay) {
+      delay=Math.max(0.01,delay);
       if(!this.delay) return;
       this.delay.delayTime.value=delay;
     },
