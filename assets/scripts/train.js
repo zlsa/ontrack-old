@@ -168,7 +168,6 @@ var Car=Fiber.extend(function() {
       var pitch=this.track.getPitch(this.distance);
 
       this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,3*this.weight);
-      this.acceleration_factors.gravity*=trange(0,this.friction,0.5,1,0.0);
       this.acceleration_factors.power=trange(-this.train.power.max,this.train.power.value,this.train.power.max,-this.power.force,this.power.force);
       this.acceleration=0;
 
