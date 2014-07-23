@@ -261,7 +261,7 @@ function shader_parse(text) {
 
 function shader_get_texture(name,url) {
   if(name in prop.shader.textures) return;
-  if(url == undefined) url="assets/textures/"+name+".png";
+  if(url == undefined) url="assets/textures/"+name+".jpg";
 //  else url="assets/textures/"+url;
   console.log(name,url);
   var image_content=new Content({
