@@ -19,7 +19,7 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:0.1
+        force:0.05
       };
       
       this.audio={
@@ -78,6 +78,8 @@ var Car=Fiber.extend(function() {
       this.track        = options.track || null;
       this.length       = options.length || 0;
       this.weight       = options.weight || 0;
+
+      this.number       = options.number || 0;
 
       this.bogies       = [
         new Bogie({
@@ -302,6 +304,7 @@ var Train=Fiber.extend(function() {
       var weight=0;
 
       for(var i=0;i<this.cars.length;i++) {
+        var friction=Math.abs(this.cars[i].calculateFriction());
         weight+=this.cars[i].weight;
       }
 

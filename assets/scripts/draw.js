@@ -151,7 +151,7 @@ function draw_ready() {
 
   // SKYDOME
 
-  var skydome_geometry=new THREE.SphereGeometry(prop.draw.zfar*0.9, 20, 10);
+  var skydome_geometry=new THREE.SphereGeometry(prop.draw.zfar*0.7, 20, 10);
 
   prop.draw.skydome=new THREE.Mesh(skydome_geometry, shader_get_material("skydome"));
   prop.draw.skydome.scale.set(-1,1,1);
@@ -224,6 +224,7 @@ function draw_update_post() {
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
     var t=game_time()*0.05;
+    var t=0;
     var cp=new THREE.Vector3(-position[0]+sin(t)*10,elevation+5,position[1]);
     prop.draw.camera.position=cp;
     dist=prop.train.current.distance-10;
@@ -238,8 +239,7 @@ function draw_update_post() {
     var dist=Math.round(prop.train.current.distance/400)*400;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
-    var t=game_time()*0.05;
-    var cp=new THREE.Vector3(-position[0]+12,elevation+3,position[1]);
+    var cp=new THREE.Vector3(-position[0]+15,elevation+3,position[1]);
     prop.draw.camera.position=cp;
     dist=prop.train.current.distance-10;
     position=track.getPosition(dist);
