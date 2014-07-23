@@ -69,13 +69,11 @@ var Railway=function(options) {
     for(var i=0;i<this.data.root.rail.length;i++) {
       var options=this.data.root.rail[i];
       options.type="rail";
-      console.log(options);
       this.root.rail.push(new Segments(options));
     }
 
     options=this.data.root.master;
     options.type="master";
-    console.log(options);
     this.root.master=new Segments(options);
 
   };

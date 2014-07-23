@@ -87,7 +87,8 @@ var Segment=Fiber.extend(function() {
       }
       else return 0;
     },
-    getDistances: function(multiply) {
+    getDistances: function(multiply,start,end) {
+      console.log(start,end);
       if(this.type == "straight") {
         var number=1;
       }
@@ -304,11 +305,15 @@ var Segments=Fiber.extend(function() {
         this.parseSegment(segments[i]);
       }
     },
-    getDistances: function(multiply) {
+    getDistances: function(multiply,start,end) {
+      if(start == null) start=0;
+      if(end == null) end=this.getLength();
       var distances=[];
       for(var i=0;i<this.segments.length;i++) {
+        if(this.segment_cache[i][0]+this.segment_cache[i][1] < start) continue;
+        if(this.segment_cache[i][0] > end) continue;
         var segment=this.segments[i];
-        var d=segment.getDistances(multiply);
+        var d=segment.getDistances(multiply,this.segment_cache[i][0]-start,end-(this.segment_cache[i][0]+this.segment_cache[i][1]));
         for(var j=0;j<d.length;j++) {
           d[j]+=this.segment_cache[i][0];
         }
@@ -445,7 +450,6 @@ var Segments=Fiber.extend(function() {
       geometry.computeVertexNormals();
       geometry.computeTangents();
       geometry.computeBoundingSphere();
-      console.log(geometry.boundingSphere.radius);
       return geometry;
     }
   };

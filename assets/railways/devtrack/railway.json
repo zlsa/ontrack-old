@@ -26,7 +26,7 @@
         {
           "type":"curve",
           "arc":90,
-          "radius":-40,
+          "radius":-400,
           "rise":0,
           "cant":[-5,-0.5]
         },
@@ -108,76 +108,6 @@
             "radius":2000,
             "rise":0,
             "cant":[0.0,-5]
-          },
-          {
-            "type":"curve",
-            "arc":90,
-            "radius":-40,
-            "rise":0,
-            "cant":[-5,-0.5]
-          },
-          {
-            "type":"curve",
-            "length":700,
-            "radius":2000,
-            "rise":1,
-            "cant":[-0.5,-0.1]
-          },
-          {
-            "type":"curve",
-            "length":2000,
-            "radius":-2000,
-            "rise":0,
-            "cant":[-0.1,0.1]
-          },
-          {
-            "type":"curve",
-            "length":700,
-            "radius":500,
-            "rise":0,
-            "cant":[0.1,0.2]
-          },
-          {
-            "type":"curve",
-            "length":2000,
-            "radius":-2000,
-            "rise":0,
-            "cant":[0.2,0.4]
-          },
-          {
-            "type":"curve",
-            "arc":90,
-            "radius":80,
-            "rise":0,
-            "cant":[0.4,0.1]
-          },
-          {
-            "type":"curve",
-            "length":700,
-            "radius":2000,
-            "rise":0,
-            "cant":[0.1,-0.1]
-          },
-          {
-            "type":"curve",
-            "length":2000,
-            "radius":-2000,
-            "rise":0,
-            "cant":[-0.1,0.1]
-          },
-          {
-            "type":"curve",
-            "length":700,
-            "radius":500,
-            "rise":0,
-            "cant":[0.1,0.2]
-          },
-          {
-            "type":"curve",
-            "length":2000,
-            "radius":-2000,
-            "rise":0,
-            "cant":[0.2,-0.1]
           }
         ]
       }
