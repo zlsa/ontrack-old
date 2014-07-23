@@ -67,7 +67,8 @@ var Shader=Fiber.extend(function() {
             url=name[1];
             name=name[0];
           }
-          shader_get_texture(name,url);
+          if(!url) url="../textures/"+name+".png";
+          shader_get_texture(name,prop.shader.url_root+url);
         }
       }
     },
@@ -165,6 +166,7 @@ var Shader=Fiber.extend(function() {
           bumpScale: this.bumpScale,
           normalMap: normalMap,
           wireframe: this.wireframe,
+          shading: THREE.SmoothShading,
         });
       }
     },
@@ -215,12 +217,15 @@ function shader_init() {
   shader_load("grass");
 //  shader_load("gravel");
   shader_get_texture("concrete-sleeper");
-  shader_get_texture("concrete-sleeper-normal");
+//  shader_get_texture("concrete-sleeper-normal","assets/textures/concrete-sleeper-normal.jpg");
+  shader_get_texture("concrete-sleeper-bump");
   shader_add(new Shader({
     name: "gravel",
     type: "phong",
     map: "concrete-sleeper",
-    normalMap: "concrete-sleeper-normal",
+    bumpMap: "concrete-sleeper-bump",
+//    normalMap: "concrete-sleeper-normal",
+    bumpScale:0.02,
     metal: false,
     shininess: 5,
   }));
@@ -259,8 +264,9 @@ function shader_parse(text) {
 
 function shader_get_texture(name,url) {
   if(name in prop.shader.textures) return;
-  if(!url) url="assets/textures/"+name+".png";
-  else url="assets/textures/"+url;
+  if(url == undefined) url="assets/textures/"+name+".png";
+//  else url="assets/textures/"+url;
+  console.log(name,url);
   var image_content=new Content({
     url: url,
     type: "image",

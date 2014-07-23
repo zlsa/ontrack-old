@@ -159,10 +159,10 @@ function draw_ready() {
   prop.draw.scene.add(prop.draw.skydome);
 
   // GROUND
-  //  var ground_geometry=new THREE.PlaneGeometry(60000, 60000, 30, 30);
-  //  prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("gravel"));
-  //  prop.draw.ground.rotation.set(-Math.PI/2,0,0);
-  //  prop.draw.scene.add(prop.draw.ground);
+  var ground_geometry=new THREE.PlaneGeometry(6000, 6000, 3, 3);
+  prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
+  prop.draw.ground.rotation.set(-Math.PI/2,0,0);
+  prop.draw.scene.add(prop.draw.ground);
 
 }
 

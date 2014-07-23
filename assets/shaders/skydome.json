@@ -1,6 +1,6 @@
 {
   "fragment":true,
   "textures": [
-    ["skydome","skydome-noon-clear.png"]
+    ["skydome","../textures/skydome-noon-clear.png"]
   ]
 }

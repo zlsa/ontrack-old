@@ -87,17 +87,17 @@ var Segment=Fiber.extend(function() {
       }
       else return 0;
     },
-    getDistances: function(multiply,start,end) {
-      console.log(start,end);
+    getDistances: function(multiply) {
       if(this.type == "straight") {
         var number=1;
       }
       if(this.type == "curve") {
-        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.3)),300);
+        var number=this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.3);
       }
       if(!multiply) multiply=1;
       number=Math.max(this.rise*4,number);
       number*=multiply;
+      number=clamp(2,number,300);
       number=Math.ceil(number);
       var distances=[];
       for(var i=0;i<number;i++) {
@@ -126,6 +126,7 @@ var Segments=Fiber.extend(function() {
       this.start     = options.start || 0;
       this.end       = options.end || 0;
       this.segments  = [];
+      this.profiles  = options.profiles || [];
 
       if(this.type == "master" || this.type == "rail") {
         this.gauge   = options.gauge || 1.435;
@@ -139,45 +140,22 @@ var Segments=Fiber.extend(function() {
 
       this.buildSegmentCache();
 
-      for(var i=0;i<this.getLength();i+=50) {
-        break;
-        var segment=this.getSegment(i);
-        var position=this.getPosition(i);
-        var rotation=this.getRotation(i);
-        var cant=this.getCant(i);
-        var pitch=this.getPitch(i)-radians(0.05);
-        var elevation=this.getElevation(i);
-        if(!position) continue;
-
-        var geometry=new THREE.BoxGeometry(this.gauge*1.3,0.1,0.2);
-        var color=0xff0000;
-        if(segment[1].type == "straight") color=0x0000ff;
-        color=0x665544;
-        var material=new THREE.MeshPhongMaterial( { color: color } );
-        var mesh=new THREE.Mesh(geometry, material);
-        mesh.castShadow=true;
-        mesh.position.x=-position[0];
-        mesh.position.y=elevation;
-        mesh.position.z=position[1];
-        mesh.rotation.order="YXZ";
-        mesh.rotation.x=pitch;
-        mesh.rotation.y=rotation;
-        mesh.rotation.z=cant;
-        prop.draw.scene.add(mesh);
-      }
-
+      this.buildMesh();
+    },
+    buildMesh: function() {
       var g=this.getGauge();
-      var profile=[
-        [[-g/2-7,    -5 ], null],
-        [[-g/2-3,     0 ], null],
 
-        [[ g/2+3,     0 ], null],
-        [[ g/2+7,    -5 ], null],
-      ];
+      // var profile=[
+      //   [[-g/2-7,    -5 ], null],
+      //   [[-g/2-3,     0 ], null],
 
-      this.geometry=this.buildProfileMesh(profile,this.getDistances(1));
-      this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
-      prop.draw.scene.add(this.mesh);
+      //   [[ g/2+3,     0 ], null],
+      //   [[ g/2+7,    -5 ], null],
+      // ];
+
+      // this.geometry=this.buildProfileMesh(profile,this.getDistances(1));
+      // this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
+      // prop.draw.scene.add(this.mesh);
 
       var rw=0.07;
       var rh=0.1;
@@ -211,6 +189,33 @@ var Segments=Fiber.extend(function() {
       geometry=this.buildProfileMesh(profile,this.getDistances(1));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
+
+      for(var i=0;i<this.profiles.length;i++) {
+        var profile_options=this.profiles[i];
+        var detail=profile_options.detail || 1;
+        detail=clamp(0.1,detail,3);
+        var profile=[];
+        for(var j=0;j<profile_options.profile.length;j++) {
+          profile.push([profile_options.profile[j],null]);
+        }
+        for(var k=0;k<profile_options.stretches.length;k++) {
+          var stretch=profile_options.stretches[k];
+          if(typeof stretch == typeof []) {
+            var start=stretch[0];
+            var end=stretch[1]+start;
+          } else if(typeof stretch == typeof {}) {
+            var start=stretch.start;
+            var end=stretch.end;
+            if(stretch.length) end=start+stretch.length;
+          } else {
+            console.log("SHITSHIT!", stretch);
+            continue;
+          }
+          geometry=this.buildProfileMesh(profile,this.getDistances(detail,start,end));
+          mesh=new THREE.Mesh(geometry,shader_get_material("gravel"));
+          prop.draw.scene.add(mesh);
+        }
+      }
 
     },
     buildSegmentCache: function() {
@@ -310,16 +315,26 @@ var Segments=Fiber.extend(function() {
       if(end == null) end=this.getLength();
       var distances=[];
       for(var i=0;i<this.segments.length;i++) {
-        if(this.segment_cache[i][0]+this.segment_cache[i][1] < start) continue;
-        if(this.segment_cache[i][0] > end) continue;
+        if(this.segment_cache[i][0]+this.segment_cache[i][1] <= start || this.segment_cache[i][0] >= end) continue;
         var segment=this.segments[i];
-        var d=segment.getDistances(multiply,this.segment_cache[i][0]-start,end-(this.segment_cache[i][0]+this.segment_cache[i][1]));
+        var d=segment.getDistances(multiply);
         for(var j=0;j<d.length;j++) {
           d[j]+=this.segment_cache[i][0];
         }
         distances.push.apply(distances,d);
       }
-      return distances;
+      var d=[];
+      for(var i=0;i<distances.length;i++) {
+        if(distances[i] < start) continue;
+        if(distances[i] > end) {
+          break;
+        }
+        if(d == []) d.push(start);
+        d.push(distances[i]);
+      }
+      if(d[d.length-1] != end)
+        d.push(end);
+      return d;
     },
     buildProfileMesh: function(profile,accuracy) {
       if(!accuracy) accuracy=5;
