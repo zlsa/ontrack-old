@@ -181,9 +181,7 @@ function draw_resize() {
   prop.draw.camera.updateProjectionMatrix();
 }
 
-function draw_update() {
-
-  var t=time()*0.5;
+function draw_update_post() {
 
   prop.draw.camera.position.x=10;
   prop.draw.camera.position.y=100;
@@ -204,14 +202,15 @@ function draw_update() {
     if(model.getObjectByName("camera")) {
       model.remove(prop.draw.camera);
     }
-    var dist=prop.train.current.distance-100;
+    var dist=prop.train.current.distance-10;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
-    var cp=new THREE.Vector3(-position[0],elevation+5,position[1]);
+    var t=game_time();
+    var cp=new THREE.Vector3(-position[0]+sin(t)*20,elevation+10,position[1]+cos(t)*20);
     prop.draw.camera.position=cp;
     //  prop.draw.camera.lookAt(prop.draw.train.position);
     //  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
-    dist=prop.train.current.distance-30;
+    dist=prop.train.current.distance-10;
     position=track.getPosition(dist);
     prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
   } else if(prop.ui.camera.mode == "cab") {

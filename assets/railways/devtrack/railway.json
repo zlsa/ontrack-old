@@ -12,7 +12,7 @@
     "master":{
       "position":[0,0],
       "elevation":0.3,
-      "gauge":1.435,
+      "gauge":1.6764,
       "start":100,
       "segments":[
         {
@@ -25,7 +25,7 @@
         {
           "type":"curve",
           "arc":90,
-          "radius":-30,
+          "radius":-300,
           "rise":0,
           "cant":[-2,-0.5]
         },
