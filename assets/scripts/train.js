@@ -41,10 +41,10 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(this,Math.abs(this.car.velocity),1,0,0.08));
+      this.audio.rails.setVolume(scrange(this,Math.abs(this.car.velocity),1,0,0.1));
       this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.1,2.0));
 
-      this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0,0.5)*crange(0,Math.abs(this.car.velocity),100,0,0.2));
+      this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0,0.3)*crange(0,Math.abs(this.car.velocity),100,0,0.1));
 //      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
     },
     updateModel: function() {
@@ -206,7 +206,7 @@ var Car=Fiber.extend(function() {
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
       this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.1));
 
-      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.9));
+      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.5));
       this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0));
 
     },

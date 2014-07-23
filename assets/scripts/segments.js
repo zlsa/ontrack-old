@@ -87,14 +87,16 @@ var Segment=Fiber.extend(function() {
       }
       else return 0;
     },
-    getDistances: function() {
+    getDistances: function(multiply) {
       if(this.type == "straight") {
         var number=1;
       }
       if(this.type == "curve") {
-        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.2)),300);
+        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.3)),300);
       }
-      number=Math.max(this.rise*3,number);
+      if(!multiply) multiply=1;
+      number=Math.max(this.rise*4,number);
+      number*=multiply;
       number=Math.ceil(number);
       var distances=[];
       for(var i=0;i<number;i++) {
@@ -172,7 +174,7 @@ var Segments=Fiber.extend(function() {
         [[ g/2+7,    -5 ], null],
       ];
 
-      this.geometry=this.buildProfileMesh(profile,this.getDistances());
+      this.geometry=this.buildProfileMesh(profile,this.getDistances(0.5));
       this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
       prop.draw.scene.add(this.mesh);
 
@@ -205,7 +207,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances());
+      geometry=this.buildProfileMesh(profile,this.getDistances(0.5));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -302,11 +304,11 @@ var Segments=Fiber.extend(function() {
         this.parseSegment(segments[i]);
       }
     },
-    getDistances: function() {
+    getDistances: function(multiply) {
       var distances=[];
       for(var i=0;i<this.segments.length;i++) {
         var segment=this.segments[i];
-        var d=segment.getDistances();
+        var d=segment.getDistances(multiply);
         for(var j=0;j<d.length;j++) {
           d[j]+=this.segment_cache[i][0];
         }

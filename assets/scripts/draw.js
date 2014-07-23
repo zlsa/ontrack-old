@@ -223,9 +223,7 @@ function draw_update_post() {
     var dist=prop.train.current.distance+120;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
-    var t=game_time()*0.05;
-    var t=0;
-    var cp=new THREE.Vector3(-position[0]+sin(t)*10,elevation+5,position[1]);
+    var cp=new THREE.Vector3(-position[0],elevation+5,position[1]);
     prop.draw.camera.position=cp;
     dist=prop.train.current.distance-10;
     position=track.getPosition(dist);
@@ -238,10 +236,11 @@ function draw_update_post() {
     }
     var dist=Math.round(prop.train.current.distance/400)*400;
     var position=track.getPosition(dist);
+    var rotation=track.getRotation(dist);
     var elevation=track.getElevation(dist);
-    var cp=new THREE.Vector3(-position[0]+15,elevation+3,position[1]);
+    var cp=new THREE.Vector3(-position[0]+cos(rotation)*20,elevation+3,position[1]+sin(rotation)*20);
     prop.draw.camera.position=cp;
-    dist=prop.train.current.distance-10;
+    dist=prop.train.current.distance-20;
     position=track.getPosition(dist);
     prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
     prop.draw.camera.fov=prop.draw.fov;
