@@ -33,7 +33,7 @@
           "type":"curve",
           "length":700,
           "radius":2000,
-          "rise":8,
+          "rise":1,
           "cant":[-0.5,-0.1]
         },
         {

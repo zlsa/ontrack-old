@@ -87,6 +87,21 @@ var Segment=Fiber.extend(function() {
       }
       else return 0;
     },
+    getDistances: function() {
+      if(this.type == "straight") {
+        var number=1;
+      }
+      if(this.type == "curve") {
+        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,1)),300);
+      }
+      number=Math.max(this.rise*5,number);
+      number=Math.ceil(number);
+      var distances=[];
+      for(var i=0;i<number;i++) {
+        distances.push(i/number*this.getLength());
+      }
+      return distances;
+    },
     getLength: function(cache) {
       if(this.cached_length == null || cache) {
         if(this.type == "straight") this.cached_length=this.length;
@@ -122,6 +137,7 @@ var Segments=Fiber.extend(function() {
       this.buildSegmentCache();
 
       for(var i=0;i<this.getLength();i+=50) {
+        break;
         var segment=this.getSegment(i);
         var position=this.getPosition(i);
         var rotation=this.getRotation(i);
@@ -156,7 +172,7 @@ var Segments=Fiber.extend(function() {
         [[ g/2+7,    -5 ], null],
       ];
 
-      this.geometry=this.buildProfileMesh(profile,5);
+      this.geometry=this.buildProfileMesh(profile,this.getDistances());
       this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
       prop.draw.scene.add(this.mesh);
 
@@ -189,7 +205,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,2);
+      geometry=this.buildProfileMesh(profile,this.getDistances());
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -286,8 +302,28 @@ var Segments=Fiber.extend(function() {
         this.parseSegment(segments[i]);
       }
     },
+    getDistances: function() {
+      var distances=[];
+      for(var i=0;i<this.segments.length;i++) {
+        var segment=this.segments[i];
+        var d=segment.getDistances();
+        for(var j=0;j<d.length;j++) {
+          d[j]+=this.segment_cache[i][0];
+        }
+        distances.push.apply(distances,d);
+      }
+      return distances;
+    },
     buildProfileMesh: function(profile,accuracy) {
       if(!accuracy) accuracy=5;
+      if(typeof accuracy == typeof 0) {
+        var distances=[];
+        for(var i=0;i<this.getLength();i+=accuracy) {
+          distances.push(i);
+        }
+      } else {
+        var distances=accuracy;
+      }
       var left_extent=Infinity;
       var right_extent=-Infinity;
       for(var i=0;i<profile.length;i++) {
@@ -314,12 +350,17 @@ var Segments=Fiber.extend(function() {
       geometry.faceVertexUvs[0]=[];
       var step=0;
       var vertices=0;
-      for(var i=0;i<this.getLength();i+=accuracy,step++) {
-        var position=this.getPosition(i);
+//      for(var i=0;i<this.getLength();i+=accuracy,step++) {
+      for(var i=0;i<distances.length;i+=1,step++) {
+        var distance=distances[i];
+        if(i >= 1) {
+          var previous_distance=distances[i-1];
+        }
+        var position=this.getPosition(distance);
         position[0]*=-1;
-        var rotation=this.getRotation(i);
-        var cant=this.getCant(i);
-        var elevation=this.getElevation(i);
+        var rotation=this.getRotation(distance);
+        var cant=this.getCant(distance);
+        var elevation=this.getElevation(distance);
 
         function transform(profile_position) {
           var tx=-profile_position[0];
@@ -370,18 +411,18 @@ var Segments=Fiber.extend(function() {
                                    previous_profile_offset+1,
                                             profile_offset+1);
             geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(s*uv_profile[j],  s*ds*(i-accuracy)),
-              new THREE.Vector2(s*uv_profile[j+1],s*ds*(i-accuracy)),
-              new THREE.Vector2(s*uv_profile[j+1],s*ds*(i)),
+              new THREE.Vector2(s*uv_profile[j],  s*ds*previous_distance),
+              new THREE.Vector2(s*uv_profile[j+1],s*ds*previous_distance),
+              new THREE.Vector2(s*uv_profile[j+1],s*ds*distance),
             ]);
             geometry.faces.push(f1);
             var f2=new THREE.Face3(         profile_offset+0,
                                    previous_profile_offset+0,
                                             profile_offset+1);
             geometry.faceVertexUvs[0].push([
-              new THREE.Vector2(s*uv_profile[j],  s*ds*(i)),
-              new THREE.Vector2(s*uv_profile[j],  s*ds*(i-accuracy)),
-              new THREE.Vector2(s*uv_profile[j+1],s*ds*(i)),
+              new THREE.Vector2(s*uv_profile[j],  s*ds*distance),
+              new THREE.Vector2(s*uv_profile[j],  s*ds*previous_distance),
+              new THREE.Vector2(s*uv_profile[j+1],s*ds*distance),
             ]);
             geometry.faces.push(f2);
           }

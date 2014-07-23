@@ -18,7 +18,9 @@ var Shader=Fiber.extend(function() {
       this.map             = options.map || null;
       this.bumpMap         = options.bumpMap || null;
       this.bumpScale       = options.bumpScale || null;
-      this.normalMap         = options.normalMap || null;
+      this.normalMap       = options.normalMap || null;
+
+      this.wireframe       = options.wireframe || false;
 
       this.uniforms        = {};
 
@@ -128,7 +130,6 @@ var Shader=Fiber.extend(function() {
           uniforms: this.uniforms,
           vertexShader: this.vertex,
           fragmentShader: this.fragment,
-          side: THREE.DoubleSide
         });
       } else if(this.type == "phong") {
         var map=null;
@@ -163,7 +164,7 @@ var Shader=Fiber.extend(function() {
           bumpMap: bumpMap,
           bumpScale: this.bumpScale,
           normalMap: normalMap,
-          side: THREE.DoubleSide
+          wireframe: this.wireframe,
         });
       }
     },

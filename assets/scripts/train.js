@@ -19,7 +19,7 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:0.5
+        force:0.1
       };
       
       this.audio={
@@ -95,7 +95,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 7000
+        force: 30000
       };
 
       this.audio={
@@ -126,7 +126,7 @@ var Car=Fiber.extend(function() {
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.7);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.4);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -135,8 +135,8 @@ var Car=Fiber.extend(function() {
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].distance=this.distance+this.bogies[i].offset;
-        this.bogies[i].track_angle=this.track.getRotationDifference(this.distance);
-        this.friction+=this.bogies[i].calculateFriction();
+        this.bogies[i].track_angle=this.track.getRotationDifference(this.distance+this.bogies[i].offset);
+        this.friction+=Math.abs(this.bogies[i].calculateFriction());
       }
 
       this.friction=clamp(0,this.friction,1);
@@ -152,8 +152,6 @@ var Car=Fiber.extend(function() {
         var factor=this.acceleration_factors[i];
         this.acceleration+=factor;
       }
-
-      this.acceleration/=this.weight;
 
       this.updateAudio();
 
@@ -232,7 +230,6 @@ var Train=Fiber.extend(function() {
 
       this.distance     = options.distance || 30;
       this.velocity     = options.velocity || 0;
-
       
       this.brake = {
         value: 0,
@@ -273,11 +270,23 @@ var Train=Fiber.extend(function() {
         this.cars[i].update();
       }
 
+      var weight=0;
+
       for(var i=0;i<this.cars.length;i++) {
+        weight+=this.cars[i].weight;
+      }
+
+      var v=this.velocity+0;
+      for(var i=0;i<this.cars.length;i++) {
+        var velocity_sign=1;
+        if(this.velocity < 0) velocity_sign=-1;
+      
         var friction=Math.abs(this.cars[i].friction);
-        var acceleration=this.cars[i].acceleration;
+        var acceleration=this.cars[i].acceleration/weight;
         this.velocity+=acceleration*game_delta();
-        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
+//        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
+        this.velocity-=crange(0,friction*game_delta(),1,0,velocity_sign);
+//        this.velocity*=scrange(0,friction*game_delta(),1,1,scrange(0.1,Math.abs(v),2,0,1))
       }
 
       this.distance+=this.velocity*game_delta();
