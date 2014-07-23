@@ -23,6 +23,7 @@ var Bogie=Fiber.extend(function() {
       };
       
       this.audio={
+        flange: audio_load("flange"),
         rails: audio_load("rails")
       };
 
@@ -31,7 +32,7 @@ var Bogie=Fiber.extend(function() {
       this.flange_offset_angle=Math.max(0,Math.abs(this.track_angle)-Math.atan2(this.gap,this.wheel_distance));
       if(this.articulated) this.flange_offset_angle*=0.03;
       this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,0.1*this.car.velocity);
-      this.friction_factors.rolling=0.0005*this.car.velocity;
+      this.friction_factors.rolling=0.0002*this.car.velocity;
       this.friction_factors.brake=trange(0,this.car.train.brake.value,this.car.train.brake.max,0,this.brake.force);
       var friction=0;
       for(var i in this.friction_factors) {
@@ -40,8 +41,10 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.03));
-      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),10,0.2,1.1));
+      this.audio.rails.setVolume(scrange(this,Math.abs(this.car.velocity),1,0,0.08));
+      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.1,2.0));
+
+      this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0,0.5)*crange(0,Math.abs(this.car.velocity),100,0,0.2));
 //      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
     },
     updateModel: function() {
@@ -150,6 +153,7 @@ var Car=Fiber.extend(function() {
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
       this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.44);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.1);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -202,8 +206,8 @@ var Car=Fiber.extend(function() {
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
       this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.1));
 
-      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.1,0.9));
-      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),20,0.1,1.2));
+      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.9));
+      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0));
 
     },
     updateModel: function() {
@@ -296,7 +300,7 @@ var Train=Fiber.extend(function() {
 
       var distance=this.distance+0;
       for(var i=0;i<this.cars.length;i++) {
-        this.cars[i].distance=distance;
+        this.cars[i].distance=distance-this.cars[i].length/2;
         this.cars[i].velocity=this.velocity;
         distance-=this.cars[i].length;
       }

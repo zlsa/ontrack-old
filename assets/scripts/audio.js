@@ -75,7 +75,7 @@ function audio_init_pre() {
   prop.audio.enabled=false;
   prop.audio.focused=true;
 
-  prop.audio.sources={};
+  prop.audio.sources=[];
   prop.audio.buffers={};
 
   try {
@@ -89,7 +89,7 @@ function audio_load(name) {
   var source=new AudioSource({
     name: name
   });
-  prop.audio.sources[name]=source;
+  prop.audio.sources.push(source);
   return source;
 }
 
@@ -111,13 +111,13 @@ function audio_load_buffer(name,format) {
 
 
 function audio_complete() {
-  for(var i in prop.audio.sources) {
+  for(var i=0;i<prop.audio.sources.length;i++) {
     prop.audio.sources[i].ready();
   }
 }
 
 function audio_update_post() {
-  for(var i in prop.audio.sources) {
+  for(var i=0;i<prop.audio.sources.length;i++) {
     prop.audio.sources[i].update();
   }
 }
