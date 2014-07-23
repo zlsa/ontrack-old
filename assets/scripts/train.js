@@ -187,10 +187,10 @@ var Car=Fiber.extend(function() {
     },
     updateAudio: function() {
       var step=5;
-      var motor_speed=trange(0,Math.abs(this.velocity%step),step,0.8,1.7);
+      var motor_speed=trange(0,Math.abs(this.velocity%step),step,0.8,2.7);
       if(Math.abs(this.velocity) < step) motor_speed=1.5;
       var mix=0.8;
-      motor_speed=clamp(0.7,motor_speed,1.5);
+      motor_speed=clamp(0.7,motor_speed,2.5);
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
@@ -288,10 +288,10 @@ var Train=Fiber.extend(function() {
     update: function() {
       if(!this.track) return;
       if(this.distance-this.getLength() < 0) {
-        this.distance=0.1+this.getLength();
+        this.distance=0.01+this.getLength();
         this.velocity=Math.abs(this.velocity)*0.05;
       } else if(this.distance >= this.track.getLength()) {
-        this.distance=this.track.getLength()-0.1;
+        this.distance=this.track.getLength()-0.01;
         this.velocity=Math.abs(this.velocity)*-0.05;
       }
 
@@ -329,7 +329,7 @@ var Train=Fiber.extend(function() {
 
       distance=this.distance+0;
       for(var i=0;i<this.cars.length;i++) {
-        this.cars[i].distance=distance;
+        this.cars[i].distance=distance-this.cars[i].length/2;
         this.cars[i].velocity=this.velocity;
         distance-=this.cars[i].length;
         this.cars[i].updateModel();
