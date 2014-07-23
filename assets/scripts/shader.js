@@ -134,28 +134,13 @@ var Shader=Fiber.extend(function() {
         });
       } else if(this.type == "phong") {
         var map=null;
-        if(this.map) {
-          map=new THREE.Texture(prop.shader.textures[this.map]);
-          map.wrapS = map.wrapT = THREE.RepeatWrapping;
-          map.repeat.set(2,2);
-          map.needsUpdate=true;
-        }
+        if(this.map) map=shader_make_texture(prop.shader.textures[this.map]);
 
         var bumpMap=null;
-        if(this.bumpMap) {
-          bumpMap=new THREE.Texture(prop.shader.textures[this.bumpMap]);
-          bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
-          bumpMap.repeat.set(2,2);
-          bumpMap.needsUpdate=true;
-        }
+        if(this.bumpMap) bumpMap=shader_make_texture(prop.shader.textures[this.bumpMap]);
 
         var normalMap=null;
-        if(this.normalMap) {
-          normalMap=new THREE.Texture(prop.shader.textures[this.normalMap]);
-          normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
-          normalMap.repeat.set(2,2);
-          normalMap.needsUpdate=true;
-        }
+        if(this.normalMap) normalMap=shader_make_texture(prop.shader.textures[this.normalMap]);
 
         this.material=new THREE.MeshPhongMaterial({
           color: this.color,
@@ -167,6 +152,7 @@ var Shader=Fiber.extend(function() {
           normalMap: normalMap,
           wireframe: this.wireframe,
           shading: THREE.SmoothShading,
+//          envMap: shader_make_texture(prop.shader.textures["skydome"],THREE.SphericalReflectionMapping)
         });
       }
     },
@@ -217,13 +203,24 @@ function shader_init() {
   shader_load("grass");
 //  shader_load("gravel");
   shader_get_texture("concrete-sleeper");
-//  shader_get_texture("concrete-sleeper-normal","assets/textures/concrete-sleeper-normal.jpg");
   shader_get_texture("concrete-sleeper-bump");
+  shader_get_texture("crossing-metal");
+  shader_get_texture("crossing-metal-bump");
   shader_add(new Shader({
     name: "gravel",
     type: "phong",
     map: "concrete-sleeper",
     bumpMap: "concrete-sleeper-bump",
+//    normalMap: "concrete-sleeper-normal",
+    bumpScale:0.02,
+    metal: false,
+    shininess: 5,
+  }));
+  shader_add(new Shader({
+    name: "crossing",
+    type: "phong",
+    map: "crossing-metal",
+    bumpMap: "crossing-metal-bump",
 //    normalMap: "concrete-sleeper-normal",
     bumpScale:0.02,
     metal: false,
@@ -279,9 +276,23 @@ function shader_get_texture(name,url) {
 }
 
 function shader_get(name) {
+  if(!(name in prop.shader.shaders)) {
+    shader_load(name);
+  }
   return prop.shader.shaders[name];
 }
 
 function shader_get_material(name) {
   return shader_get(name).material;
+}
+
+
+function shader_make_texture(image,mapping) {
+  var texture=new THREE.Texture(image);
+  texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
+  texture.repeat.set(2,2);
+  texture.needsUpdate=true;
+  texture.anisotropy=prop.draw.renderer.getMaxAnisotropy()
+  if(mapping) texture.mapping=mapping;
+  return texture;
 }

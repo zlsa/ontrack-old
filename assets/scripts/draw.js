@@ -185,6 +185,10 @@ function draw_unset_camera(mode) {
   if(mode == "cab" || mode == "front") {
     prop.train.current.cars[0].model.remove(prop.draw.camera);
   }
+  if(mode == "front") {
+    prop.draw.camera.fov=prop.draw.fov;
+    prop.draw.camera.updateProjectionMatrix();
+  }
 }
 
 function draw_set_camera(mode) {
@@ -195,8 +199,10 @@ function draw_set_camera(mode) {
     prop.draw.camera.position.set(0,0.5,10.1);
     prop.draw.camera.rotation.set(0,Math.PI,0);
   } else if(mode == "front") {
-    prop.draw.camera.position.set(0,2,30.1);
+    prop.draw.camera.position.set(0,2,50);
     prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
+    prop.draw.camera.fov=prop.draw.fov*0.4;
+    prop.draw.camera.updateProjectionMatrix();
   }
 }
 

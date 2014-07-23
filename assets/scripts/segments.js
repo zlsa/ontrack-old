@@ -203,16 +203,25 @@ var Segments=Fiber.extend(function() {
           if(typeof stretch == typeof []) {
             var start=stretch[0];
             var end=stretch[1]+start;
+            if(stretch[1] <= 0)
+              end=this.getLength()-stretch[1];
           } else if(typeof stretch == typeof {}) {
             var start=stretch.start;
             var end=stretch.end;
-            if(stretch.length) end=start+stretch.length;
+            if(end <= 0) {
+              end=this.getLength()-end;
+            } else if(stretch.length) {
+              end=start+stretch.length;
+              if(stretch.length <= 0)
+                end=this.getLength()-stretch.length;
+            }
           } else {
-            console.log("SHITSHIT!", stretch);
+            log("invalid stretch format",LOG_WARNING);
             continue;
           }
+          detail*=prop.segments.detail;
           geometry=this.buildProfileMesh(profile,this.getDistances(detail,start,end));
-          mesh=new THREE.Mesh(geometry,shader_get_material("gravel"));
+          mesh=new THREE.Mesh(geometry,shader_get_material(profile_options.shader));
           prop.draw.scene.add(mesh);
         }
       }
@@ -349,11 +358,10 @@ var Segments=Fiber.extend(function() {
         if(distances[i] > end) {
           break;
         }
-        if(d == []) d.push(start);
+        if(d.length == 0) d.push(start);
         d.push(distances[i]);
       }
-      if(d[d.length-1] != end)
-        d.push(end);
+      d.push(end);
       return d;
     },
     buildProfileMesh: function(profile,accuracy) {
@@ -490,6 +498,7 @@ var Segments=Fiber.extend(function() {
   };
 });
 
-function segments_init() {
-  
+function segments_init_pre() {
+  prop.segments={};
+  prop.segments.detail=0.8;
 }

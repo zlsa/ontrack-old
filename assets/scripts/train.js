@@ -19,7 +19,7 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:0.05
+        force:10000
       };
       
       this.audio={
@@ -31,8 +31,8 @@ var Bogie=Fiber.extend(function() {
     calculateFriction: function() {
       this.flange_offset_angle=Math.max(0,Math.abs(this.track_angle)-Math.atan2(this.gap,this.wheel_distance));
       if(this.articulated) this.flange_offset_angle*=0.03;
-      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,0.2*this.car.velocity);
-      this.friction_factors.rolling=0.0002*this.car.velocity;
+      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,500*this.car.velocity);
+      this.friction_factors.rolling=200*this.car.velocity;
       this.friction_factors.brake=trange(0,this.car.train.brake.value,this.car.train.brake.max,0,this.brake.force);
       var friction=0;
       for(var i in this.friction_factors) {
@@ -61,7 +61,7 @@ var Bogie=Fiber.extend(function() {
       this.model.rotation.set(pitch,rotation,cant);
     },
     createModel: function() {
-      var geometry=new THREE.BoxGeometry(1.6,1,3.0);
+      var geometry=new THREE.BoxGeometry(1.6,0.5,3.0);
       var color=0x444444;
       var material=new THREE.MeshPhongMaterial( { color: color } );
       this.model=new THREE.Mesh(geometry, material);
@@ -153,7 +153,6 @@ var Car=Fiber.extend(function() {
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
       this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.44);
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.1);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -165,8 +164,6 @@ var Car=Fiber.extend(function() {
         this.bogies[i].track_angle=this.track.getRotationDifference(this.distance+this.bogies[i].offset);
         this.friction+=Math.abs(this.bogies[i].calculateFriction());
       }
-
-      this.friction=clamp(0,this.friction,1);
 
       var pitch=this.track.getPitch(this.distance);
 
@@ -235,7 +232,7 @@ var Car=Fiber.extend(function() {
     },
     createModel: function() {
       var gauge=this.track.getGauge();
-      var geometry=new THREE.BoxGeometry(3,2,this.length-0.3);
+      var geometry=new THREE.BoxGeometry(3,2.5,this.length-0.3);
       var color=0xdddddd;
       var material=new THREE.MeshPhongMaterial( { color: color } );
       this.model=new THREE.Mesh(geometry, material);
@@ -309,7 +306,6 @@ var Train=Fiber.extend(function() {
       var weight=0;
 
       for(var i=0;i<this.cars.length;i++) {
-        var friction=Math.abs(this.cars[i].calculateFriction());
         weight+=this.cars[i].weight;
       }
 
@@ -320,7 +316,7 @@ var Train=Fiber.extend(function() {
         var acceleration=this.cars[i].acceleration/weight;
         this.velocity+=acceleration*game_delta();
 //        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
-        this.velocity-=crange(0,friction*game_delta(),1,0,velocity_sign);
+        this.velocity-=crange(0,friction*game_delta()/weight,1,0,velocity_sign);
 //        this.velocity*=scrange(0,friction*game_delta(),1,1,scrange(0.1,Math.abs(v),2,0,1))
       }
 
@@ -360,26 +356,6 @@ function train_init_post() {
 //    track: prop.railway.current.getRoot("master"),
     velocity:0,
   });
-  train.push(new Car({
-    length: 21.336,
-    weight: 30000
-  }));
-  train.push(new Car({
-    length: 21.336,
-    weight: 30000
-  }));
-  train.push(new Car({
-    length: 21.336,
-    weight: 30000
-  }));
-  train.push(new Car({
-    length: 21.336,
-    weight: 30000
-  }));
-  train.push(new Car({
-    length: 21.336,
-    weight: 30000
-  }));
   train.push(new Car({
     length: 21.336,
     weight: 30000
