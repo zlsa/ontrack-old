@@ -126,7 +126,7 @@ var Car=Fiber.extend(function() {
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.3);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.44);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -278,8 +278,7 @@ var Train=Fiber.extend(function() {
 
       var v=this.velocity+0;
       for(var i=0;i<this.cars.length;i++) {
-        var velocity_sign=1;
-        if(this.velocity < 0) velocity_sign=-1;
+        var velocity_sign=scrange(-1,this.velocity,1,-1,1);
       
         var friction=Math.abs(this.cars[i].friction);
         var acceleration=this.cars[i].acceleration/weight;
