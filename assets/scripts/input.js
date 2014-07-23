@@ -63,15 +63,19 @@ function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
     input_keydown(e.which);
-    if(e.which >= 112 && e.which <= prop.input.keysym.f10)
+    if(e.which >= prop.input.keysym.f1 && e.which <=  prop.input.keysym.f10) {
       e.preventDefault();
+      return false;
+    }
   });
 
   $(window).keyup(function(e) {
     prop.input.keys[e.which]=false;
     console.log(e.which);
-    if(e.which >= 112 && e.which <= 123)
+    if(e.which >= prop.input.keysym.f1 && e.which <=  prop.input.keysym.f10) {
       e.preventDefault();
+      return false;
+    }
   });
 
 }

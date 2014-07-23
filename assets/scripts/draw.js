@@ -181,7 +181,24 @@ function draw_resize() {
   prop.draw.camera.updateProjectionMatrix();
 }
 
-function
+function draw_unset_camera(mode) {
+  if(mode == "cab" || mode == "front") {
+    prop.train.current.cars[0].model.remove(prop.draw.camera);
+  }
+}
+
+function draw_set_camera(mode) {
+  if(mode == "cab" || mode == "front") {
+    prop.train.current.cars[0].model.add(prop.draw.camera);
+  }
+  if(mode == "cab") {
+    prop.draw.camera.position.set(0,0.5,10.1);
+    prop.draw.camera.rotation.set(0,Math.PI,0);
+  } else if(mode == "front") {
+    prop.draw.camera.position.set(0,2,30.1);
+    prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
+  }
+}
 
 function draw_update_post() {
 

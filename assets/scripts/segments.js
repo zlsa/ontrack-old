@@ -174,7 +174,7 @@ var Segments=Fiber.extend(function() {
         [[ g/2+7,    -5 ], null],
       ];
 
-      this.geometry=this.buildProfileMesh(profile,this.getDistances(0.5));
+      this.geometry=this.buildProfileMesh(profile,this.getDistances(2));
       this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
       prop.draw.scene.add(this.mesh);
 
@@ -207,7 +207,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances(0.5));
+      geometry=this.buildProfileMesh(profile,this.getDistances(2));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 

@@ -273,12 +273,13 @@ function update() {
     prop.time.frame.count=0;
     prop.time.frame.start=time();
   }
-  prop.time.frame.delta=Math.min(time()-prop.time.frame.last,1/20);
+  prop.time.frame.delta=time()-prop.time.frame.last;
   prop.time.frame.last=time();
-  if(UPDATE)
+  if(UPDATE) {
     requestAnimationFrame(update);
+  }
 }
 
 function delta() {
-  return Math.min(prop.time.frame.delta,0.5);
+  return prop.time.frame.delta;
 }
