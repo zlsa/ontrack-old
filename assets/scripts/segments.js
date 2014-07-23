@@ -257,7 +257,7 @@ var Segments=Fiber.extend(function() {
         }
       }
     },
-    getPosition: function(distance) {
+    getTruePosition: function(distance) {
       distance=clamp(0.01,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
       var position=clone(segment[0][2]); // start position of the segment
@@ -267,10 +267,30 @@ var Segments=Fiber.extend(function() {
       position[1]+=(cos(rotation)*pos[1])+(-sin(rotation)*pos[0]);
       return position;
     },
-    getRotation: function(distance) {
+    getPosition: function(distance,separation) {
+      distance=clamp(0.01,distance,this.getLength()-0.01);
+      if(!separation) separation=10;
+      var start=Math.max(0,distance-separation/2);
+      var middle=start+separation/2;
+      var end=start+separation;
+      var start_position=this.getTruePosition(start);
+      var end_position=this.getTruePosition(end);
+      var middle_position=average2d(this.getTruePosition(middle),average2d(start_position,end_position));
+      return middle_position;
+    },
+    getTrueRotation: function(distance) {
       distance=clamp(0.01,distance,this.getLength()-0.01);
       var segment=this.getSegment(distance);
       return Math.PI*2-(segment[0][4]+segment[1].getRotation(distance-segment[0][0]));
+    },
+    getRotation: function(distance,separation) {
+      distance=clamp(0.01,distance,this.getLength()-0.01);
+      if(!separation) separation=10;
+      var start=Math.max(0,distance-separation/2);
+      var end=start+separation;
+      var start=this.getPosition(start,separation);
+      var end=this.getPosition(end,separation);
+      return -Math.atan2(end[0]-start[0],end[1]-start[1]);
     },
     getRotationDifference: function(distance,difference) {
       distance=clamp(0.01,distance,this.getLength()-0.01);

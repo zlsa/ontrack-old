@@ -25,7 +25,7 @@
         {
           "type":"curve",
           "length":100,
-          "radius":-50,
+          "radius":-150,
           "rise":0,
           "cant":[-5,-0.5]
         },
@@ -38,7 +38,7 @@
         {
           "type":"curve",
           "length":100,
-          "radius":50,
+          "radius":150,
           "rise":0,
           "cant":[5,0.5]
         },

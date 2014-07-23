@@ -205,7 +205,7 @@ var Car=Fiber.extend(function() {
       var flange_offset_angle=average(this.bogies[0].flange_offset_angle,this.bogies[1].flange_offset_angle);
       var mix=0.4;
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
-      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.1));
+      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.3));
 
       this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.5));
       this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0));
@@ -407,6 +407,11 @@ function train_ready() {
   for(var i=0;i<prop.train.trains.length;i++) {
     prop.train.trains[i].ready();
   }
+}
+
+function train_load(name, url) {
+  if(!url) url="assets/trains/"+name+"/";
+
 }
 
 function train_add(train) {
