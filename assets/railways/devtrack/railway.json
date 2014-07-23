@@ -21,14 +21,14 @@
           "length":200,
           "radius":2000,
           "rise":0,
-          "cant":[0.0,-2]
+          "cant":[0.0,-5]
         },
         {
           "type":"curve",
           "arc":90,
           "radius":-40,
           "rise":0,
-          "cant":[-2,-0.5]
+          "cant":[-5,-0.5]
         },
         {
           "type":"curve",
@@ -97,15 +97,85 @@
     },
     "rail":[
       {
-        "position":[10,0],
-        "elevation":4.3,
-        "gauge":10.0,
-        "start":100,
+        "position":[0,0],
+        "elevation":10,
+        "gauge":1.435,
+        "start":10,
         "segments":[
           {
             "type":"curve",
-            "length":100,
+            "length":200,
             "radius":2000,
+            "rise":0,
+            "cant":[0.0,-5]
+          },
+          {
+            "type":"curve",
+            "arc":90,
+            "radius":-40,
+            "rise":0,
+            "cant":[-5,-0.5]
+          },
+          {
+            "type":"curve",
+            "length":700,
+            "radius":2000,
+            "rise":1,
+            "cant":[-0.5,-0.1]
+          },
+          {
+            "type":"curve",
+            "length":2000,
+            "radius":-2000,
+            "rise":0,
+            "cant":[-0.1,0.1]
+          },
+          {
+            "type":"curve",
+            "length":700,
+            "radius":500,
+            "rise":0,
+            "cant":[0.1,0.2]
+          },
+          {
+            "type":"curve",
+            "length":2000,
+            "radius":-2000,
+            "rise":0,
+            "cant":[0.2,0.4]
+          },
+          {
+            "type":"curve",
+            "arc":90,
+            "radius":80,
+            "rise":0,
+            "cant":[0.4,0.1]
+          },
+          {
+            "type":"curve",
+            "length":700,
+            "radius":2000,
+            "rise":0,
+            "cant":[0.1,-0.1]
+          },
+          {
+            "type":"curve",
+            "length":2000,
+            "radius":-2000,
+            "rise":0,
+            "cant":[-0.1,0.1]
+          },
+          {
+            "type":"curve",
+            "length":700,
+            "radius":500,
+            "rise":0,
+            "cant":[0.1,0.2]
+          },
+          {
+            "type":"curve",
+            "length":2000,
+            "radius":-2000,
             "rise":0,
             "cant":[0.2,-0.1]
           }

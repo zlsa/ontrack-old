@@ -31,7 +31,7 @@ var Bogie=Fiber.extend(function() {
     calculateFriction: function() {
       this.flange_offset_angle=Math.max(0,Math.abs(this.track_angle)-Math.atan2(this.gap,this.wheel_distance));
       if(this.articulated) this.flange_offset_angle*=0.03;
-      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,0.1*this.car.velocity);
+      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,0.2*this.car.velocity);
       this.friction_factors.rolling=0.0002*this.car.velocity;
       this.friction_factors.brake=trange(0,this.car.train.brake.value,this.car.train.brake.max,0,this.brake.force);
       var friction=0;
@@ -41,8 +41,8 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(this,Math.abs(this.car.velocity),1,0,0.1));
-      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.1,2.0));
+      this.audio.rails.setVolume(scrange(this,Math.abs(this.car.velocity),1,0,0.5));
+      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.2,2.0));
 
       this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0,0.3)*crange(0,Math.abs(this.car.velocity),100,0,0.1));
 //      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
@@ -195,7 +195,8 @@ var Car=Fiber.extend(function() {
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
       this.audio.motor.setVolume(scrange(0,Math.abs(this.velocity),3,0.2,0.4));
-      this.audio.motor.setRate(this.power.speed);
+      this.audio.motor.setRate(this.power.speed*crange(0,(this.train.distance-this.distance)%50,50,0.95,1.05));
+//      this.audio.motor.setDelay((this.distance*this.velocity)%5);
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateAudio();
@@ -207,7 +208,7 @@ var Car=Fiber.extend(function() {
       this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.1));
 
       this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.5));
-      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0));
+      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0)*crange(0,(this.train.distance-this.distance)%50,50,0.95,1.05));
 
     },
     updateModel: function() {

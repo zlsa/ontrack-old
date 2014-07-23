@@ -126,7 +126,7 @@ var Segments=Fiber.extend(function() {
       this.end       = options.end || 0;
       this.segments  = [];
 
-      if(this.type == "master" || this.type == "track") {
+      if(this.type == "master" || this.type == "rail") {
         this.gauge   = options.gauge || 1.435;
       }
 
@@ -174,7 +174,7 @@ var Segments=Fiber.extend(function() {
         [[ g/2+7,    -5 ], null],
       ];
 
-      this.geometry=this.buildProfileMesh(profile,this.getDistances(2));
+      this.geometry=this.buildProfileMesh(profile,this.getDistances(1));
       this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
       prop.draw.scene.add(this.mesh);
 
@@ -207,7 +207,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances(2));
+      geometry=this.buildProfileMesh(profile,this.getDistances(1));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -444,6 +444,8 @@ var Segments=Fiber.extend(function() {
       geometry.computeFaceNormals();
       geometry.computeVertexNormals();
       geometry.computeTangents();
+      geometry.computeBoundingSphere();
+      console.log(geometry.boundingSphere.radius);
       return geometry;
     }
   };

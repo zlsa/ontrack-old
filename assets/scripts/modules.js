@@ -108,6 +108,7 @@ function prop_init() {
   prop.complete=false;
   prop.log=LOG_DEBUG;
   prop.loaded=false;
+  if($("html").hasClass("editor")) prop.editor=true;
   if(RELEASE)
     prop.log=LOG_WARNING;
 }
