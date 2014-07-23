@@ -205,21 +205,55 @@ function draw_update_post() {
     var dist=prop.train.current.distance-10;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
-    var t=game_time();
-    var cp=new THREE.Vector3(-position[0]+sin(t)*20,elevation+10,position[1]+cos(t)*20);
+//    var t=game_time()*0.2;
+    var t=0;
+    var cp=new THREE.Vector3(-position[0]+sin(t)*20,elevation+5,position[1]+cos(t)*20);
     prop.draw.camera.position=cp;
     //  prop.draw.camera.lookAt(prop.draw.train.position);
     //  prop.draw.camera.lookAt(new THREE.Vector3(-100,0,0));
     dist=prop.train.current.distance-10;
     position=track.getPosition(dist);
     prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+    prop.draw.camera.fov=prop.draw.fov;
+  } else if(prop.ui.camera.mode == "front") {
+    var model=prop.train.current.cars[0].model;
+    if(model.getObjectByName("camera")) {
+      model.remove(prop.draw.camera);
+    }
+    var dist=prop.train.current.distance+120;
+    var position=track.getPosition(dist);
+    var elevation=track.getElevation(dist);
+    var t=game_time()*0.05;
+    var cp=new THREE.Vector3(-position[0]+sin(t)*10,elevation+5,position[1]);
+    prop.draw.camera.position=cp;
+    dist=prop.train.current.distance-10;
+    position=track.getPosition(dist);
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+    prop.draw.camera.fov=8;
+  } else if(prop.ui.camera.mode == "flyby") {
+    var model=prop.train.current.cars[0].model;
+    if(model.getObjectByName("camera")) {
+      model.remove(prop.draw.camera);
+    }
+    var dist=Math.round(prop.train.current.distance/400)*400;
+    var position=track.getPosition(dist);
+    var elevation=track.getElevation(dist);
+    var t=game_time()*0.05;
+    var cp=new THREE.Vector3(-position[0]+12,elevation+3,position[1]);
+    prop.draw.camera.position=cp;
+    dist=prop.train.current.distance-10;
+    position=track.getPosition(dist);
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+    prop.draw.camera.fov=prop.draw.fov;
   } else if(prop.ui.camera.mode == "cab") {
     var model=prop.train.current.cars[0].model;
     if(!model.getObjectByName("camera")) {
       model.add(prop.draw.camera);
       prop.draw.camera.lookAt(new THREE.Vector3(0,-0.5,10));
     }
+    prop.draw.camera.fov=prop.draw.fov;
   }
+  prop.draw.camera.updateProjectionMatrix();
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 

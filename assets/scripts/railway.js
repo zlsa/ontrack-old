@@ -43,7 +43,8 @@ var Railway=function(options) {
       this.data.about.name &&
       this.data.about.description &&
       this.data.environment &&
-      this.data.environment.skydome &&
+      this.data.environment.time &&
+      this.data.environment.clouds &&
       this.data.root &&
       this.data.root.master;
     for(var i in this.data.root) {
@@ -83,7 +84,7 @@ var Railway=function(options) {
     if(status == "ok") {
       this.data=data;
       this.verifyData();
-      shader_get_texture("skydome-"+this.data.environment.skydome);
+      shader_get_texture("skydome-"+this.data.environment.time+"-"+this.data.environment.clouds);
     }
   };
 

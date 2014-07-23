@@ -42,12 +42,8 @@ function controls_move(lever,direction) {
 
 function controls_update_pre() {
   if(prop.controls.emergency_brake) {
-
     prop.controls.power=0;
   }
-}
-
-function controls_update_post() {
   var direction="N";
   var style="neutral";
   if(prop.controls.direction > 0) {

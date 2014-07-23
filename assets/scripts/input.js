@@ -93,6 +93,10 @@ function input_keydown(keycode) {
     prop.ui.camera.mode="cab";
   } else if(keycode == prop.input.keysym.f2) {
     prop.ui.camera.mode="chase";
+  } else if(keycode == prop.input.keysym.f3) {
+    prop.ui.camera.mode="front";
+  } else if(keycode == prop.input.keysym.f4) {
+    prop.ui.camera.mode="flyby";
   }
 }
 

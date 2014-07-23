@@ -6,7 +6,8 @@
     "description":"A test railway for debugging"
   },
   "environment":{
-    "skydome":"noon-clear"
+    "time":"noon",
+    "clouds":"clear"
   },
   "root":{
     "master":{
