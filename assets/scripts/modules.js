@@ -95,6 +95,7 @@ function prop_init() {
   prop.version=VERSION;
   prop.version_string="v"+VERSION.join(".")+" "+VERSION_STATUS;
   prop.time={};
+  prop.time.time=new Date().getTime()*0.001;
   prop.time.start=time();
   prop.time.frames=0;
   prop.time.frame={};
@@ -160,7 +161,7 @@ function async_check() {
 // UTIL
 
 function time() {
-  return new Date().getTime()*0.001;
+  return prop.time.time;
 }
 
 function s(number,single,multiple) {
@@ -260,11 +261,10 @@ function update() {
     prop.complete=true;
     call_module("*","complete");
   }
+  prop.time.time=new Date().getTime()*0.001;
   call_module("*","update_pre");
   call_module("*","update");
   call_module("*","update_post");
-  if(UPDATE)
-    requestAnimationFrame(update);
   prop.time.frames+=1;
   prop.time.frame.count+=1;
   var elapsed=time()-prop.time.frame.start;
@@ -275,6 +275,8 @@ function update() {
   }
   prop.time.frame.delta=Math.min(time()-prop.time.frame.last,1/20);
   prop.time.frame.last=time();
+  if(UPDATE)
+    requestAnimationFrame(update);
 }
 
 function delta() {

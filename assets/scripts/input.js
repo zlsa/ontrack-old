@@ -90,15 +90,15 @@ function input_keydown(keycode) {
   } else if(keycode == prop.input.keysym.p) {
     prop.game.paused=!prop.game.paused;
   } else if(keycode == prop.input.keysym.f1) {
-    prop.ui.camera.mode="cab";
+    ui_set_camera("cab");
   } else if(keycode == prop.input.keysym.f2) {
-    prop.ui.camera.mode="chase";
+    ui_set_camera("chase");
   } else if(keycode == prop.input.keysym.f3) {
-    prop.ui.camera.mode="front";
+    ui_set_camera("front");
   } else if(keycode == prop.input.keysym.f4) {
-    prop.ui.camera.mode="front";
+    ui_set_camera("flyby");
   } else if(keycode == prop.input.keysym.f5) {
-    prop.ui.camera.mode="top";
+    ui_set_camera("top");
   }
 }
 
