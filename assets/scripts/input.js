@@ -63,7 +63,7 @@ function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
     input_keydown(e.which);
-    if(e.which >= 112 && e.which <= 115)
+    if(e.which >= 112 && e.which <= prop.input.keysym.f10)
       e.preventDefault();
   });
 
@@ -96,7 +96,9 @@ function input_keydown(keycode) {
   } else if(keycode == prop.input.keysym.f3) {
     prop.ui.camera.mode="front";
   } else if(keycode == prop.input.keysym.f4) {
-    prop.ui.camera.mode="flyby";
+    prop.ui.camera.mode="front";
+  } else if(keycode == prop.input.keysym.f5) {
+    prop.ui.camera.mode="top";
   }
 }
 

@@ -244,6 +244,20 @@ function draw_update_post() {
     position=track.getPosition(dist);
     prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
     prop.draw.camera.fov=prop.draw.fov;
+  } else if(prop.ui.camera.mode == "top") {
+    var model=prop.train.current.cars[0].model;
+    if(model.getObjectByName("camera")) {
+      model.remove(prop.draw.camera);
+    }
+    var dist=prop.train.current.distance-80;
+    var position=track.getPosition(dist);
+    var elevation=track.getElevation(dist);
+    var cp=new THREE.Vector3(-position[0],elevation+80,position[1]);
+    prop.draw.camera.position=cp;
+    dist=prop.train.current.distance-30;
+    position=track.getPosition(dist);
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+    prop.draw.camera.fov=prop.draw.fov;
   } else if(prop.ui.camera.mode == "cab") {
     var model=prop.train.current.cars[0].model;
     if(!model.getObjectByName("camera")) {
