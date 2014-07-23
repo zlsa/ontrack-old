@@ -204,7 +204,7 @@ function draw_update() {
     if(model.getObjectByName("camera")) {
       model.remove(prop.draw.camera);
     }
-    var dist=prop.train.current.distance-60;
+    var dist=prop.train.current.distance-100;
     var position=track.getPosition(dist);
     var elevation=track.getElevation(dist);
     var cp=new THREE.Vector3(-position[0],elevation+5,position[1]);

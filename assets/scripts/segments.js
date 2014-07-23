@@ -92,9 +92,9 @@ var Segment=Fiber.extend(function() {
         var number=1;
       }
       if(this.type == "curve") {
-        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,1)),300);
+        var number=clamp(2,(this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.2)),300);
       }
-      number=Math.max(this.rise*5,number);
+      number=Math.max(this.rise*3,number);
       number=Math.ceil(number);
       var distances=[];
       for(var i=0;i<number;i++) {
@@ -192,7 +192,7 @@ var Segments=Fiber.extend(function() {
         [[-g/2     , b   ], null],
         [[-g/2     ,-1   ], null],
 
-        [[h/2-rw   , 0   ], null],
+        [[h/2-rw   ,-1   ], null],
         [[h/2-rw   , b   ], null],
         [[h/2-rw   , rh-b], null],
         [[h/2-rw   , rh  ], null],
@@ -201,7 +201,7 @@ var Segments=Fiber.extend(function() {
         [[h/2      , rh  ], null],
         [[h/2      , rh-b], null],
         [[h/2      , b   ], null],
-        [[h/2      ,-1   ], null],
+        [[h/2      , 0   ], null],
 
       ];
 
@@ -398,7 +398,7 @@ var Segments=Fiber.extend(function() {
           vertices+=1;
         }
 //        if(step%2 == 1 && step > 2) {
-        if(step > 1) {
+        if(step >= 1) {
           for(var j=0;j<profile.length;j++) {
             var previous_profile_offset=vertices-profile.length*2+j;
             var profile_offset=vertices-profile.length+j;

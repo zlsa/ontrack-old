@@ -126,7 +126,7 @@ var Car=Fiber.extend(function() {
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.4);
+      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.3);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -325,10 +325,6 @@ function train_init_post() {
 //    track: prop.railway.current.getRoot("master"),
     velocity:0,
   });
-  train.push(new Car({
-    length: 20,
-    weight: 30000
-  }));
   train.push(new Car({
     length: 20,
     weight: 30000
