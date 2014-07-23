@@ -11,12 +11,12 @@ function game_init_pre() {
   prop.game.delta=0;
 
   $(window).blur(function() {
-//    prop.game.focused=false;
-//    update();
+    prop.game.focused=false;
+    update();
   });
 
   $(window).focus(function() {
-//    prop.game.focused=true;
+    prop.game.focused=true;
   });
 
 }
