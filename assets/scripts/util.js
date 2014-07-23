@@ -91,9 +91,8 @@ function within(n,c,r) {
 }
 
 function trange(il,i,ih,ol,oh) {
-    return(ol+(oh-ol)*(i-il)/(ih-il));
-    i=(i/(ih-il))-il;
-    return (i*(oh-ol))+ol;
+  if(il == ih) return ol;
+  return(ol+(oh-ol)*(i-il)/(ih-il));
 }
 
 function clamp(l,i,h) {
@@ -157,6 +156,10 @@ function average() {
   var n=0;
   for(var i=0;i<arguments.length;i++) n+=arguments[i];
   return n/arguments.length;
+}
+
+function average2d(x,y) {
+  return [average(x[0],y[0]),average(x[1],y[1])];
 }
 
 function drawSquare(x1, y1, x2, y2) { 

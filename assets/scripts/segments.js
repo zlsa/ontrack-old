@@ -72,7 +72,7 @@ var Segment=Fiber.extend(function() {
       return srange(0,distance,this.getLength(),this.cant[0],this.cant[1]);
     },
     getElevation: function(distance) {
-      return crange(0,distance,this.getLength(),0,this.rise*this.getLength()*0.01);
+      return srange(0,distance,this.getLength(),0,this.rise*this.getLength()*0.01);
     },
     // returns the end position for the segment relative to the start;
     // does not include the previous segments' rotation

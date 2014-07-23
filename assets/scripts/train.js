@@ -40,8 +40,8 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.07));
-      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),10,0.3,1.2));
+      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.01));
+      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),10,0.2,1.1));
 //      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
     }
   };
@@ -62,13 +62,13 @@ var Car=Fiber.extend(function() {
         new Bogie({
           car: this,
           articulated: true,
-          offset: -this.length+2,
+          offset: this.length+2,
           wheel_distance: 1,
         }),
         new Bogie({
           car: this,
           articulated: true,
-          offset: this.length+2,
+          offset: -this.length+2,
           wheel_distance: 1,
         })
       ];
@@ -120,7 +120,6 @@ var Car=Fiber.extend(function() {
       this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
       this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
       this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
-      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.2));
 
       this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
 
@@ -160,12 +159,15 @@ var Car=Fiber.extend(function() {
 
     },
     updateAudio: function() {
-      var motor_speed=trange(0,Math.abs(this.velocity),20,0.2,1.1);
+      var step=6;
+      var motor_speed=trange(0,Math.abs(this.velocity%step),step,1.3,1.7);
+      if(Math.abs(this.velocity) < step) motor_speed=1.5;
       var mix=0.8;
+      motor_speed=clamp(0.7,motor_speed,1.5);
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
-      this.audio.motor.setVolume(crange(0,Math.abs(this.train.power.value),this.train.power.max,0,0.2));
+      this.audio.motor.setVolume(scrange(0,Math.abs(this.velocity),3,0.2,0.4));
       this.audio.motor.setRate(this.power.speed);
 
       for(var i=0;i<this.bogies.length;i++) {
@@ -174,11 +176,11 @@ var Car=Fiber.extend(function() {
 
       var flange_offset_angle=average(this.bogies[0].flange_offset_angle,this.bogies[1].flange_offset_angle);
       var mix=0.4;
-      this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;;
-//      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.0,0,0.2));
+      this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
+      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.1));
 
-      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),40,0,0.5));
-      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),40,0.1,1.2));
+      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0,0.8));
+      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),20,0.1,1.2));
 
     },
     updateModel: function() {
@@ -188,11 +190,15 @@ var Car=Fiber.extend(function() {
 //        bogey_distances.push(this.distance+this.bogies[i].);
 //      }
       
-      var position= this.track.getPosition( this.distance);
-      var rotation= this.track.getRotation( this.distance);
-      var cant=     this.track.getCant(     this.distance);
-      var pitch=    this.track.getPitch(    this.distance);
-      var elevation=this.track.getElevation(this.distance);
+      var position= average2d(this.track.getPosition( this.bogies[0].distance),
+                              this.track.getPosition( this.bogies[1].distance));
+      var rotation= average(  this.track.getRotation( this.bogies[0].distance),
+                              this.track.getRotation( this.bogies[1].distance));
+      var elevation_front=this.track.getElevation(    this.bogies[0].distance);
+      var elevation_rear=this.track.getElevation(     this.bogies[1].distance);
+      var elevation=average(elevation_front,elevation_rear);
+      var pitch=-Math.atan2(elevation_front-elevation_rear,this.bogies[0].distance-this.bogies[1].distance);
+      var cant=this.tilt;
       
       this.model.position.x=-position[0]
       this.model.position.y=elevation+1.1;
@@ -310,6 +316,14 @@ function train_init_post() {
 //    track: prop.railway.current.getRoot("master"),
     velocity:0,
   });
+  train.push(new Car({
+    length: 20,
+    weight: 30000
+  }));
+  train.push(new Car({
+    length: 20,
+    weight: 30000
+  }));
   train.push(new Car({
     length: 20,
     weight: 30000
