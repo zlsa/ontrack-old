@@ -33,7 +33,7 @@ var Content=function(options) {
       .done(this.dl_done)
       .fail(this.dl_fail);
   };
-
+ 
   this.getAudio=function() {
     this.request=new XMLHttpRequest();
     this.request.open("GET",this.url,true);
@@ -51,7 +51,15 @@ var Content=function(options) {
     this.request.send();
   };
 
-  this.getImage=function() {
+  this.getThreeGeometry=function() {
+    this.loader=new THREE.JSONLoader();
+    var that=this;
+    this.loader.load(this.url,function(geometry, materials) {
+      that.dl_done([geometry,materials]);
+    });
+  };
+
+ this.getImage=function() {
     log("Getting image "+this.url+"...",LOG_DEBUG);
     this.data.src=this.url+"?time="+time();
     this.data.onload=function() {
@@ -127,6 +135,8 @@ var Content=function(options) {
         that.getImage();
       } else if(that.type == "audio") {
         that.getAudio();
+      } else if(that.type == "three") {
+        that.getThreeGeometry();
       } else {
         that.dl_fail({status:"unknown content type "+that.type},"type",false);
       }

@@ -77,6 +77,7 @@ var Car=Fiber.extend(function() {
       if(!options) options={};
       this.distance     = 0; // set by the train
       this.velocity     = 0; // set by the train
+      this.type         = options.type || null;
       this.train        = options.train || null;
       this.track        = options.track || null;
       this.length       = options.length || 0;
@@ -88,13 +89,13 @@ var Car=Fiber.extend(function() {
         new Bogie({
           car: this,
           articulated: true,
-          offset: this.length/2-2,
+          offset: this.length/2-2.5,
           wheel_distance: 1,
         }),
         new Bogie({
           car: this,
           articulated: true,
-          offset: -this.length/2+2,
+          offset: -this.length/2+2.5,
           wheel_distance: 1,
         })
       ];
@@ -218,7 +219,7 @@ var Car=Fiber.extend(function() {
       var pitch=-Math.atan2(elevation_front-elevation_rear,this.bogies[0].distance-this.bogies[1].distance);
       var cant=this.tilt;
       
-      this.model.position.set(-position[0],elevation+2.0,position[1]);
+      this.model.position.set(-position[0],elevation+0,position[1]);
 
       this.model.rotation.order="YXZ";
 
@@ -230,10 +231,12 @@ var Car=Fiber.extend(function() {
 
     },
     createModel: function() {
-      var gauge=this.track.getGauge();
-      var geometry=new THREE.BoxGeometry(3,2.5,this.length-0.3);
-      var color=0xdddddd;
-      var material=new THREE.MeshPhongMaterial( { color: color } );
+//      var geometry=new THREE.BoxGeometry(3,2.5,this.length-0.3);
+//      var color=0xdddddd;
+//      var material=new THREE.MeshPhongMaterial( { color: color } );
+      console.log("creating model");
+      var geometry=prop.train.geometry[this.type][0]
+      var material=new THREE.MeshFaceMaterial(prop.train.geometry[this.type][1]);
       this.model=new THREE.Mesh(geometry, material);
 
       prop.draw.scene.add(this.model);
@@ -336,6 +339,7 @@ var Train=Fiber.extend(function() {
       this.distance=this.track.start;
       for(var i=0;i<this.cars.length;i++) {
         this.cars[i].track=this.track;
+        
         this.cars[i].createModel();
       }
     }
@@ -348,6 +352,8 @@ function train_init_pre() {
   prop.train.trains=[];
 
   prop.train.current=null;
+
+  prop.train.geometry={};
 }
 
 function train_init_post() {
@@ -356,26 +362,59 @@ function train_init_post() {
     velocity:0,
   });
   train.push(new Car({
-    length: 21.336,
-    weight: 30000
+    length: 20.5,
+    weight: 30000,
+    type: "cab"
   }));
   train.push(new Car({
-    length: 21.336,
-    weight: 30000
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
   }));
   train.push(new Car({
-    length: 21.336,
-    weight: 30000
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
   }));
   train.push(new Car({
-    length: 21.336,
-    weight: 30000
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
   }));
   train.push(new Car({
-    length: 21.336,
-    weight: 30000
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
   }));
   train_set_current(train_add(train));
+
+  train_load_model("cab","assets/trains/intercity/cab/cab.js");
+  train_load_model("passenger","assets/trains/intercity/passenger/passenger.js");
 }
 
 function train_ready() {
@@ -387,6 +426,18 @@ function train_ready() {
 function train_load(name, url) {
   if(!url) url="assets/trains/"+name+"/";
 
+}
+
+function train_load_model(name, url) {
+  if(!url) url=prop.train.url_root+name+".js";
+  new Content({
+    type: "three",
+    url: url,
+    payload: name,
+    callback: function(status, data, payload) {
+      prop.train.geometry[payload]=data;
+    }
+  });
 }
 
 function train_add(train) {

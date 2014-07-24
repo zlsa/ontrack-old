@@ -102,7 +102,7 @@ function input_keydown(keycode) {
   } else if(keycode == prop.input.keysym.f4) {
     ui_set_camera("flyby");
   } else if(keycode == prop.input.keysym.f5) {
-    ui_set_camera("top");
+    ui_set_camera("side");
   }
 }
 
