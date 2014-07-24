@@ -95,7 +95,6 @@ function prop_init() {
   prop.version=VERSION;
   prop.version_string="v"+VERSION.join(".")+" "+VERSION_STATUS;
   prop.time={};
-  prop.time.time=new Date().getTime()*0.001;
   prop.time.start=time();
   prop.time.frames=0;
   prop.time.frame={};
@@ -262,7 +261,6 @@ function update() {
     prop.complete=true;
     call_module("*","complete");
   }
-  prop.time.time=new Date().getTime()*0.001;
   call_module("*","update_pre");
   call_module("*","update");
   call_module("*","update_post");

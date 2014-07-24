@@ -31,8 +31,8 @@ var Bogie=Fiber.extend(function() {
     calculateFriction: function() {
       this.flange_offset_angle=Math.max(0,Math.abs(this.track_angle)-Math.atan2(this.gap,this.wheel_distance));
       if(this.articulated) this.flange_offset_angle*=0.03;
-      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,500*this.car.velocity);
-      this.friction_factors.rolling=200*this.car.velocity;
+      this.friction_factors.flange=crange(0,this.flange_offset_angle,radians(2),0,500*this.car.getSpeed());
+      this.friction_factors.rolling=200*this.car.getSpeed();
       this.friction_factors.brake=trange(0,this.car.train.brake.value,this.car.train.brake.max,0,this.brake.force);
       var friction=0;
       for(var i in this.friction_factors) {
@@ -41,13 +41,13 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.02));
-      this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.2,2.0));
+      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.getSpeed()),1,0,0.02));
+      this.audio.rails.setRate(crange(0,Math.abs(this.car.getSpeed()),100,0.2,2.0));
 
       if(this.car.train.brake.value <= 0)
         this.audio.flange.setVolume(0);
       else
-        this.audio.flange.setVolume(crange(1,this.car.train.brake.value,this.car.train.brake.max,0.2,0.3)*crange(0,Math.abs(this.car.velocity),100,0,0.1));
+        this.audio.flange.setVolume(crange(1,this.car.train.brake.value,this.car.train.brake.max,0.2,0.3)*crange(0,Math.abs(this.car.getSpeed()),100,0,0.1));
     },
     updateModel: function() {
       var position=this.car.track.getPosition(  this.distance);
@@ -130,7 +130,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 300000
+        force: 9000
       };
 
       this.audio={
@@ -146,22 +146,25 @@ var Car=Fiber.extend(function() {
       this.train=train;
       this.track=train.track;
     },
+    getSpeed: function() {
+      return Math.abs(this.velocity*30);
+    },
     calculateFriction: function() {
       if(!this.train) return;
       if(!this.track) return;
 
       var time_seed=game_time()+this.distance*0.1;
       this.tilt_factors.cant=this.track.getCant(this.distance);
-      this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
-      this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
-      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
+      this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,this.getSpeed(),100,radians(0),radians(0.5));
+      this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,this.getSpeed(),100,radians(0),radians(0.3));
+      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,this.getSpeed(),100,radians(0),radians(0.1));
       this.tilt_factors.wobble*=2;
 
       if(Math.abs(this.tilt_factors.derail) > Math.PI/10) {
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail*(1+game_delta()),Math.PI/2);
       } else {
         var difference=this.track.getRotationDifference(this.distance)
-        this.tilt_factors.derail=trange(0,difference*this.velocity,200,0,Math.PI/2);
+        this.tilt_factors.derail=trange(0,difference*Math.abs(this.velocity),20,0,Math.PI/2);
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail,Math.PI/2);
       }
 
@@ -171,12 +174,12 @@ var Car=Fiber.extend(function() {
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
       if(this.number == 0) {
-        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*1.1*this.front_surface);
+        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.5*this.front_surface);
       } else {
-        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*0.05*this.front_surface);
+        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.05*this.front_surface);
       }
 
-      this.friction_factors.tilt=crange(10,Math.abs(this.velocity)*Math.abs(this.tilt_factors.derail),100,0,1000*this.weight);
+      this.friction_factors.tilt=crange(10,this.getSpeed()*Math.abs(this.tilt_factors.derail),100,0,200*this.weight);
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -202,17 +205,18 @@ var Car=Fiber.extend(function() {
 
       this.updateAudio();
 
+      this.friction/=3;
       return this.friction;
 
     },
     updateAudio: function() {
-      var motor_speed=crange(0,Math.abs(this.velocity),90,0.2,4.0);
+      var motor_speed=crange(0,this.getSpeed(),90,0.2,4.0);
       var mix=0.9;
       motor_speed*=1.5;
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
-      this.audio.motor.setVolume(scrange(0,Math.abs(this.velocity),3,0.2,0.2)*crange(0,Math.abs(this.train.power.value),this.train.power.max,0.5,1.0));
+      this.audio.motor.setVolume(scrange(0,this.getSpeed(),3,0.2,0.2)*crange(0,Math.abs(this.train.power.value),this.train.power.max,0.5,1.0));
       this.audio.motor.setRate(this.power.speed);
 //      this.audio.motor.setDelay((this.distance*this.velocity)%5);
 
@@ -223,10 +227,10 @@ var Car=Fiber.extend(function() {
       var flange_offset_angle=average(this.bogies[0].flange_offset_angle,this.bogies[1].flange_offset_angle);
       var mix=0.4;
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
-      this.audio.flange.setVolume(scrange(0,Math.abs(this.velocity)*this.flange_lowpass,0.1,0,0.3));
+      this.audio.flange.setVolume(scrange(0,this.getSpeed()*this.flange_lowpass,0.1,0,0.3));
 
-      this.audio.geartrain.setVolume(crange(0,Math.abs(this.velocity),10,0.2,0.5));
-      this.audio.geartrain.setRate(crange(0,Math.abs(this.velocity),100,0.1,5.0));
+      this.audio.geartrain.setVolume(crange(0,this.getSpeed(),10,0.2,0.5));
+      this.audio.geartrain.setRate(crange(0,this.getSpeed(),100,0.1,5.0));
 
     },
     updateModel: function() {
@@ -308,6 +312,9 @@ var Train=Fiber.extend(function() {
       }
       return length;
     },
+    getSpeed: function() {
+      return Math.abs(this.velocity*30);
+    },
     update: function() {
       if(!this.track) return;
       if(this.distance-this.getLength() < 0) {
@@ -339,15 +346,16 @@ var Train=Fiber.extend(function() {
         var velocity_sign=scrange(-1,this.velocity,1,-1,1);
         var friction=Math.abs(this.cars[i].calculateFriction());
         var acceleration=this.cars[i].acceleration/weight;
-        this.velocity+=acceleration*game_delta();
+        this.velocity+=acceleration*game_delta()*0.1;
 //        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
-        this.velocity-=crange(0,(friction*game_delta())/weight,1,0,velocity_sign);
+        this.velocity-=crange(0,(friction*game_delta())/weight,1,0,velocity_sign)*0.1;
 //        this.velocity*=scrange(0,friction*game_delta(),1,1,scrange(0.1,Math.abs(v),2,0,1))
       }
 
-      this.distance+=this.velocity*game_delta();
+//      this.distance+=this.velocity*game_delta();
+      this.distance+=this.velocity;
 
-      $("#speed").text(Math.abs(this.velocity*3.6).toFixed(2)+" kph")
+      $("#speed").text((this.getSpeed()*3.6).toFixed(2)+" kph")
 
       distance=this.distance+0;
       for(var i=0;i<this.cars.length;i++) {
