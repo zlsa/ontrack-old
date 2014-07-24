@@ -158,13 +158,13 @@ function draw_init() {
   prop.draw.spot.shadowCameraVisible=true;
   prop.draw.spot.onlyShadow=true;
   prop.draw.spot.castShadow=true;
-  prop.draw.spot.shadowMapWidth=2048;
-  prop.draw.spot.shadowMapHeight=2048;
+  prop.draw.spot.shadowMapWidth=4096;
+  prop.draw.spot.shadowMapHeight=4096;
   prop.draw.spot.shadowCameraNear=500;
   prop.draw.spot.shadowCameraFar=520;
   prop.draw.spot.shadowBias=-0.1;
   prop.draw.spot.shadowDarkness=0.65;
-  prop.draw.spot.shadowCameraFov=20;
+  prop.draw.spot.shadowCameraFov=30;
 
   prop.draw.scene.add(prop.draw.spot);
 
