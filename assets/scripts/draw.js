@@ -164,7 +164,7 @@ function draw_init() {
   prop.draw.spot.shadowCameraFar=520;
   prop.draw.spot.shadowBias=-0.1;
   prop.draw.spot.shadowDarkness=0.65;
-  prop.draw.spot.shadowCameraFov=12;
+  prop.draw.spot.shadowCameraFov=20;
 
   prop.draw.scene.add(prop.draw.spot);
 
