@@ -215,6 +215,7 @@ function shader_init() {
     bumpScale:0.02,
     metal: false,
     shininess: 5,
+//    wireframe: true,
   }));
   shader_add(new Shader({
     name: "crossing",

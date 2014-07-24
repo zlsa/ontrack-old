@@ -44,7 +44,7 @@ var Bogie=Fiber.extend(function() {
       this.audio.rails.setVolume(scrange(0,Math.abs(this.car.velocity),1,0,0.02));
       this.audio.rails.setRate(crange(0,Math.abs(this.car.velocity),100,0.2,2.0));
 
-      this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0,0.3)*crange(0,Math.abs(this.car.velocity),100,0,0.1));
+      this.audio.flange.setVolume(crange(0,this.car.train.brake.value,this.car.train.brake.max,0.2,0.3)*crange(0,Math.abs(this.car.velocity),100,0,0.1));
 //      this.audio.rails.setDelay((this.wheel_distance*this.car.velocity)%5);
     },
     updateModel: function() {
@@ -65,6 +65,9 @@ var Bogie=Fiber.extend(function() {
       var material=new THREE.MeshFaceMaterial(prop.train.geometry["bogie"][1]);
       this.model=new THREE.Mesh(geometry, material);
 
+      this.model.castShadow=true;
+      this.model.receiveShadow=true;
+
       prop.draw.scene.add(this.model);
     }
   };
@@ -82,6 +85,7 @@ var Car=Fiber.extend(function() {
       this.length       = options.length || 0;
       this.weight       = options.weight || 0;
 
+      this.front_surface= options.front_surface || 0;
       this.number       = options.number || 0;
 
       this.bogies       = [
@@ -121,7 +125,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 30000
+        force: 20000
       };
 
       this.audio={
@@ -146,14 +150,18 @@ var Car=Fiber.extend(function() {
       this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
       this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
       this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
-      this.tilt_factors.wobble*=10;
+      this.tilt_factors.wobble*=2;
 
       this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
 
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
-      this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,0.44);
+      if(this.number == 0) {
+        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*0.2*this.front_surface);
+      } else {
+        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*0.05*this.front_surface);
+      }
 
       this.friction=0;
       for(var i in this.friction_factors) {
@@ -168,7 +176,7 @@ var Car=Fiber.extend(function() {
 
       var pitch=this.track.getPitch(this.distance);
 
-      this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,3*this.weight);
+      this.acceleration_factors.gravity=-prop.environment.gravity*trange(0,pitch,Math.PI,0,5*this.weight);
       this.acceleration_factors.power=trange(-this.train.power.max,this.train.power.value,this.train.power.max,-this.power.force,this.power.force);
       this.acceleration=0;
 
@@ -237,6 +245,8 @@ var Car=Fiber.extend(function() {
       var geometry=prop.train.geometry[this.type][0]
       var material=new THREE.MeshFaceMaterial(prop.train.geometry[this.type][1]);
       this.model=new THREE.Mesh(geometry, material);
+      this.model.castShadow=true;
+      this.model.receiveShadow=true;
 
       prop.draw.scene.add(this.model);
 
@@ -276,6 +286,7 @@ var Train=Fiber.extend(function() {
     push: function(car) {
       this.cars.push(car);
       car.setTrain(this);
+      car.number=this.cars.length-1;
     },
     getLength: function() {
       var length=0;
@@ -287,11 +298,11 @@ var Train=Fiber.extend(function() {
     update: function() {
       if(!this.track) return;
       if(this.distance-this.getLength() < 0) {
-        this.distance=0.01+this.getLength();
-        this.velocity=Math.abs(this.velocity)*0.05;
+        this.distance=this.getLength();
+        this.velocity=0;
       } else if(this.distance >= this.track.getLength()) {
-        this.distance=this.track.getLength()-0.01;
-        this.velocity=Math.abs(this.velocity)*-0.05;
+        this.distance=this.track.getLength();
+        this.velocity=0;
       }
 
       this.brake.value=clamp(0,this.brake.value,this.brake.max);
@@ -363,11 +374,37 @@ function train_init_post() {
   train.push(new Car({
     length: 20.5,
     weight: 30000,
-    type: "cab"
+    front_surface: 5,
+    type: "cab",
   }));
   train.push(new Car({
     length: 20.5,
     weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
     type: "passenger"
   }));
   train.push(new Car({
@@ -378,36 +415,19 @@ function train_init_post() {
   train.push(new Car({
     length: 20.5,
     weight: 30000,
+    front_surface: 10,
     type: "passenger"
   }));
   train.push(new Car({
     length: 20.5,
     weight: 30000,
+    front_surface: 10,
     type: "passenger"
   }));
   train.push(new Car({
     length: 20.5,
     weight: 30000,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
+    front_surface: 10,
     type: "passenger"
   }));
   train_set_current(train_add(train));

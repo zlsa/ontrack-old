@@ -131,6 +131,8 @@ function draw_init() {
   });
 
   prop.draw.renderer.setSize(prop.draw.size.width, prop.draw.size.height);
+  prop.draw.renderer.shadowMapEnabled=true;
+  prop.draw.renderer.shadowMapSoft=true;
 
   $("body #view").append(prop.draw.renderer.domElement);
 
@@ -144,6 +146,25 @@ function draw_init() {
                               prop.environment.fog.far);
 
   prop.draw.scene.fog=prop.draw.fog;
+
+  prop.draw.ambient=new THREE.AmbientLight(0x111111);
+  prop.draw.scene.add(prop.draw.ambient);
+
+  prop.draw.hemi=new THREE.HemisphereLight(0x445577, 0x334455,0.5);
+  prop.draw.scene.add(prop.draw.hemi);
+
+  prop.draw.spot=new THREE.SpotLight(0xffffff);
+
+  prop.draw.spot.shadowCameraVisible=true;
+  prop.draw.spot.onlyShadow=true;
+  prop.draw.spot.castShadow=true;
+  prop.draw.spot.shadowMapWidth=4096;
+  prop.draw.spot.shadowMapHeight=4096;
+  prop.draw.spot.shadowCameraNear=1000;
+  prop.draw.spot.shadowCameraFar=1200;
+  prop.draw.spot.shadowCameraFov=20;
+
+  prop.draw.scene.add(prop.draw.spot);
 
 }
 
@@ -199,7 +220,8 @@ function draw_set_camera(mode) {
     prop.draw.camera.position.set(0,2.0,10.1);
     prop.draw.camera.rotation.set(0,Math.PI,0);
   } else if(mode == "chase") {
-    prop.draw.camera.position.set(30,10,30);
+    var t=game_time()*0.5;
+    prop.draw.camera.position.set(sin(t)*30,20,cos(t)*30);
     prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
   } else if(mode == "front") {
     prop.draw.camera.position.set(3,4,90);
@@ -216,7 +238,16 @@ function draw_set_camera(mode) {
 
 function draw_update_post() {
 
+  if(prop.ui.camera.mode == "chase") {
+    var t=game_time()*0.5;
+    prop.draw.camera.position.set(sin(t)*30,20,cos(t)*30);
+    prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
+  }
+
   var track=prop.railway.current.getRoot("master");
+
+  var cab=prop.train.current.cars[0].model.position;
+  prop.draw.spot.position.set(cab.x,1050,cab.z);
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 

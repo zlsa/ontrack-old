@@ -92,10 +92,10 @@ var Segment=Fiber.extend(function() {
         var number=1;
       }
       if(this.type == "curve") {
-        var number=this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.3);
+        var number=this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.4);
       }
       if(!multiply) multiply=1;
-      number=Math.max(this.rise*4,number);
+      number*=trange(0,Math.abs(this.rise),10,1,5);
       number*=multiply;
       number=clamp(2,number,300);
       number=Math.ceil(number);
@@ -222,6 +222,8 @@ var Segments=Fiber.extend(function() {
           detail*=prop.segments.detail;
           geometry=this.buildProfileMesh(profile,this.getDistances(detail,start,end));
           mesh=new THREE.Mesh(geometry,shader_get_material(profile_options.shader));
+          mesh.castShadow=true;
+          mesh.receiveShadow=true;
           prop.draw.scene.add(mesh);
         }
       }
