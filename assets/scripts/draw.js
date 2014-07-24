@@ -158,11 +158,13 @@ function draw_init() {
   prop.draw.spot.shadowCameraVisible=true;
   prop.draw.spot.onlyShadow=true;
   prop.draw.spot.castShadow=true;
-  prop.draw.spot.shadowMapWidth=4096;
-  prop.draw.spot.shadowMapHeight=4096;
-  prop.draw.spot.shadowCameraNear=1000;
-  prop.draw.spot.shadowCameraFar=1200;
-  prop.draw.spot.shadowCameraFov=20;
+  prop.draw.spot.shadowMapWidth=2048;
+  prop.draw.spot.shadowMapHeight=2048;
+  prop.draw.spot.shadowCameraNear=500;
+  prop.draw.spot.shadowCameraFar=520;
+  prop.draw.spot.shadowBias=-0.1;
+  prop.draw.spot.shadowDarkness=0.65;
+  prop.draw.spot.shadowCameraFov=12;
 
   prop.draw.scene.add(prop.draw.spot);
 
@@ -246,8 +248,9 @@ function draw_update_post() {
 
   var track=prop.railway.current.getRoot("master");
 
-  var cab=prop.train.current.cars[0].model.position;
-  prop.draw.spot.position.set(cab.x,1050,cab.z);
+  var cab=prop.train.current.cars[Math.ceil(prop.train.current.cars.length/2)].model.position;
+  prop.draw.spot.position.set(cab.x,cab.y+505,cab.z);
+  prop.draw.spot.target.position.set(cab.x,cab.y,cab.z);
 
   prop.draw.renderer.render(prop.draw.scene, prop.draw.camera);
 
