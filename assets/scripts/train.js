@@ -171,7 +171,7 @@ var Car=Fiber.extend(function() {
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
 
       if(this.number == 0) {
-        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*1.2*this.front_surface);
+        this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*1.1*this.front_surface);
       } else {
         this.friction_factors.aero=trange(0,Math.abs(this.velocity),100,0,this.weight*0.05*this.front_surface);
       }

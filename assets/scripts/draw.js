@@ -207,6 +207,8 @@ function draw_resize() {
 function draw_unset_camera(mode) {
   if(mode == "cab" || mode == "front" || mode == "side") {
     prop.train.current.cars[0].model.remove(prop.draw.camera);
+  } else if(mode == "flyby") {
+    prop.train.current.cars[0].bogies[0].model.remove(prop.draw.camera);
   }
   if(mode == "front" || mode == "side") {
     prop.draw.camera.fov=prop.draw.fov;
@@ -217,6 +219,8 @@ function draw_unset_camera(mode) {
 function draw_set_camera(mode) {
   if(mode == "cab" || mode == "front" || mode == "side") {
     prop.train.current.cars[0].model.add(prop.draw.camera);
+  } else if(mode == "flyby") {
+    prop.train.current.cars[0].bogies[0].model.add(prop.draw.camera);
   }
   if(mode == "cab") {
     prop.draw.camera.position.set(0,2.0,10.1);
@@ -232,6 +236,9 @@ function draw_set_camera(mode) {
     prop.draw.camera.lookAt(new THREE.Vector3(0,1,-20));
     prop.draw.camera.fov=prop.draw.fov*0.4;
     prop.draw.camera.updateProjectionMatrix();
+  } else if(mode == "flyby") {
+    prop.draw.camera.position.set(4,1,7);
+    prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
   }
 }
 
