@@ -58,7 +58,7 @@ var Bogie=Fiber.extend(function() {
       
       var tilt=scrange(Math.PI/10,Math.abs(this.car.tilt),Math.PI/2,0,1)*this.car.tilt;
 
-      this.model.position.set(-position[0],elevation+0.25+(sin(Math.abs(tilt))*2.0),position[1]);
+      this.model.position.set(-position[0],elevation+0.4+(sin(Math.abs(tilt))*2.0),position[1]);
 
       this.model.rotation.order="YXZ";
 
@@ -130,7 +130,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 30000
+        force: 300000
       };
 
       this.audio={
@@ -161,7 +161,7 @@ var Car=Fiber.extend(function() {
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail*(1+game_delta()),Math.PI/2);
       } else {
         var difference=this.track.getRotationDifference(this.distance)
-        this.tilt_factors.derail=trange(0,difference*this.velocity,1000,0,Math.PI/2);
+        this.tilt_factors.derail=trange(0,difference*this.velocity,200,0,Math.PI/2);
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail,Math.PI/2);
       }
 
@@ -341,7 +341,7 @@ var Train=Fiber.extend(function() {
         var acceleration=this.cars[i].acceleration/weight;
         this.velocity+=acceleration*game_delta();
 //        this.velocity*=trange(0,friction*game_delta()*scrange(0,Math.abs(this.velocity),10,5,1),1,1.0,crange(0,Math.abs(this.velocity),10,0.93,0.98));
-        this.velocity-=crange(0,friction*game_delta()/weight,1,0,velocity_sign);
+        this.velocity-=crange(0,(friction*game_delta())/weight,1,0,velocity_sign);
 //        this.velocity*=scrange(0,friction*game_delta(),1,1,scrange(0.1,Math.abs(v),2,0,1))
       }
 
@@ -362,7 +362,6 @@ var Train=Fiber.extend(function() {
       this.distance=this.track.start+this.getLength();
       for(var i=0;i<this.cars.length;i++) {
         this.cars[i].track=this.track;
-        
         this.cars[i].createModel();
       }
     }

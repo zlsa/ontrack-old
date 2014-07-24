@@ -162,7 +162,7 @@ function async_check() {
 // UTIL
 
 function time() {
-  return prop.time.time;
+  return new Date().getTime()*0.001;
 }
 
 function s(number,single,multiple) {
