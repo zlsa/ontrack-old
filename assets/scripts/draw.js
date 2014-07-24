@@ -150,7 +150,7 @@ function draw_init() {
   prop.draw.ambient=new THREE.AmbientLight(0x111111);
   prop.draw.scene.add(prop.draw.ambient);
 
-  prop.draw.hemi=new THREE.HemisphereLight(0x445577, 0x334455,0.5);
+  prop.draw.hemi=new THREE.HemisphereLight(0x445577, 0x112233, 0.2);
   prop.draw.scene.add(prop.draw.hemi);
 
   prop.draw.spot=new THREE.SpotLight(0xffffff);
