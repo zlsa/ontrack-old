@@ -35,7 +35,35 @@
           "length":4000,
           "radius":4000,
           "rise":0,
-          "cant":[-0.3,2]
+          "cant":[-0.3,0]
+        },
+        {
+          "type":"curve",
+          "length":1000,
+          "radius":-2000,
+          "rise":0,
+          "cant":[2,1]
+        },
+        {
+          "type":"curve",
+          "length":200,
+          "radius":200,
+          "rise":0,
+          "cant":[1,0]
+        },
+        {
+          "type":"curve",
+          "length":500,
+          "radius":-200,
+          "rise":0,
+          "cant":0
+        },
+        {
+          "type":"curve",
+          "length":4000,
+          "radius":4000,
+          "rise":0,
+          "cant":[-0.3,0]
         },
         {
           "type":"curve",

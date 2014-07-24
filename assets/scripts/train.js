@@ -54,16 +54,15 @@ var Bogie=Fiber.extend(function() {
       var cant=this.car.track.getCant(          this.distance);
       var pitch=this.car.track.getPitch(        this.distance);
       
-      this.model.position.set(-position[0],elevation+0.5,position[1]);
+      this.model.position.set(-position[0],elevation+0.25,position[1]);
 
       this.model.rotation.order="YXZ";
 
       this.model.rotation.set(pitch,rotation,cant);
     },
     createModel: function() {
-      var geometry=new THREE.BoxGeometry(1.6,0.5,3.0);
-      var color=0x444444;
-      var material=new THREE.MeshPhongMaterial( { color: color } );
+      var geometry=prop.train.geometry["bogie"][0]
+      var material=new THREE.MeshFaceMaterial(prop.train.geometry["bogie"][1]);
       this.model=new THREE.Mesh(geometry, material);
 
       prop.draw.scene.add(this.model);
@@ -89,13 +88,13 @@ var Car=Fiber.extend(function() {
         new Bogie({
           car: this,
           articulated: true,
-          offset: this.length/2-2.5,
+          offset: this.length/2-2.25,
           wheel_distance: 1,
         }),
         new Bogie({
           car: this,
           articulated: true,
-          offset: -this.length/2+2.5,
+          offset: -this.length/2+2.25,
           wheel_distance: 1,
         })
       ];
@@ -142,11 +141,12 @@ var Car=Fiber.extend(function() {
       if(!this.train) return;
       if(!this.track) return;
 
-      var time_seed=game_time()+this.distance;
+      var time_seed=game_time()+this.distance*0.1;
       this.tilt_factors.cant=this.track.getCant(this.distance);
       this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.5));
       this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.3));
       this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,Math.abs(this.velocity),100,radians(0),radians(0.1));
+      this.tilt_factors.wobble*=10;
 
       this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
 
@@ -234,7 +234,6 @@ var Car=Fiber.extend(function() {
 //      var geometry=new THREE.BoxGeometry(3,2.5,this.length-0.3);
 //      var color=0xdddddd;
 //      var material=new THREE.MeshPhongMaterial( { color: color } );
-      console.log("creating model");
       var geometry=prop.train.geometry[this.type][0]
       var material=new THREE.MeshFaceMaterial(prop.train.geometry[this.type][1]);
       this.model=new THREE.Mesh(geometry, material);
@@ -415,6 +414,7 @@ function train_init_post() {
 
   train_load_model("cab","assets/trains/intercity/cab/cab.js");
   train_load_model("passenger","assets/trains/intercity/passenger/passenger.js");
+  train_load_model("bogie","assets/trains/intercity/bogie/bogie.js");
 }
 
 function train_ready() {
