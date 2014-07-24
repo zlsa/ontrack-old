@@ -172,6 +172,7 @@ var Car=Fiber.extend(function() {
 
       this.tilt=0;
       for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
+      this.tilt*=1;
 
       if(this.number == 0) {
         this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.5*this.front_surface);
@@ -234,10 +235,12 @@ var Car=Fiber.extend(function() {
 
     },
     updateModel: function() {
-      var position= average2d(this.track.getPosition( this.bogies[0].distance),
-                              this.track.getPosition( this.bogies[1].distance));
-      var rotation= average(  this.track.getRotation( this.bogies[0].distance),
-                              this.track.getRotation( this.bogies[1].distance));
+      var bogie_position=[this.track.getPosition(this.bogies[0].distance),
+                          this.track.getPosition(this.bogies[1].distance)];
+      var position= average2d(bogie_position[0],bogie_position[1]);
+//      var rotation= average(  this.track.getRotation( this.bogies[0].distance),
+//                              this.track.getRotation( this.bogies[1].distance));
+      var rotation=Math.atan2(bogie_position[1][0]-bogie_position[0][0],-(bogie_position[1][1]-bogie_position[0][1]));
       var elevation_front=this.track.getElevation(    this.bogies[0].distance);
       var elevation_rear=this.track.getElevation(     this.bogies[1].distance);
       var elevation=average(elevation_front,elevation_rear);
