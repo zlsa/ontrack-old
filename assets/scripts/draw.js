@@ -137,7 +137,7 @@ function draw_init() {
   $("body #view").append(prop.draw.renderer.domElement);
 
   // SUN
-  prop.draw.sun=new THREE.DirectionalLight(0xffeedd, 1.1);
+  prop.draw.sun=new THREE.DirectionalLight(0xffe8cf, 0.9);
   prop.draw.sun.position=prop.environment.sun_direction;
   prop.draw.scene.add(prop.draw.sun);
   
@@ -147,10 +147,10 @@ function draw_init() {
 
   prop.draw.scene.fog=prop.draw.fog;
 
-  prop.draw.ambient=new THREE.AmbientLight(0x111111);
+  prop.draw.ambient=new THREE.AmbientLight(0x222222);
   prop.draw.scene.add(prop.draw.ambient);
 
-  prop.draw.hemi=new THREE.HemisphereLight(0x445577, 0x112233, 0.2);
+  prop.draw.hemi=new THREE.HemisphereLight(0x556688, 0x223a55, 0.2);
   prop.draw.scene.add(prop.draw.hemi);
 
   prop.draw.spot=new THREE.SpotLight(0xffffff);
@@ -158,11 +158,11 @@ function draw_init() {
   prop.draw.spot.shadowCameraVisible=true;
   prop.draw.spot.onlyShadow=true;
   prop.draw.spot.castShadow=true;
-  prop.draw.spot.shadowMapWidth=2048;
-  prop.draw.spot.shadowMapHeight=2048;
+  prop.draw.spot.shadowMapWidth=4096;
+  prop.draw.spot.shadowMapHeight=4096;
   prop.draw.spot.shadowCameraNear=500;
   prop.draw.spot.shadowCameraFar=520;
-  prop.draw.spot.shadowBias=-0.1;
+  prop.draw.spot.shadowBias=0.0001;
   prop.draw.spot.shadowDarkness=0.65;
   prop.draw.spot.shadowCameraFov=30;
 
@@ -232,11 +232,11 @@ function draw_set_camera(mode) {
     prop.draw.camera.fov=prop.draw.fov*0.2;
     prop.draw.camera.updateProjectionMatrix();
   } else if(mode == "side") {
-    prop.draw.camera.position.set(10,0,-10);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,-1,-20));
+    prop.draw.camera.position.set(20,0,-10);
+    prop.draw.camera.lookAt(new THREE.Vector3(0,-1,-10));
   } else if(mode == "flyby") {
-    prop.draw.camera.position.set(4,1,7);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,0,0));
+    prop.draw.camera.position.set(0,0.4,7);
+    prop.draw.camera.lookAt(new THREE.Vector3(0,0.4,0));
   }
 }
 

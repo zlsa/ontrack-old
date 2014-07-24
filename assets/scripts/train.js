@@ -56,13 +56,13 @@ var Bogie=Fiber.extend(function() {
       var cant=this.car.track.getCant(          this.distance);
       var pitch=this.car.track.getPitch(        this.distance);
       
-      var tilt=scrange(Math.PI/10,Math.abs(this.car.tilt),Math.PI/2,0,1)*this.car.tilt;
+//      var tilt=scrange(Math.PI/100,Math.abs(this.car.tilt),Math.PI/2,0,1)*this.car.tilt;
 
-      this.model.position.set(-position[0],elevation+0.4+(sin(Math.abs(tilt))*2.0),position[1]);
+      this.model.position.set(-position[0],elevation+0.4,position[1]);
 
       this.model.rotation.order="YXZ";
 
-      this.model.rotation.set(pitch,rotation,cant+tilt);
+      this.model.rotation.set(pitch,rotation,cant);
     },
     createModel: function() {
       var geometry=prop.train.geometry["bogie"][0]
@@ -96,13 +96,13 @@ var Car=Fiber.extend(function() {
         new Bogie({
           car: this,
           articulated: true,
-          offset: this.length/2-2.25,
+          offset: this.length/2-1.5,
           wheel_distance: 1,
         }),
         new Bogie({
           car: this,
           articulated: true,
-          offset: -this.length/2+2.25,
+          offset: -this.length/2+1.5,
           wheel_distance: 1,
         })
       ];
@@ -130,7 +130,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 9000
+        force: 5000
       };
 
       this.audio={
@@ -160,24 +160,25 @@ var Car=Fiber.extend(function() {
       this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,this.getSpeed(),100,radians(0),radians(0.1));
       this.tilt_factors.wobble*=2;
 
-      if(Math.abs(this.tilt_factors.derail) > Math.PI/10) {
-        this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail*(1+game_delta()),Math.PI/2);
+      if(Math.abs(this.tilt-this.tilt_factors.cant) > Math.PI/50 && false) {
+        this.tilt=clamp(-Math.PI/2,this.tilt*(1+game_delta()),Math.PI/2);
+        this.friction_factors.derail=scrange(Math.PI/50,Math.abs(this.tilt),Math.PI/2,0,100*this.weight);
       } else {
-        var difference=this.track.getRotationDifference(this.distance)
-        this.tilt_factors.derail=trange(0,difference*Math.abs(this.velocity),20,0,Math.PI/2);
+        var difference=this.track.getRotationDifference(this.distance);
+        this.tilt_factors.derail=trange(0,difference*this.getSpeed(),1000,0,Math.PI/2);
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail,Math.PI/2);
+
+        this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
+
+        this.tilt=0;
+        for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
+        this.tilt*=2;
       }
 
-      this.tilt_factors.wind=sin(time_seed*0.3)*radians(0.2)*sin(time_seed*1.3)*radians(0.1);
-
-      this.tilt=0;
-      for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
-      this.tilt*=1;
-
       if(this.number == 0) {
-        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.5*this.front_surface);
+        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.2*this.front_surface);
       } else {
-        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.05*this.front_surface);
+        this.friction_factors.aero=trange(0,this.getSpeed(),100,0,this.weight*0.02*this.front_surface);
       }
 
       this.friction_factors.tilt=crange(10,this.getSpeed()*Math.abs(this.tilt_factors.derail),100,0,200*this.weight);
@@ -247,7 +248,7 @@ var Car=Fiber.extend(function() {
       var pitch=-Math.atan2(elevation_front-elevation_rear,this.bogies[0].distance-this.bogies[1].distance);
       var cant=this.tilt;
       
-      this.model.position.set(-position[0],elevation+(sin(Math.abs(this.tilt))*1.5),position[1]);
+      this.model.position.set(-position[0],elevation+Math.abs(sin(Math.abs(this.tilt))*scrange(Math.PI/4,Math.abs(this.tilt),Math.PI/2,0,0.5))+1.05,position[1]);
 
       this.model.rotation.order="YXZ";
 
@@ -356,7 +357,8 @@ var Train=Fiber.extend(function() {
       }
 
 //      this.distance+=this.velocity*game_delta();
-      this.distance+=this.velocity;
+      if(!game_paused())
+         this.distance+=this.velocity;
 
       $("#speed").text((this.getSpeed()*3.6).toFixed(2)+" kph")
 
@@ -394,13 +396,25 @@ function train_init_post() {
     velocity:0,
   });
   train.push(new Car({
-    length: 20.5,
+    length: 20,
     weight: 30000,
     front_surface: 5,
     type: "cab",
   }));
   train.push(new Car({
-    length: 20.5,
+    length: 20,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20,
     weight: 30000,
     front_surface: 10,
     type: "passenger"
@@ -417,41 +431,29 @@ function train_init_post() {
     front_surface: 10,
     type: "passenger"
   }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   front_surface: 10,
-  //   type: "passenger"
-  // }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   front_surface: 10,
-  //   type: "passenger"
-  // }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   type: "passenger"
-  // }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   front_surface: 10,
-  //   type: "passenger"
-  // }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   front_surface: 10,
-  //   type: "passenger"
-  // }));
-  // train.push(new Car({
-  //   length: 20.5,
-  //   weight: 30000,
-  //   front_surface: 10,
-  //   type: "passenger"
-  // }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
+  train.push(new Car({
+    length: 20.5,
+    weight: 30000,
+    front_surface: 10,
+    type: "passenger"
+  }));
   train_set_current(train_add(train));
 
   train_load_model("cab","assets/trains/intercity/cab/cab.js");
