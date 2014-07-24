@@ -166,7 +166,7 @@ function draw_init() {
   prop.draw.spot.shadowDarkness=0.65;
   prop.draw.spot.shadowCameraFov=30;
 
-  prop.draw.scene.add(prop.draw.spot);
+//  prop.draw.scene.add(prop.draw.spot);
 
 }
 
@@ -185,7 +185,7 @@ function draw_ready() {
   var ground_geometry=new THREE.PlaneGeometry(60000, 60000, 3, 3);
   prop.draw.ground=new THREE.Mesh(ground_geometry, shader_get_material("grass"));
   prop.draw.ground.rotation.set(-Math.PI/2,0,0);
-  prop.draw.scene.add(prop.draw.ground);
+  //  prop.draw.scene.add(prop.draw.ground);
 
 }
 
@@ -205,7 +205,7 @@ function draw_resize() {
 }
 
 function draw_unset_camera(mode) {
-  if(mode == "cab" || mode == "front" || mode == "chase" || mode == "side") {
+  if(mode == "cab" || mode == "front" || mode == "side") {
     prop.train.current.cars[0].model.remove(prop.draw.camera);
   }
   if(mode == "front" || mode == "side") {
@@ -215,23 +215,20 @@ function draw_unset_camera(mode) {
 }
 
 function draw_set_camera(mode) {
-  if(mode == "cab" || mode == "front" || mode == "chase" || mode == "side") {
+  if(mode == "cab" || mode == "front" || mode == "side") {
     prop.train.current.cars[0].model.add(prop.draw.camera);
   }
   if(mode == "cab") {
     prop.draw.camera.position.set(0,2.0,10.1);
     prop.draw.camera.rotation.set(0,Math.PI,0);
   } else if(mode == "chase") {
-    var t=game_time()*0.5;
-    prop.draw.camera.position.set(sin(t)*30,20,cos(t)*30);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
   } else if(mode == "front") {
     prop.draw.camera.position.set(3,4,90);
     prop.draw.camera.lookAt(new THREE.Vector3(0,3,0));
     prop.draw.camera.fov=prop.draw.fov*0.2;
     prop.draw.camera.updateProjectionMatrix();
   } else if(mode == "side") {
-    prop.draw.camera.position.set(50,5,-20);
+    prop.draw.camera.position.set(50,5,-30);
     prop.draw.camera.lookAt(new THREE.Vector3(0,1,-20));
     prop.draw.camera.fov=prop.draw.fov*0.4;
     prop.draw.camera.updateProjectionMatrix();
@@ -241,12 +238,18 @@ function draw_set_camera(mode) {
 function draw_update_post() {
 
   if(prop.ui.camera.mode == "chase") {
-    var t=game_time()*0.5;
-    prop.draw.camera.position.set(sin(t)*30,20,cos(t)*30);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,1,0));
-  }
+    var distance=Math.max(0.01,prop.train.current.distance-prop.train.current.getLength()-20);
+    var position=prop.train.current.track.getPosition(distance);
+    var elevation=prop.train.current.track.getElevation(distance);
+    var t=game_time()*0.05;
+    var d=10;
+    prop.draw.camera.position.set(-position[0]+sin(t)*d,elevation+8,position[1]+cos(t)*d);
 
-  var track=prop.railway.current.getRoot("master");
+    distance=prop.train.current.distance-prop.train.current.getLength()/2;
+    position=prop.train.current.track.getPosition(distance);
+    elevation=prop.train.current.track.getElevation(distance);
+    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+  }
 
   var cab=prop.train.current.cars[Math.ceil(prop.train.current.cars.length/2)].model.position;
   prop.draw.spot.position.set(cab.x,cab.y+505,cab.z);

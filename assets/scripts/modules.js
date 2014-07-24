@@ -29,7 +29,7 @@ var MODULES=[
 ];
 
 // saved as prop.version and prop.version_string
-var VERSION=[0,2];
+var VERSION=[0,3];
 var VERSION_STATUS="alpha";
 
 // are you using a main loop? (you must call update() afterward disable/reenable)

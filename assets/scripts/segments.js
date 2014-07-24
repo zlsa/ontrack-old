@@ -502,5 +502,5 @@ var Segments=Fiber.extend(function() {
 
 function segments_init_pre() {
   prop.segments={};
-  prop.segments.detail=0.8;
+  prop.segments.detail=0.5;
 }
