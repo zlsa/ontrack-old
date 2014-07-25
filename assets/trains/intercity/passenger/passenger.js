@@ -47,7 +47,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -83,7 +83,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -119,7 +119,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -155,7 +155,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -191,7 +191,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -227,7 +227,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -245,7 +245,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -281,7 +281,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -317,7 +317,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -353,7 +353,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -389,7 +389,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -425,7 +425,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},
@@ -461,7 +461,7 @@
 		"depthWrite" : true,
 		"shading" : "Lambert",
 		"specularCoef" : 30,
-		"transparency" : 0.20000000298023224,
+		"transparency" : 0.4000000059604645,
 		"transparent" : true,
 		"vertexColors" : false
 	},

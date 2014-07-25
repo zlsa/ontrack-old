@@ -130,7 +130,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 5000
+        force: 7000
       };
 
       this.audio={
@@ -147,7 +147,7 @@ var Car=Fiber.extend(function() {
       this.track=train.track;
     },
     getSpeed: function() {
-      return Math.abs(this.velocity*30);
+      return this.train.getSpeed();
     },
     calculateFriction: function() {
       if(!this.train) return;
@@ -172,7 +172,7 @@ var Car=Fiber.extend(function() {
 
         this.tilt=0;
         for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
-        this.tilt*=2;
+        this.tilt*=0.7;
       }
 
       if(this.number == 0) {
@@ -288,6 +288,7 @@ var Train=Fiber.extend(function() {
       this.cars         = options.cars || [];
 
       this.distance     = options.distance || 30;
+      this.last_distance= this.distance;
       this.velocity     = options.velocity || 0;
       
       this.brake = {
@@ -317,15 +318,17 @@ var Train=Fiber.extend(function() {
       return length;
     },
     getSpeed: function() {
-      return Math.abs(this.velocity*30);
+      return Math.abs(this.distance-this.last_distance)*30;
     },
     update: function() {
       if(!this.track) return;
       if(this.distance-this.getLength() < 0) {
         this.distance=this.getLength();
+        this.last_distance=this.getLength();
         this.velocity=0;
       } else if(this.distance >= this.track.getLength()) {
         this.distance=this.track.getLength();
+        this.last_distance=this.track.getLength();
         this.velocity=0;
       }
 
@@ -357,6 +360,7 @@ var Train=Fiber.extend(function() {
       }
 
 //      this.distance+=this.velocity*game_delta();
+      this.last_distance=this.distance;
       if(!game_paused())
          this.distance+=this.velocity;
 
@@ -373,6 +377,7 @@ var Train=Fiber.extend(function() {
     ready: function() {
       this.track=prop.railway.current.getRoot("master");
       this.distance=this.track.start+this.getLength();
+      this.last_distance=this.distance;
       for(var i=0;i<this.cars.length;i++) {
         this.cars[i].track=this.track;
         this.cars[i].createModel();
@@ -398,7 +403,7 @@ function train_init_post() {
   train.push(new Car({
     length: 20,
     weight: 30000,
-    front_surface: 5,
+    front_surface: 2,
     type: "cab",
   }));
   train.push(new Car({

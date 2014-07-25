@@ -25,8 +25,8 @@
         },
         {
           "type":"curve",
-          "length":100,
-          "radius":-50,
+          "length":20,
+          "radius":-10,
           "rise":0,
           "cant":[-0.2,-0.3]
         },
