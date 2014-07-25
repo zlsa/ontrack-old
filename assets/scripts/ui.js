@@ -75,7 +75,7 @@ function ui_set_camera(mode) {
   if(mode == "cab") {
     prop.ui.camera.parent="train";
     prop.ui.camera.anchor="front";
-    prop.ui.camera.distance_offset=-1;
+    prop.ui.camera.distance_offset=-0.2;
     prop.ui.camera.height_offset=2.7;
     prop.ui.camera.shift_offset=0;
   } else if(mode == "track") {
@@ -114,10 +114,10 @@ function ui_camera_rotate(axis, direction) {
 
 function ui_update_post() {
   var axes=["distance","shift","height","rotation","pitch","roll"];
-  var mix=0.1;
-  mix=0.9;
+  var mix=0.2;
+//  mix=0.9;
   for(var i in axes) {
     prop.ui.camera[axes[i]+"_target"]+=prop.ui.camera[axes[i]+"_velocity"]*game_delta();
-    prop.ui.camera[axes[i]]=((prop.ui.camera[axes[i]+"_offset"]+prop.ui.camera[axes[i]+"_target"])*(1-mix))+prop.ui.camera[axes[i]]*mix;
+    prop.ui.camera[axes[i]]=((prop.ui.camera[axes[i]+"_offset"]+prop.ui.camera[axes[i]+"_parent"]+prop.ui.camera[axes[i]+"_target"])*(1-mix))+prop.ui.camera[axes[i]]*mix;
   }
 }

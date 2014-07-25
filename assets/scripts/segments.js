@@ -174,7 +174,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances(2.0));
+      geometry=this.buildProfileMesh(profile,this.getDistances(1.0));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -492,5 +492,5 @@ var Segments=Fiber.extend(function() {
 
 function segments_init_pre() {
   prop.segments={};
-  prop.segments.detail=0.5;
+  prop.segments.detail=0.2;
 }

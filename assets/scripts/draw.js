@@ -209,24 +209,26 @@ function draw_update_post() {
 
   if(prop.ui.camera.parent == "train") {
     prop.ui.camera.distance_parent=prop.train.current.distance;
+    prop.ui.camera.rotation_parent=prop.train.current.track.getRotation(prop.train.current.distance);
+    prop.ui.camera.roll_offset=prop.train.current.cars[0].tilt;
   }
   if(prop.ui.camera.parent == "train" && prop.ui.camera.anchor == "rear") {
     prop.ui.camera.distance_parent-=prop.train.current.getLength();
   }
 
-  var distance=prop.ui.camera.distance+prop.ui.camera.distance_parent
+  var distance=prop.ui.camera.distance;
   var position=prop.train.current.track.getPosition(distance);
   var elevation=prop.train.current.track.getElevation(distance);
-  var rotation=prop.train.current.track.getRotation(distance);
+  var rotation=prop.train.current.track.getRotation(distance)+prop.ui.camera.rotation;
   
   if(prop.ui.camera.parent == "train") {
     elevation+=prop.train.current.track.getElevation(prop.train.current.distance);
   }
 
-  var shift=prop.ui.camera.shift+prop.ui.camera.shift_parent;
-  var height=prop.ui.camera.height+prop.ui.camera.height_parent;
+  var shift=prop.ui.camera.shift;
+  var height=prop.ui.camera.height;
 
-  prop.draw.camera.position.set(-position[0]+cos(rotation)*shift,elevation+height,position[1]+sin(rotation)*shift);
+  prop.draw.camera.position.set(-position[0]+cos(rotation)*shift,elevation+height,position[1]-sin(rotation)*shift);
   prop.draw.camera.rotation.set(prop.ui.camera.pitch,Math.PI+prop.ui.camera.rotation,prop.ui.camera.roll);
   
   var cab=prop.train.current.cars[Math.ceil(prop.train.current.cars.length/2)].model.position;
