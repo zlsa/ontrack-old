@@ -240,6 +240,12 @@ function shader_init() {
     color:0x776655,
     shininess:20,
   }));
+  shader_add(new Shader({
+    name: "metal",
+    type: "phong",
+    color:0x666677,
+    shininess:50,
+  }));
 }
 
 function shader_ready_pre() {

@@ -59,7 +59,7 @@ var Bogie=Fiber.extend(function() {
       
 //      var tilt=scrange(Math.PI/100,Math.abs(this.car.tilt),Math.PI/2,0,1)*this.car.tilt;
 
-      this.model.position.set(-position[0],elevation+0.4,position[1]);
+      this.model.position.set(-position[0],elevation+0.3,position[1]);
 
       this.model.rotation.order="YXZ";
 
@@ -251,7 +251,7 @@ var Car=Fiber.extend(function() {
       var pitch=-Math.atan2(elevation_front-elevation_rear,this.bogies[0].distance-this.bogies[1].distance);
       var cant=this.tilt;
       
-      this.model.position.set(-position[0],elevation+Math.abs(sin(Math.abs(this.tilt))*scrange(Math.PI/4,Math.abs(this.tilt),Math.PI/2,0,0.5))+1.05,position[1]);
+      this.model.position.set(-position[0],elevation+Math.abs(sin(Math.abs(this.tilt))*scrange(Math.PI/4,Math.abs(this.tilt),Math.PI/2,0,0.5))+0.95,position[1]);
 
       this.model.rotation.order="YXZ";
 
@@ -412,7 +412,7 @@ function train_init_post() {
     type: "cab",
   }));
   if(true) {
-    for(var i=0;i<30;i++) {
+    for(var i=0;i<9;i++) {
       train.push(new Car({
         length: 20,
         weight: 30000,
