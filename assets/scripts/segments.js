@@ -92,7 +92,7 @@ var Segment=Fiber.extend(function() {
         var number=1;
       }
       if(this.type == "curve") {
-        var number=this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,0.4);
+        var number=this.getLength()*this.arc*crange(10,this.radius[0],1000,0.5,2);
       }
       if(!multiply) multiply=1;
       number*=trange(0,Math.abs(this.rise),10,1,5);
@@ -174,13 +174,14 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances(prop.segments.detail*1.5));
+      geometry=this.buildProfileMesh(profile,this.getDistances(2.0));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
       for(var i=0;i<this.profiles.length;i++) {
         var profile_options=this.profiles[i];
         var detail=profile_options.detail || 1;
+        var stretch=profile_options.stretch || 1;
         detail=clamp(0.1,detail,3);
         var profile=[];
         for(var j=0;j<profile_options.profile.length;j++) {
@@ -208,7 +209,7 @@ var Segments=Fiber.extend(function() {
             continue;
           }
           detail*=prop.segments.detail;
-          geometry=this.buildProfileMesh(profile,this.getDistances(detail,start,end));
+          geometry=this.buildProfileMesh(profile,this.getDistances(detail,start,end),stretch);
           mesh=new THREE.Mesh(geometry,shader_get_material(profile_options.shader));
           mesh.castShadow=true;
           mesh.receiveShadow=true;
@@ -380,6 +381,7 @@ var Segments=Fiber.extend(function() {
           uv_profile.push(0);
         }
       }
+      var uvw=uv_width;
       uv_width=1/uv_width;
       for(var i=0;i<uv_profile.length;i++) {
         uv_profile[i]*=uv_width*0.5;
@@ -446,7 +448,7 @@ var Segments=Fiber.extend(function() {
             var left_offset=profile[j][0][0];
             var right_offset=profile[j+1][0][0];
             var s=1.0;
-            var ds=0.02;
+            var ds=1/uvw;
             var f1=new THREE.Face3(previous_profile_offset+0,
                                    previous_profile_offset+1,
                                             profile_offset+1);
@@ -490,5 +492,5 @@ var Segments=Fiber.extend(function() {
 
 function segments_init_pre() {
   prop.segments={};
-  prop.segments.detail=1;
+  prop.segments.detail=0.5;
 }

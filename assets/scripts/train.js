@@ -156,17 +156,18 @@ var Car=Fiber.extend(function() {
       if(!this.track) return;
 
       var time_seed=game_time()+this.distance*0.1;
-      this.tilt_factors.cant=this.track.getCant(this.distance);
-      this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,this.getSpeed(),100,radians(0),radians(0.5));
-      this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,this.getSpeed(),100,radians(0),radians(0.3));
-      this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,this.getSpeed(),100,radians(0),radians(0.1));
-      this.tilt_factors.wobble*=2;
 
       if(Math.abs(this.tilt-this.tilt_factors.cant) > Math.PI/50 && false) {
         this.tilt=clamp(-Math.PI/2,this.tilt*(1+game_delta()),Math.PI/2);
         this.friction_factors.derail=scrange(Math.PI/50,Math.abs(this.tilt),Math.PI/2,0,100*this.weight);
       } else {
         var difference=this.track.getRotationDifference(this.distance);
+        this.tilt_factors.cant=this.track.getCant(this.distance);
+        this.tilt_factors.wobble= sin(time_seed*0.5)*trange(0,this.getSpeed(),100,radians(0),radians(0.5));
+        this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,this.getSpeed(),100,radians(0),radians(0.3));
+        this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,this.getSpeed(),100,radians(0),radians(0.1));
+        this.tilt_factors.wobble*=2;
+        this.tilt_factors.wobble=0;
         this.tilt_factors.derail=trange(0,difference*this.getSpeed(),1000,0,Math.PI/2);
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail,Math.PI/2);
 
@@ -174,7 +175,7 @@ var Car=Fiber.extend(function() {
 
         this.tilt=0;
         for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
-        this.tilt*=0.7;
+        this.tilt*=10.0;
       }
 
       if(this.number == 0) {
@@ -366,8 +367,7 @@ var Train=Fiber.extend(function() {
 
 //      this.distance+=this.velocity*game_delta();
       this.last_distance=this.distance;
-      if(!game_paused())
-         this.distance+=this.velocity;
+      this.distance+=this.velocity*game_speedup();
 
       $("#speed").text((this.getSpeed()*3.6).toFixed(2)+" kph")
 
@@ -412,7 +412,7 @@ function train_init_post() {
     type: "cab",
   }));
   if(true) {
-    for(var i=0;i<9;i++) {
+    for(var i=0;i<1;i++) {
       train.push(new Car({
         length: 20,
         weight: 30000,

@@ -11,7 +11,7 @@ $UTILS
 $FOG_PARAMETERS
 
 void main() {
-  vec2 vp=vUV*8000.0;
+  vec2 vp=vUV*50.0;
   
   vec4 color=texture2D(grass, vp*0.7);
   color+=texture2D(grass, vp*0.3)*2.0;

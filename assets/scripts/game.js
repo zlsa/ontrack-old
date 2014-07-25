@@ -33,6 +33,11 @@ function game_delta() {
   return prop.game.delta;
 }
 
+function game_speedup() {
+  if(game_paused()) return 0;
+  return prop.game.speedup;
+}
+
 function game_update_pre() {
   prop.game.delta=delta()*prop.game.speedup;
   if(game_paused()) {

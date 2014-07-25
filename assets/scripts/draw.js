@@ -4,7 +4,7 @@ function draw_init_pre() {
 
   prop.draw.fov=60;
 
-  prop.draw.znear=1;
+  prop.draw.znear=0.1;
   prop.draw.zfar=50000;
 
   prop.draw.size={
@@ -223,7 +223,7 @@ function draw_set_camera(mode) {
     prop.train.current.cars[0].bogies[0].model.add(prop.draw.camera);
   }
   if(mode == "cab") {
-    prop.draw.camera.position.set(0,2.0,10.1);
+    prop.draw.camera.position.set(0,2.0,9.1);
     prop.draw.camera.rotation.set(0,Math.PI,0);
   } else if(mode == "chase") {
   } else if(mode == "front") {
