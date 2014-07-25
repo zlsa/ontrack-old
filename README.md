@@ -1,6 +1,6 @@
-# [on__track__ ](http://zlsa.github.io/ontrack)
+# [ontrack](http://zlsa.github.io/ontrack)
 
-A 3D railroad simulator, currently in development.
+A 3D train simulator for HTML5, currently in development.
 
 # License
 
