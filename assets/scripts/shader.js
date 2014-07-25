@@ -199,6 +199,13 @@ function shader_init_pre() {
 }
 
 function shader_init() {
+  shader_add(new Shader({
+    name: "default",
+    type: "phong",
+    color: 0xff00ff,
+    shininess: 0,
+//    wireframe: true,
+  }));
   shader_load("skydome");
   shader_load("grass");
 //  shader_load("gravel");
@@ -284,7 +291,9 @@ function shader_get(name) {
 }
 
 function shader_get_material(name) {
-  return shader_get(name).material;
+  var shader=shader_get(name);
+  if(!shader) return shader_get("default").material;
+  return shader.material;
 }
 
 

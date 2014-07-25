@@ -145,18 +145,6 @@ var Segments=Fiber.extend(function() {
     buildMesh: function() {
       var g=this.getGauge();
 
-      // var profile=[
-      //   [[-g/2-7,    -5 ], null],
-      //   [[-g/2-3,     0 ], null],
-
-      //   [[ g/2+3,     0 ], null],
-      //   [[ g/2+7,    -5 ], null],
-      // ];
-
-      // this.geometry=this.buildProfileMesh(profile,this.getDistances(1));
-      // this.mesh=new THREE.Mesh(this.geometry,shader_get_material("gravel"));
-      // prop.draw.scene.add(this.mesh);
-
       var rw=0.07;
       var rh=0.1;
       var b=0.01;
@@ -186,7 +174,7 @@ var Segments=Fiber.extend(function() {
 
       ];
 
-      geometry=this.buildProfileMesh(profile,this.getDistances(1));
+      geometry=this.buildProfileMesh(profile,this.getDistances(prop.segments.detail*1.5));
       mesh=new THREE.Mesh(geometry,shader_get_material("rails"));
       prop.draw.scene.add(mesh);
 
@@ -502,5 +490,5 @@ var Segments=Fiber.extend(function() {
 
 function segments_init_pre() {
   prop.segments={};
-  prop.segments.detail=0.5;
+  prop.segments.detail=1;
 }

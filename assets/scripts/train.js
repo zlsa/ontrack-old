@@ -88,6 +88,7 @@ var Car=Fiber.extend(function() {
       this.track        = options.track || null;
       this.length       = options.length || 0;
       this.weight       = options.weight || 0;
+      this.reverse      = options.reverse || false;
 
       this.front_surface= options.front_surface || 0;
       this.number       = options.number || 0;
@@ -253,6 +254,8 @@ var Car=Fiber.extend(function() {
       this.model.rotation.order="YXZ";
 
       this.model.rotation.set(pitch,rotation,this.tilt);
+      if(this.reverse)
+      this.model.rotation.y+=Math.PI;
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateModel();
@@ -406,58 +409,67 @@ function train_init_post() {
     front_surface: 2,
     type: "cab",
   }));
+  if(false) {
+    train.push(new Car({
+      length: 20,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+    train.push(new Car({
+      length: 20.5,
+      weight: 30000,
+      front_surface: 10,
+      type: "passenger"
+    }));
+  }
   train.push(new Car({
     length: 20,
     weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
-  }));
-  train.push(new Car({
-    length: 20.5,
-    weight: 30000,
-    front_surface: 10,
-    type: "passenger"
+    front_surface: 2,
+    type: "cab",
+    reverse: true
   }));
   train_set_current(train_add(train));
 
