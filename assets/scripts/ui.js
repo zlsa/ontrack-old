@@ -65,12 +65,12 @@ function ui_set_camera(mode) {
   }
   prop.ui.camera.mode=mode;
 
-//  prop.ui.camera.distance_target=0;
-//  prop.ui.camera.height_target=0;
-//  prop.ui.camera.shift_target=0;
-//  prop.ui.camera.rotation_target=0;
-//  prop.ui.camera.pitch_target=0;
-//  prop.ui.camera.tilt_target=0;
+  prop.ui.camera.distance_target=0;
+  prop.ui.camera.height_target=0;
+  prop.ui.camera.shift_target=0;
+  prop.ui.camera.rotation_target=0;
+  prop.ui.camera.pitch_target=0;
+  prop.ui.camera.tilt_target=0;
 
   if(mode == "cab") {
     prop.ui.camera.parent="train";
