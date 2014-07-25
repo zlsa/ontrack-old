@@ -19,7 +19,7 @@ var Bogie=Fiber.extend(function() {
       };
 
       this.brake={
-        force:10000
+        force:20000
       };
       
       this.audio={
@@ -41,13 +41,14 @@ var Bogie=Fiber.extend(function() {
       return friction;
     },
     updateAudio: function() {
-      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.getSpeed()),1,0,0.02));
+      var vm=1/this.car.train.cars.length;
+      this.audio.rails.setVolume(scrange(0,Math.abs(this.car.getSpeed()),1,0,0.04)*vm);
       this.audio.rails.setRate(crange(0,Math.abs(this.car.getSpeed()),100,0.2,2.0));
 
       if(this.car.train.brake.value <= 0)
         this.audio.flange.setVolume(0);
       else
-        this.audio.flange.setVolume(crange(1,this.car.train.brake.value,this.car.train.brake.max,0.2,0.3)*crange(0,Math.abs(this.car.getSpeed()),100,0,0.1));
+        this.audio.flange.setVolume(crange(1,this.car.train.brake.value,this.car.train.brake.max,0.2,0.3)*crange(0,Math.abs(this.car.getSpeed()),100,0,0.1)*vm);
     },
     updateModel: function() {
       var position=this.car.track.getPosition(  this.distance);
@@ -215,11 +216,12 @@ var Car=Fiber.extend(function() {
     updateAudio: function() {
       var motor_speed=crange(0,this.getSpeed(),90,0.2,4.0);
       var mix=0.9;
+      var vm=1/this.train.cars.length;
       motor_speed*=1.5;
       if(this.train.power.value == 0) motor_speed=0;
       this.power.speed=(motor_speed*(1-mix))+this.power.speed*mix;
 
-      this.audio.motor.setVolume(scrange(0,this.getSpeed(),3,0.2,0.2)*crange(0,Math.abs(this.train.power.value),this.train.power.max,0.5,1.0));
+      this.audio.motor.setVolume(scrange(0,this.getSpeed(),3,0.2,0.2)*crange(0,Math.abs(this.train.power.value),this.train.power.max,0.5,1.0)*vm);
       this.audio.motor.setRate(this.power.speed);
 //      this.audio.motor.setDelay((this.distance*this.velocity)%5);
 
@@ -230,9 +232,9 @@ var Car=Fiber.extend(function() {
       var flange_offset_angle=average(this.bogies[0].flange_offset_angle,this.bogies[1].flange_offset_angle);
       var mix=0.4;
       this.flange_lowpass=(flange_offset_angle*(1-mix))+this.flange_lowpass*mix;
-      this.audio.flange.setVolume(scrange(0,this.getSpeed()*this.flange_lowpass,0.1,0,0.3));
+      this.audio.flange.setVolume(scrange(0,this.getSpeed()*this.flange_lowpass,0.1,0,0.3)*vm);
 
-      this.audio.geartrain.setVolume(crange(0,this.getSpeed(),10,0.2,0.5));
+      this.audio.geartrain.setVolume(crange(0,this.getSpeed(),10,0.2,0.5)*vm);
       this.audio.geartrain.setRate(crange(0,this.getSpeed(),100,0.1,5.0));
 
     },
@@ -409,60 +411,15 @@ function train_init_post() {
     front_surface: 2,
     type: "cab",
   }));
-  if(false) {
-    train.push(new Car({
-      length: 20,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
-    train.push(new Car({
-      length: 20.5,
-      weight: 30000,
-      front_surface: 10,
-      type: "passenger"
-    }));
+  if(true) {
+    for(var i=0;i<30;i++) {
+      train.push(new Car({
+        length: 20,
+        weight: 30000,
+        front_surface: 10,
+        type: "passenger"
+      }));
+    }
   }
   train.push(new Car({
     length: 20,
