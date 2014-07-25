@@ -104,6 +104,7 @@ function railway_init_pre() {
 
 function railway_init() {
   railway_set_current(railway_get("devtrack"));
+//  railway_set_current(railway_get("smalltrack"));
 //  railway_set_current(railway_get("train-test"));
 }
 

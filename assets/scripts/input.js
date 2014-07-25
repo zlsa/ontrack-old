@@ -14,6 +14,36 @@ function input_init() {
   prop.input.keysym={
     shift:16,
     control:17,
+    num_divide: 111,
+    num_multiply: 106,
+    num_subtract: 109,
+    num_add: 107,
+    num_del: 46,
+    num_insert: 45,
+    num_end: 35,
+    num_down: 40,
+    num_pgdn: 34,
+    num_left: 37,
+    num_begin: 12,
+    num_right: 39,
+    num_home: 36,
+    num_up: 38,
+    num_pgup: 33,
+
+    num_0: 96,
+    num_1: 97,
+    num_2: 98,
+    num_3: 99,
+    num_4: 100,
+    num_5: 101,
+    num_6: 102,
+    num_7: 103,
+    num_8: 104,
+    num_9: 105,
+    num_dot: 110,
+
+    num_lock: 144,
+
     a:65,
     b:66,
     c:67,
@@ -96,18 +126,37 @@ function input_keydown(keycode) {
   } else if(keycode == prop.input.keysym.f1) {
     ui_set_camera("cab");
   } else if(keycode == prop.input.keysym.f2) {
-    ui_set_camera("chase");
+    ui_set_camera("track");
   } else if(keycode == prop.input.keysym.f3) {
-    ui_set_camera("front");
+    ui_set_camera("chase");
   } else if(keycode == prop.input.keysym.f4) {
     ui_set_camera("flyby");
   } else if(keycode == prop.input.keysym.f5) {
-    ui_set_camera("side");
+    ui_set_camera("track");
   }
 }
 
 function input_update() {
-  if(prop.input.keys[prop.input.keysym.shift]) {
-    // okay, shift key is currently held down
+  var damping=3;
+  if(prop.input.keys[prop.input.keysym.num_up]) {
+    ui_camera_move("distance",1);
+  } else if(prop.input.keys[prop.input.keysym.num_down]) {
+    ui_camera_move("distance",-1);
+  } else {
+    prop.ui.camera.distance_velocity*=1-game_delta()*damping;
+  }
+  if(prop.input.keys[prop.input.keysym.num_home]) {
+    ui_camera_move("height",1);
+  } else if(prop.input.keys[prop.input.keysym.num_end]) {
+    ui_camera_move("height",-1);
+  } else {
+    prop.ui.camera.height_velocity*=1-game_delta()*damping;
+  }
+  if(prop.input.keys[prop.input.keysym.num_left]) {
+    ui_camera_move("shift",-1);
+  } else if(prop.input.keys[prop.input.keysym.num_right]) {
+    ui_camera_move("shift",1);
+  } else {
+    prop.ui.camera.shift_velocity*=1-game_delta()*damping;
   }
 }

@@ -167,7 +167,6 @@ var Car=Fiber.extend(function() {
         this.tilt_factors.wobble+=sin(time_seed*2  )*trange(0,this.getSpeed(),100,radians(0),radians(0.3));
         this.tilt_factors.wobble+=sin(time_seed*5  )*trange(0,this.getSpeed(),100,radians(0),radians(0.1));
         this.tilt_factors.wobble*=2;
-        this.tilt_factors.wobble=0;
         this.tilt_factors.derail=trange(0,difference*this.getSpeed(),1000,0,Math.PI/2);
         this.tilt_factors.derail=clamp(-Math.PI/2,this.tilt_factors.derail,Math.PI/2);
 
@@ -175,7 +174,7 @@ var Car=Fiber.extend(function() {
 
         this.tilt=0;
         for(var i in this.tilt_factors) this.tilt+=this.tilt_factors[i];
-        this.tilt*=10.0;
+        this.tilt*=1.0;
       }
 
       if(this.number == 0) {
@@ -215,6 +214,7 @@ var Car=Fiber.extend(function() {
 
     },
     updateAudio: function() {
+      if(game_paused()) return;
       var motor_speed=crange(0,this.getSpeed(),90,0.2,4.0);
       var mix=0.9;
       var vm=1/this.train.cars.length;
@@ -251,14 +251,16 @@ var Car=Fiber.extend(function() {
       var elevation=average(elevation_front,elevation_rear);
       var pitch=-Math.atan2(elevation_front-elevation_rear,this.bogies[0].distance-this.bogies[1].distance);
       var cant=this.tilt;
+      if(this.reverse) {
+        rotation+=Math.PI;
+        cant=-cant;
+      }
       
       this.model.position.set(-position[0],elevation+Math.abs(sin(Math.abs(this.tilt))*scrange(Math.PI/4,Math.abs(this.tilt),Math.PI/2,0,0.5))+0.95,position[1]);
 
       this.model.rotation.order="YXZ";
 
       this.model.rotation.set(pitch,rotation,this.tilt);
-      if(this.reverse)
-      this.model.rotation.y+=Math.PI;
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateModel();
@@ -356,7 +358,7 @@ var Train=Fiber.extend(function() {
 
       var v=this.velocity+0;
       for(var i=0;i<this.cars.length;i++) {
-        var velocity_sign=scrange(-1,this.velocity,1,-1,1);
+        var velocity_sign=scrange(-0.1,this.velocity,0.1,-1,1);
         var friction=Math.abs(this.cars[i].calculateFriction());
         var acceleration=this.cars[i].acceleration/weight;
         this.velocity+=acceleration*game_delta()*0.1;

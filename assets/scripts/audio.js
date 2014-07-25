@@ -18,7 +18,7 @@ var AudioSource=Fiber.extend(function() {
       volume=clamp(0,volume,1);
       if(!this.gain) return;
       this.volume=volume;
-      this.gain.gain.value=volume*this.master_volume;
+      this.gain.gain.value=volume*this.master_volume*2;
     },
     setRate: function(rate) {
       rate=clamp(0.01,rate,5);

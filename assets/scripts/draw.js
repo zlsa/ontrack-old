@@ -124,6 +124,7 @@ function draw_init() {
     prop.draw.znear,
     prop.draw.zfar);
   prop.draw.camera.name="camera";
+  prop.draw.camera.rotation.order="YXZ";
 
   // RENDERER
   prop.draw.renderer=new THREE.WebGLRenderer({
@@ -204,58 +205,30 @@ function draw_resize() {
   prop.draw.camera.updateProjectionMatrix();
 }
 
-function draw_unset_camera(mode) {
-  if(mode == "cab" || mode == "front" || mode == "side") {
-    prop.train.current.cars[0].model.remove(prop.draw.camera);
-  } else if(mode == "flyby") {
-    prop.train.current.cars[0].bogies[0].model.remove(prop.draw.camera);
-  }
-  if(mode == "front") {
-    prop.draw.camera.fov=prop.draw.fov;
-    prop.draw.camera.updateProjectionMatrix();
-  }
-}
-
-function draw_set_camera(mode) {
-  if(mode == "cab" || mode == "front" || mode == "side") {
-    prop.train.current.cars[0].model.add(prop.draw.camera);
-  } else if(mode == "flyby") {
-    prop.train.current.cars[0].bogies[0].model.add(prop.draw.camera);
-  }
-  if(mode == "cab") {
-    prop.draw.camera.position.set(0,2.0,9.1);
-    prop.draw.camera.rotation.set(0,Math.PI,0);
-  } else if(mode == "chase") {
-  } else if(mode == "front") {
-    prop.draw.camera.position.set(3,4,90);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,3,0));
-    prop.draw.camera.fov=prop.draw.fov*0.2;
-    prop.draw.camera.updateProjectionMatrix();
-  } else if(mode == "side") {
-    prop.draw.camera.position.set(20,0,-10);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,-1,-10));
-  } else if(mode == "flyby") {
-    prop.draw.camera.position.set(0,0.4,7);
-    prop.draw.camera.lookAt(new THREE.Vector3(0,0.4,0));
-  }
-}
-
 function draw_update_post() {
 
-  if(prop.ui.camera.mode == "chase") {
-    var distance=Math.max(0.01,prop.train.current.distance-prop.train.current.getLength()-20);
-    var position=prop.train.current.track.getPosition(distance);
-    var elevation=prop.train.current.track.getElevation(distance);
-    var t=game_time()*0.05;
-    var d=10;
-    prop.draw.camera.position.set(-position[0]+sin(t)*d,elevation+8,position[1]+cos(t)*d);
-
-    distance=prop.train.current.distance-prop.train.current.getLength()/2;
-    position=prop.train.current.track.getPosition(distance);
-    elevation=prop.train.current.track.getElevation(distance);
-    prop.draw.camera.lookAt(new THREE.Vector3(-position[0],elevation+1,position[1]));
+  if(prop.ui.camera.parent == "train") {
+    prop.ui.camera.distance_parent=prop.train.current.distance;
+  }
+  if(prop.ui.camera.parent == "train" && prop.ui.camera.anchor == "rear") {
+    prop.ui.camera.distance_parent-=prop.train.current.getLength();
   }
 
+  var distance=prop.ui.camera.distance+prop.ui.camera.distance_parent
+  var position=prop.train.current.track.getPosition(distance);
+  var elevation=prop.train.current.track.getElevation(distance);
+  var rotation=prop.train.current.track.getRotation(distance);
+  
+  if(prop.ui.camera.parent == "train") {
+    elevation+=prop.train.current.track.getElevation(prop.train.current.distance);
+  }
+
+  var shift=prop.ui.camera.shift+prop.ui.camera.shift_parent;
+  var height=prop.ui.camera.height+prop.ui.camera.height_parent;
+
+  prop.draw.camera.position.set(-position[0]+cos(rotation)*shift,elevation+height,position[1]+sin(rotation)*shift);
+  prop.draw.camera.rotation.set(prop.ui.camera.pitch,Math.PI+prop.ui.camera.rotation,prop.ui.camera.roll);
+  
   var cab=prop.train.current.cars[Math.ceil(prop.train.current.cars.length/2)].model.position;
   prop.draw.spot.position.set(cab.x,cab.y+505,cab.z);
   prop.draw.spot.target.position.set(cab.x,cab.y,cab.z);
