@@ -6,6 +6,8 @@ function ui_init_pre() {
     parent: "foo",
     anchor: "front",
 
+    order: ["cab","chase","track"],
+
     distance: 150,
     distance_offset: 0,
     distance_parent: 0,
@@ -51,6 +53,18 @@ function ui_ready_post() {
 }
 
 function ui_set_camera(mode) {
+  if(mode == "next") {
+    var mode=prop.ui.camera.order[mod(prop.ui.camera.order.indexOf(prop.ui.camera.mode)+1,prop.ui.camera.order.length)];
+    ui_set_camera(mode);
+    return;
+  } else if(mode == "prev") {
+    var mode=prop.ui.camera.order[mod(prop.ui.camera.order.indexOf(prop.ui.camera.mode)-1,prop.ui.camera.order.length)];
+    ui_set_camera(mode);
+    return;
+  }
+
+  console.log(mode);
+
   prop.ui.camera.distance_offset=0;
   prop.ui.camera.height_offset=0;
   prop.ui.camera.shift_offset=0;
@@ -114,7 +128,7 @@ function ui_camera_rotate(axis, direction) {
 
 function ui_update_post() {
   var axes=["distance","shift","height","rotation","pitch","roll"];
-  var mix=0.2;
+  var mix=0.3;
 //  mix=0.9;
   for(var i in axes) {
     prop.ui.camera[axes[i]+"_target"]+=prop.ui.camera[axes[i]+"_velocity"]*game_delta();

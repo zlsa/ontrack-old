@@ -92,7 +92,7 @@ function input_init() {
 function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
-    input_keydown(e.which);
+    input_keydown(e.which, e);
     if(e.which >= prop.input.keysym.f1 && e.which <=  prop.input.keysym.f10) {
       e.preventDefault();
       return false;
@@ -110,7 +110,7 @@ function input_done() {
 
 }
 
-function input_keydown(keycode) {
+function input_keydown(keycode,e) {
   if(keycode == prop.input.keysym.a) {
     controls_move("power",0);
   } else if(keycode == prop.input.keysym.z) {
@@ -133,6 +133,11 @@ function input_keydown(keycode) {
     ui_set_camera("flyby");
   } else if(keycode == prop.input.keysym.f5) {
     ui_set_camera("track");
+  } else if(keycode == prop.input.keysym.c) {
+    if(e.shiftKey)
+      ui_set_camera("prev");
+    else
+      ui_set_camera("next");
   }
 }
 

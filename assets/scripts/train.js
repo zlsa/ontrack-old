@@ -132,7 +132,7 @@ var Car=Fiber.extend(function() {
 
       this.power={
         speed: 0, // speed of the motor
-        force: 7000
+        force: 11000
       };
 
       this.audio={
@@ -260,7 +260,7 @@ var Car=Fiber.extend(function() {
 
       this.model.rotation.order="YXZ";
 
-      this.model.rotation.set(pitch,rotation,this.tilt);
+      this.model.rotation.set(pitch,rotation,cant);
 
       for(var i=0;i<this.bogies.length;i++) {
         this.bogies[i].updateModel();
@@ -327,6 +327,9 @@ var Train=Fiber.extend(function() {
     },
     getSpeed: function() {
       return Math.abs(this.distance-this.last_distance)*30;
+    },
+    getVelocity: function() {
+      return (this.distance-this.last_distance)*30;
     },
     update: function() {
       if(!this.track) return;

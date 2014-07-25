@@ -28,14 +28,14 @@
           "length":300,
           "radius":-300,
           "rise":0,
-          "cant":[-0.2,-0.3]
+          "cant":[-0.2,20]
         },
         {
           "type":"curve",
           "length":4000,
           "radius":4000,
           "rise":0,
-          "cant":[-0.3,0]
+          "cant":[20,0]
         },
         {
           "type":"curve",
